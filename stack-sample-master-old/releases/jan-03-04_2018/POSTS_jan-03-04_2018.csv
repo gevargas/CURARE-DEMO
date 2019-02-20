@@ -1,0 +1,3101 @@
+Id,PostTypeId,AcceptedAnswerId,ParentId,CreationDate,DeletionDate,Score,ViewCount,Body,OwnerUserId,OwnerDisplayName,LastEditorUserId,LastEditorDisplayName,LastEditDate,LastActivityDate,Title,Tags,AnswerCount,CommentCount,FavoriteCount,ClosedDate,CommunityOwnedDate
+"48080799","2","","48080546","2018-01-03 15:56:27","","-7","","<p>Firstly almost all recenet C++ compilers comes with placement new so please provide specific compiler name and version etc.</p>
+
+<p>Secondly this is somewhat crude method but works. 
+Solution is you first allocate memory using whatever means u can. Then use reinterpret_cast to cast pointer to that memory location as pointer to your class.
+Lastly have empty constructor and move all the work done inside constructor to initialize method.</p>
+
+<pre><code>#include &lt;iostream&gt;
+
+using namespace std;
+
+class A
+{
+    public:
+    A() {;}
+    /* This is not replacement for constructor as constructor
+    also constructs virtual table calls base class constructor
+    so do not add virtual method and base classes here.*/
+    void initialize() 
+    {
+        cout &lt;&lt; endl &lt;&lt; ""Inside Intialize"" &lt;&lt; endl;
+    }
+};
+
+int main()
+{
+    try
+    {
+        char arr[2048];
+        void* ptr = arr;
+        A* classptr = reinterpret_cast&lt;A*&gt;(ptr);
+        classptr-&gt;initialize();
+    }
+    catch(...)
+    {
+        cout &lt;&lt; endl &lt;&lt; ""Unknown exception"" &lt;&lt; endl;
+    }
+    return 0;
+}
+</code></pre>
+","3494614","","","","","2018-01-03 15:56:27","","","","5","","",""
+"48080800","2","","48080724","2018-01-03 15:56:32","","1","","<p>I assume you are taking about keras. So callbacks are used to execute code during training. Everything is explained quite well <a href=""https://keras.io/callbacks/"" rel=""nofollow noreferrer"">here</a></p>
+
+<p>Here an example on how to log loss during training:</p>
+
+<pre><code>class LossHistory(Callback):
+    def on_train_begin(self, logs={}):
+        self.losses = []
+
+    def on_batch_end(self, batch, logs={}):
+        self.losses.append(logs.get('loss'))
+        print logs.get('loss')
+
+model.fit(data, data, epochs=50, batch_size=72, validation_data=(data, data), verbose=0, shuffle=False,callbacks=[LossHistory()])
+</code></pre>
+","3656912","","","","","2018-01-03 15:56:32","","","","1","","",""
+"48080801","2","","48080667","2018-01-03 15:56:37","","0","","<p>If your structure of the XML is dynamic, you can create a couple of loops which extract the values along with the names of the elements and add them into a result array one by one.</p>
+
+<pre><code>$file = ""product.xml"";
+$productArray = simplexml_load_file($file) or
+     die (""ERROR loading file"");
+$articles = [];
+foreach ( $productArray-&gt;article as $article )  {
+    $newElement = [];
+    foreach ( $article as $element )    {
+        $newElement [ $element-&gt;getName() ] = (string)$element;
+    }
+    $articles[] = $newElement;
+}
+
+print_r($articles);
+</code></pre>
+
+<p>Gives...</p>
+
+<pre><code>Array
+(
+    [0] =&gt; Array
+        (
+            [a] =&gt; TEST&gt;
+            [b] =&gt; TEST2
+            [c] =&gt; TEST3
+        )
+
+    [1] =&gt; Array
+        (
+            [a] =&gt; TEST4&gt;
+            [b] =&gt; TEST5
+            [c] =&gt; TEST6
+        )
+
+)
+</code></pre>
+","1213708","","","","","2018-01-03 15:56:37","","","","2","","",""
+"48080803","2","","48079948","2018-01-03 15:56:45","","0","","<ol>
+<li>for sure because the master data can change over time and if you have that as Enum or static data you have to recompile the application.</li>
+</ol>
+","1045142","","","","","2018-01-03 15:56:45","","","","2","","",""
+"48080804","2","","48077953","2018-01-03 15:56:47","","0","","<p><code>TemplatedParent</code> only works in a ControlTemplate. </p>
+
+<p>I suspect that what you want is this:</p>
+
+<pre><code>&lt;Grid 
+    DataContext=""{Binding RelativeSource={RelativeSource AncestorType={x:Type infiniteReservoir:PressureSource}}}""&gt;
+</code></pre>
+
+<p>As a side note, it's usually considered poor practice to bind DataContext, since that can often have unexpected side effects. You can instead use the RelativeSource in each of the bindings on the children:</p>
+
+<pre><code>&lt;TextBlock Text=""Label:"" Grid.Row=""2""/&gt;
+    &lt;TextBox 
+        Grid.Row=""2"" 
+        Grid.Column=""1"" 
+        Text=""{Binding Name, RelativeSource={RelativeSource AncestorType={x:Type infiniteReservoir:PressureSource}}}""
+        /&gt;
+
+    &lt;TextBlock Text=""Media:"" Grid.Row=""3""/&gt;
+    &lt;TextBlock 
+        Grid.Row=""3"" 
+        Grid.Column=""1"" 
+        Text=""{Binding ToolTip, RelativeSource={RelativeSource AncestorType={x:Type infiniteReservoir:PressureSource}}}""
+        /&gt;
+</code></pre>"
+","424129","","","","","2018-01-03 15:56:47","","","","2","","",""
+","9164280","","5647260","","2018-01-03 16:03:26","2018-01-03 16:03:26","squareArea is not a function when requiring module","<javascript><node.js>","2","3","","",""
+","578011","","","","","2018-01-03 16:45:32","How can I capture the Package Version of a Dot Net Core assembly in startup code?","<c#><.net-core>","1","1","","",""
+"48080808","1","","","2018-01-03 15:57:07","","0","50","<p>This question is for someone very good with react as well as understand filestack-js</p>
+
+<p>I read the whole source code for src/ReactFilestack.jsx but I can't find the part where filestack attach itself to the dom.. somehow it just magically .. did without using <code>ref</code> or ReactDom whatsoever.</p>
+
+<p>if possible anyone can point me to the line that the dom attachment 
+ from <code>client</code> to <code>&lt;Tag&gt;</code> happens?<a href=""https://github.com/filestack/filestack-react/blob/master/src/ReactFilestack.jsx"" rel=""nofollow noreferrer"">https://github.com/filestack/filestack-react/blob/master/src/ReactFilestack.jsx</a></p>
+
+<p>Thanks!</p>
+
+<pre><code>import React, { Component } from 'react';
+import filestack from 'filestack-js';
+import PropTypes from 'prop-types';
+
+class ReactFilestack extends Component {
+  static defaultProps = {
+    file: null,
+    link: false,
+    buttonText: 'Pick file',
+    buttonClass: '',
+    onSuccess: result =&gt; console.log(result),
+    onError: error =&gt; console.error(error),
+    mode: 'pick',
+    options: {},
+    security: null,
+    children: null,
+    render: null,
+    cname: null,
+  };
+
+  static propTypes = {
+    file: PropTypes.objectOf(PropTypes.any),
+    apikey: PropTypes.string.isRequired,
+    link: PropTypes.bool,
+    mode: PropTypes.string,
+    buttonText: PropTypes.string,
+    buttonClass: PropTypes.string,
+    onSuccess: PropTypes.func,
+    onError: PropTypes.func,
+    options: PropTypes.objectOf(PropTypes.any),
+    security: PropTypes.objectOf(PropTypes.any),
+    children: PropTypes.node,
+    render: PropTypes.func,
+    cname: PropTypes.string,
+  };
+
+  onClickPick = (event) =&gt; {
+    event.stopPropagation();
+    event.preventDefault();
+    const {
+      apikey,
+      onSuccess,
+      onError,
+      options,
+      mode,
+      file,
+      security,
+      cname
+    } = this.props;
+    const onFinished = (result) =&gt; {
+      if (typeof onSuccess === 'function') {
+        onSuccess(result);
+      } else {
+        console.log(result);
+      }
+    };
+    const onFail = (error) =&gt; {
+      if (typeof onError === 'function') {
+        onError(error);
+      } else {
+        console.error(error);
+      }
+    };
+
+    this.initClient(mode, apikey, options, file, security, cname)
+      .then(onFinished)
+      .catch(onFail);
+  };
+
+  initClient = (mode, apikey, options, file, security, cname) =&gt; {
+    const { url, handle } = options;
+    delete options.handle;
+    delete options.url;
+    const client = filestack.init(apikey, security, cname);
+
+    if (mode === 'transform') {
+      return new Promise((resolve, reject) =&gt; {
+        try {
+          resolve(client.transform(url, options));
+        } catch (err) {
+          reject(err);
+        }
+      });
+    } else if (mode === 'retrieve') {
+      return client.retrieve(handle, options);
+    } else if (mode === 'metadata') {
+      return client.metadata(handle, options);
+    } else if (mode === 'storeUrl') {
+      return client.storeURL(url, options);
+    } else if (mode === 'upload') {
+      return client.upload(file, options);
+    } else if (mode === 'remove') {
+      return client.remove(handle, security);
+    }
+
+    return client.pick(options);
+  };
+
+  render () {
+    const { buttonClass, buttonText, link, children, render: CustomRender } = this.props;
+    if (CustomRender) {
+      return (
+        &lt;CustomRender onPick={this.onClickPick} /&gt;
+      );
+    }
+    const Tag = link ? 'a' : 'button';
+    return (
+      &lt;Tag
+        name=""filestack""
+        onClick={this.onClickPick}
+        className={buttonClass}
+      &gt;
+        {children || buttonText}
+      &lt;/Tag&gt;
+    );
+  }
+}
+
+export default ReactFilestack;
+</code></pre>
+","2646226","","2646226","","2018-01-03 19:05:07","2018-02-13 17:30:17","Where the client dom got attached to the react dom for filestack-react?","<javascript><reactjs><dom><filestack>","1","10","","",""
+"48080809","1","48081508","","2018-01-03 15:57:11","","0","76","<pre><code>&lt;?php
+header($_SERVER[""SERVER_PROTOCOL""]."" 404 Not Found"");
+</code></pre>
+
+<p>No output on\in page. </p>
+
+<hr>
+
+<p><strong>why is that? and what to do to see the error page?</strong>
+<a href=""https://i.stack.imgur.com/eGGeG.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/eGGeG.png"" alt=""path to 404.php-script""></a></p>
+
+<p><a href=""https://i.stack.imgur.com/8uhl4.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/8uhl4.png"" alt=""no output in firefox""></a></p>
+
+<hr>
+
+<h2>reply to the first comment</h2>
+
+<p><a href=""https://i.stack.imgur.com/kgYFI.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/kgYFI.png"" alt=""reply to the first comment""></a></p>
+","6268192","","6268192","","2018-01-03 16:07:22","2018-01-03 16:38:29","header 404 not found - not work with\on\in Firefox 57.0.3 (64b)","<php><http><firefox><https><http-status-code-404>","1","5","","",""
+"48080811","2","","24495348","2018-01-03 15:57:23","","0","","<p>On Windows, I solved this problem by putting the Lib directory of my Python installation directly on the PYTHONPATH.  This is necessary even though, if you run Python directly in the same shell, it doesn't require this to find the encodings package:</p>
+
+<pre><code>set PYTHONPATH=C:\WinPython-64bit-3.4.4.6Qt5\python-3.4.4.amd64\Lib;%PYTHONPATH%
+c:\apache24\bin\httpd.exe
+</code></pre>
+
+<p>Also be sure to use the correct mod_wsgi version.  I downloaded mine from the <a href=""https://www.lfd.uci.edu/~gohlke/pythonlibs/"" rel=""nofollow noreferrer"">Unofficial Binaries page</a> and chose it to match the Python (64 bit 3.4 in the example above).  My website works correctly with Python after the above change to the .bat file starting Apache. </p>
+
+<p>Note my version of Python, <a href=""https://winpython.github.io/"" rel=""nofollow noreferrer"">WinPython</a>, is installed by unzipping the install and placing it in the C: drive.  Thus is it not installed in the Registry in the usual Windows way, which should minimize Registry interaction considerations.</p>
+","1637798","","1637798","","2018-01-04 01:18:11","2018-01-04 01:18:11","","","","2","","",""
+"48080812","2","","47956819","2018-01-03 15:57:24","","0","","<p>The only download error that I saw while using Chrome's Inspect function pertains to a SCRIPT tag with a Facebook url as the source (src) file.</p>
+
+<p>This is the error as reported by Inspect.
+<a href=""https://i.stack.imgur.com/RMlCO.jpg"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/RMlCO.jpg"" alt=""enter image description here""></a></p>
+
+<p>This is the SCRIPT tag that caused the error.
+<a href=""https://i.stack.imgur.com/oVM4h.jpg"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/oVM4h.jpg"" alt=""enter image description here""></a></p>
+
+<p>I am not sure that this is the cause of the reoccurring 404 error, but it is an issue that needs attention on this website.</p>
+","3057983","","","","","2018-01-03 15:57:24","","","","1","","",""
+"48080813","2","","10108122","2018-01-03 15:57:27","","3","","<p>This could be used if you want to check that <code>object</code> is instance of <code>List&lt;T&gt;</code>, which is not empty:</p>
+
+<pre><code>if(object instanceof List){
+    if(((List)object).size()&gt;0 &amp;&amp; (((List)object).get(0) instanceof MyObject)){
+        // The object is of List&lt;MyObject&gt; and is not empty. Do something with it.
+    }
+}
+</code></pre>
+","2298241","","","","","2018-01-03 15:57:27","","","","0","","",""
+"48080814","2","","48080613","2018-01-03 15:57:34","","0","","<p>This is by design. Apple does not want iOS apps to run in the background as they might drain the battery.</p>
+
+<p>But Apple has added many APIs so iOS can take over the background task on behalf of the app. And uploading and downloading is one of these tasks.</p>
+
+<p>Have a look at <a href=""https://developer.apple.com/documentation/foundation/nsurlsession"" rel=""nofollow noreferrer"">NSURLSession</a> and in particular at <a href=""https://developer.apple.com/documentation/foundation/nsurlsessionconfiguration/1407496-backgroundsessionconfigurationwi?language=objc"" rel=""nofollow noreferrer"">NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:</a>. This is how it's done.</p>
+","413337","","","","","2018-01-03 15:57:34","","","","0","","",""
+"48080815","1","48082397","","2018-01-03 15:57:46","","0","38","<p>I need to update the list of users for a security role. How can I avoid re-associating an user that already has the role assigned?</p>
+
+<p>I'm trying to build a query to get the role where user x is not in the role's list of users and then use it for the association if the user was not found. Here is what I have so far:</p>
+
+<pre><code>LinkEntity userRoles = new LinkEntity
+{
+    LinkFromEntityName = ""role"",
+    LinkToEntityName = ""systemuserroles"",
+    LinkFromAttributeName = ""roleid"",
+    LinkToAttributeName = ""roleid"",
+    JoinOperator = JoinOperator.LeftOuter,
+    Columns = new ColumnSet(true),
+    EntityAlias = ""userroles"",
+    LinkCriteria =
+    {
+        Conditions =
+        {
+            new ConditionExpression{
+                //not sure how to build the ""where user x does not exists""
+           }
+        }
+    }
+};
+
+QueryExpression roleQuery = new QueryExpression
+{
+    EntityName = ""role"",
+    ColumnSet = new ColumnSet(true),
+    Criteria =
+    {
+        Conditions = { 
+            new ConditionExpression { 
+                AttributeName = ""name"", 
+                Operator = ConditionOperator.Equal, 
+                Values = { ""RoleName""}
+            } 
+        }
+    },
+    LinkEntities = { userRoles }
+};
+</code></pre>
+
+<p>I need to build something like this query:</p>
+
+<pre><code>select * from role 
+where role.name = ""RoleName""
+and not exists
+(select 1 from userRoles 
+where userRoles.roleid = role.roleid
+and userRoles.user = ""xyz"")
+</code></pre>
+","4042972","","4042972","","2018-01-03 16:41:39","2018-01-03 17:38:01","How to build a query to get a security role where user X does not exists in Dynamics CRM 2016 C#","<c#><dynamics-crm><dynamics-crm-2016><query-expressions>","1","0","1","",""
+"48080816","1","48081210","","2018-01-03 15:57:47","","0","44","<p><a href=""https://i.stack.imgur.com/qXLjU.png"" rel=""nofollow noreferrer"">see this</a></p>
+
+<p>i am struggle with match the pattern with empty column. my regex pattern look like</p>
+
+<p><code>^(.*?\$).*?(\w\:\\.*?)\s(.*?)$</code>. </p>
+
+<p>this pattern match the not empty column in a row, but i want to match the empty column in a row.</p>
+","6649016","","5320802","","2018-01-03 16:07:45","2018-01-03 16:20:31","regex pattern for table structure string","<regex>","1","0","","",""
+"48080817","2","","48080771","2018-01-03 15:58:03","","2","","<p>You need to <a href=""https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation"" rel=""nofollow noreferrer"">stop the event from propagating</a> up to the parent:</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>document
+  .querySelector('#inner')
+  .addEventListener('click', e =&gt; {
+    console.log('click inner');
+    e.stopPropagation(); // &lt;-- stop event propagation
+  })
+
+document
+  .querySelector('#outer')
+  .addEventListener('click', () =&gt; {
+    console.log('click outer');
+  })</code></pre>
+<pre class=""snippet-code-css lang-css prettyprint-override""><code>#outer {
+  background: pink;
+  height: 300px;
+  width: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#inner {
+  background: salmon;
+  width: 150px;
+  height: 150px;
+}</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;div id=""outer""&gt;
+  &lt;div id=""inner""&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+</p>
+","3928341","","","","","2018-01-03 15:58:03","","","","1","","",""
+"48080818","2","","48051752","2018-01-03 15:58:03","","0","","<p>By looking at the log file I see this error:</p>
+
+<blockquote>
+  <p>Exception: Retrieving the COM class factory for component with CLSID
+  {177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D} failed due to the following
+  error: 8007007e The specified module could not be found. (Exception
+  from HRESULT: 0x8007007E).</p>
+</blockquote>
+
+<p>So the COM compoment with CLSID <code>{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}</code> is missing. Searching for the CLSID <code>{177F0C4A-1CD3-4DE7-A32C-71DBBB9FA36D}</code> shows <a href=""https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.setup.interop.setupconfiguration?view=visualstudiosdk-2017"" rel=""nofollow noreferrer"">this page about a class SetupConfiguration</a> which is located in <code>Microsoft.IntelliTrace.Core.dll</code> an the <code>Microsoft.IntelliTrace.Core.dll</code> is missing on your system.</p>
+","1466046","","","","","2018-01-03 15:58:03","","","","0","","",""
+"48080765","2","","48080431","2018-01-03 15:53:51","","1","","<p>If you are running it from the command line, just include the following flag:</p>
+
+<pre><code>live-server --no-browser 
+</code></pre>
+
+<p>Also, looking at the source, .live-server.json  should be a json file and not a javascript module:</p>
+
+<p>{</p>
+
+<pre><code>  port: 8181, // Set the server port. Defaults to 8080.
+  host: ""0.0.0.0"", // Set the address to bind to. Defaults to 0.0.0.0 or process.env.IP.
+  open: false, // When false, it won't load your browser by default.
+  logLevel: 2, // 0 = errors only, 1 = some, 2 = lots
+}
+</code></pre>
+","775345","","","","","2018-01-03 15:53:51","","","","1","","",""
+"48080766","2","","48080692","2018-01-03 15:53:56","","1","","<p>You will want to use a backing field instead of referencing the property itself in the getter and setter, like so: </p>
+
+<pre><code>private List&lt;UIBookmark&gt; _bookmarks;
+public List&lt;UIBookmark&gt; Bookmarks { get { return _bookmarks.OrderBy(b =&gt; b.Name).ToList(); } set { _bookmarks = value; } }
+</code></pre>
+
+<p>MSDN has some good articles introducing the concepts of <a href=""https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/using-properties"" rel=""nofollow noreferrer"">Properties</a> and <a href=""https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/auto-implemented-properties"" rel=""nofollow noreferrer"">Auto-Properties</a> that I would suggest reading up on too.</p>
+","1529156","","","","","2018-01-03 15:53:56","","","","1","","",""
+"48080767","1","48093397","","2018-01-03 15:53:59","","0","21","<p>In my solution some projects reference the ""MahApps"" NuGet package, which includes 'System.Windows.Interactivity.dll' <strong>4.5.0.0</strong>. Some projects also reference the ""Prism"" NuGet package, which includes 'System.Windows.Interactivity.dll' <strong>4.0.0.0</strong>.</p>
+
+<p>The app.config has a binding redirect of ""0.0.0.0-4.5.0.0"" to ""4.5.0.0"" by the way.</p>
+
+<p>A handful of projects reference <em>both</em> NuGet packages, and looking in their ""References"" lists some of them have S.W.I v4.5.0.0 while others have v4.0.0.0. (I'm guessing this randomness is down to the order in which the packages were installed to the projects).</p>
+
+<p>Sometimes the solution will build and run fine, but if only make a code change in one of the projects referencing S.W.I 4.0.0.0 then I get a runtime error along the lines of ""v4.5.0.0 could not be found"". v4.0.0.0 is being copied to the build output folder but my binding redirect is telling it to expect 4.5.0.0.</p>
+
+<p>Any thoughts on a solution? I <em>could</em> try uninstalling and reinstalling the packages in the projects causing the issue, to see if I can get them to reference the 4.5.0.0 in the MahApps package, but my concern is that this may not be guaranteed to work during a package restore, screwing it up for another developer (or the build server).</p>
+","981831","","","","","2018-01-04 10:35:14","DLL version clashes in different NuGet packages","<visual-studio-2013><nuget><nuget-package><nuget-package-restore>","1","0","","",""
+"48080768","2","","48079541","2018-01-03 15:54:01","","2","","<h1>First</h1>
+
+<p>Not all properties in CSS are inherited, see these links so you can see which CSS properties are inherited and how inheritance is applied:   </p>
+
+<p><a href=""https://www.w3.org/TR/CSS22/propidx.html"" rel=""nofollow noreferrer"">https://www.w3.org/TR/CSS22/propidx.html</a><br>
+<a href=""https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance"" rel=""nofollow noreferrer"">https://developer.mozilla.org/en-US/docs/Web/CSS/inheritance</a></p>
+
+<p><br></p>
+
+<h1>Second</h1>
+
+<p>The order you declare duplicated properties is important.</p>
+
+<p>If the color you want to be applied is <code>green</code> this is not the same:   </p>
+
+<pre><code>// correct way to declare fallback color, it will be green and yellow if --color3 was not defined
+body span {
+  --color3: green;
+  color: yellow;
+  color: var(--color3);
+}
+</code></pre>
+
+<p>as:    </p>
+
+<pre><code>body span { // incorrect way to declare fallback color
+  --color3: green;
+  color: var(--color3);
+  color: yellow;
+  color: var(--color4);
+}
+</code></pre>
+
+<blockquote>
+  <p>The property <code>color: var(--color4);</code> will be taken since there is no invalid syntax on this declaration but since there is no variable declared as <code>--color4</code> the inherited color will be applied (<em>in this case from <code>body { color: var(--color1) }</code></em>)    </p>
+  
+  <p>Because <code>color</code> <a href=""https://developer.mozilla.org/en-US/docs/Web/CSS/color#Syntax"" rel=""nofollow noreferrer"">is a inherited property</a></p>
+</blockquote>
+
+<p><br></p>
+
+<h1>Third</h1>
+
+<p>Using the fallback with <code>var()</code> is another solution, but the previous one is a fallback for older browsers that don't support <code>var()</code>    </p>
+
+<p>Furthermore, you are using it wrong, the correct way to use the fallback from <code>var()</code> should be this:</p>
+
+<pre><code>color: var(--color4, var(--color3));
+</code></pre>
+
+<p>or this:   </p>
+
+<pre><code>color: var(--color4, var(--color3, yellow));
+</code></pre>
+
+<p><code>var()</code> only accepts 2 arguments, the value you want to use and the fallback.<br>
+See the syntax of how to use it in the <a href=""https://developer.mozilla.org/en-US/docs/Web/CSS/var#Syntax"" rel=""nofollow noreferrer"">following link</a></p>
+
+<p><br></p>
+
+<h1>Conclusion</h1>
+
+<p>Since <code>var()</code> is not available in all browsers <em>yet</em>, using duplicated properties the right way is the option I would go with, or you can go with both of them.</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-css lang-css prettyprint-override""><code>:root {
+ --color1: red;
+}
+
+body {
+ color: var(--color1);
+}
+
+body p {
+ color: var(--color2);
+ --color2: blue;
+}
+
+body span {
+  --color3: green;
+  color: yellow;
+  color: var(--color4, var(--color3));
+}</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;body&gt;
+  Text 1
+  &lt;p&gt;
+    Text 2
+  &lt;/p&gt;
+  &lt;span&gt;
+    Text 3
+  &lt;/span&gt;
+&lt;/body&gt;</code></pre>
+</div>
+</div>
+</p>
+","3159293","","3159293","","2018-01-03 16:13:46","2018-01-03 16:13:46","","","","7","","",""
+"48080822","2","","48067366","2018-01-03 15:58:16","","8","","<p>I don't know why you question is downvoted because I think it is a very valid question to ask. One of GraphQL's selling points is ""fetch less and more at once"". A client can decide very granually what it needs from the backend. Using deeply nested graphlike queries that previously required multiple endpoints can now be expressed in a single query. At the same time over-fetching can be avoided. Now you find yourself with a big query, everything loads at once and there are no n+1 query waterfalls. But now you know that a few fields in your big query are subject to change from now and then and you want to actively update the cache with new data from the server. Apollo offers the <code>refetch</code> field but it loads the whole query which clearly is <em>overfetching</em> that was sold to me as not being a concern anymore in GraphQL. Let me offer some solutions:</p>
+
+<h2>Premature Optimisation?</h2>
+
+<blockquote>
+  <p>The real problem is that programmers have spent far too much time worrying about efficiency in the wrong places and at the wrong times; premature optimization is the root of all evil (or at least most of it) in programming. <strong>- Donald Knuth</strong></p>
+</blockquote>
+
+<p>Sometimes we try to optimise too much without measuring first. Write it the easy way first and then see if it is really an issue. What exactly is slow? The network? A particular field in the query? The sheer size of the query?</p>
+
+<p>After you analized what exactly is slow we can start looking into improving:</p>
+
+<h2>Refetch and include/skip directives</h2>
+
+<p>Using <a href=""http://graphql.org/learn/queries/#directives"" rel=""noreferrer"">directives</a> you can exclude fields from a query depending on variables. The <a href=""https://www.apollographql.com/docs/react/basics/queries.html#graphql-query-data-refetch"" rel=""noreferrer"">refetch function can specify different variables</a> than the initial query. This way you can exclude fields when you refetch the query.</p>
+
+<h2>Splitting up Queries</h2>
+
+<p>Single page apps are a great idea. The HTML is generated client side and the page does not have to make expensive trips to the server to render a new page. But soon SPAs got to big and code splitting became an issue. And now we are basically back to server side rendering and splitting the app into pages. The same might apply to GraphQL. Sometimes queries are too big and should be split. You could split up the queries for <code>UserInfo</code> and <code>ListOfFriends</code>. Inside of the cache the fields will be merged. With <a href=""https://dev-blog.apollodata.com/query-batching-in-apollo-63acfd859862"" rel=""noreferrer"">query batching</a> both queries will be send in the same request and a GraphQL server that implements per request resource caching correctly (e.g. with <a href=""https://github.com/facebook/dataloader"" rel=""noreferrer"">Dataloader</a>) will barely notice a difference.</p>
+
+<h2>Subscriptions</h2>
+
+<p>Maybe you are ready to use subscriptions already. Subscriptions send updates from the server for fields that have changed. This way you could subscribe to a user's friends and get updates in real time. The good news is that Apollo Client, Relay and many server implementations offer support for subscriptions already. The bad news is that it needs websockets that usually put different requirements on your technology stack than pure HTTP.</p>
+
+<h2><code>withApollo()</code> -> <code>this.client.query</code></h2>
+
+<p>This should only be your last resort! Using <a href=""https://github.com/apollographql/react-apollo"" rel=""noreferrer"">react-apollo</a>'s <code>withApollo</code> higher order component you can directly inject the <code>ApolloClient</code> instance. You can now execute queries using <code>this.client.query()</code>. <code>{ user(id: 1) { friendlist { ... } } }</code> can be used to just fetch the friend list and update the cache which will lead to an update of your component. This might look like what you want but can haunt you in later stages of the app.</p>
+","3849167","","3849167","","2018-01-03 16:04:10","2018-01-03 16:04:10","","","","1","","",""
+"48080823","1","","","2018-01-03 15:58:16","","0","30","<p>I am trying to implement the redshift COPY command from my node.js script. I followed <a href=""https://stackoverflow.com/questions/30694668/load-data-into-redshift-using-node-js"">this example using a postgres client</a>, the command works but it doesn't yield the expected results. I am using CSV and the inserted values have the double quotes and also if the value contains a comma (delimiter in this case) the command fails.</p>
+
+<p>Has anyone tried to do a COPY to redshift from javascript? </p>
+
+<p>Appreciate your help!</p>
+","2588615","","","","","2018-01-03 15:58:16","Redshift COPY command + CSV + Postgres : Results are not as expected","<javascript><postgresql><csv><amazon-redshift><comma>","0","0","","",""
+"48080824","2","","48075723","2018-01-03 15:58:21","","2","","<p>I'd like to add my answer to the 'pot', maybe it makes things a bit more clear.
+So, why doesn't that work for lists and dictionaries? Well, if you have a piece of code like this:</p>
+
+<pre><code>static string Test()
+{
+   Dictionary&lt;int, string&gt; s = new Dictionary&lt;int, string&gt;();
+   return s[0];
+}
+</code></pre>
+
+<p>This (in debug mode) translates to this IL code:</p>
+
+<pre><code>IL_0000: nop
+IL_0001: newobj instance void class [mscorlib]System.Collections.Generic.Dictionary`2&lt;int32, string&gt;::.ctor()
+IL_0006: stloc.0
+IL_0007: ldloc.0
+IL_0008: ldc.i4.0
+IL_0009: callvirt instance !1 class [mscorlib]System.Collections.Generic.Dictionary`2&lt;int32, string&gt;::get_Item(!0)
+IL_000e: stloc.1
+IL_000f: br.s IL_0011
+
+IL_0011: ldloc.1
+IL_0012: ret
+</code></pre>
+
+<p>This, in turn means that what you do with one line of code (<code>return s[0]</code>) is actually a three-step process: calling the method, storing the return value in a local variable and then returning the value that is stored in that local variable. And, as pointed out by the links the others have provided, returning a local variable by reference is not possible (unless the local variable is a ref local variable, but as pointed out by the others again, since <code>Diciotionary&lt;TKey,TValue&gt;</code> and <code>List&lt;T&gt;</code> does not have a by-reference return API, this is not possible either). </p>
+
+<p>And now, why does it work for the array? If you look at how array-indexing is handled more closely (i.e. on IL-code level), you can see that there is no method call for array indexing. Instead, a special opcode is added to the code called ldelem (or some variant of that). A code like this: </p>
+
+<pre><code> static string Test()
+ {
+    string[] s = new string[2];
+    return s[0];
+ }
+</code></pre>
+
+<p>translates to this in IL:</p>
+
+<pre><code>IL_0000: nop
+IL_0001: ldc.i4.2
+IL_0002: newarr [mscorlib]System.String
+IL_0007: stloc.0
+IL_0008: ldloc.0
+IL_0009: ldc.i4.0
+IL_000a: ldelem.ref
+IL_000b: stloc.1
+IL_000c: br.s IL_000e
+
+IL_000e: ldloc.1
+IL_000f: ret
+</code></pre>
+
+<p>Of course this looks like the same as it was for the dictionary, but I think the key difference is that the indexer here generates an IL-native call, not a property (i.e. method) call. And if you look at all the possible ldelem variants on MSDN <a href=""https://msdn.microsoft.com/en-us/library/system.reflection.emit.opcodes(v=vs.110).aspx"" rel=""nofollow noreferrer"">here</a>, you can see that there is one called <strong>ldelema</strong> which can load the address of the element directly to the heap. And indeed, if you write a piece of code like this:</p>
+
+<pre><code>static ref string Test()
+{
+   string[] s = new string[2];
+   return ref s[0];
+}
+</code></pre>
+
+<p>This translates to the following IL code, utilizing the direct-reference loading ldelema opcode:</p>
+
+<pre><code>IL_0000: nop
+IL_0001: ldc.i4.2
+IL_0002: newarr [mscorlib]System.String
+IL_0007: stloc.0
+IL_0008: ldloc.0
+IL_0009: ldc.i4.0
+IL_000a: ldelema [mscorlib]System.String
+IL_000f: stloc.1
+IL_0010: br.s IL_0012
+
+IL_0012: ldloc.1
+IL_0013: ret
+</code></pre>
+
+<p>So basically, array indexers are different and under the hood, arrays have support for loading an element by reference to the evaluation stack via native IL calls. Since the <code>Dictionary&lt;TKey,TValue&gt;</code> and other collections implement indexers as properties, which result in method calls, they can only do this if the method called explicitly specifies ref returns.</p>
+","7614076","","7614076","","2018-01-04 09:54:00","2018-01-04 09:54:00","","","","3","","",""
+"48080769","1","48080834","","2018-01-03 15:54:16","","0","47","<p>i was going through linq GroupBy extension method and stumbled on one of the overloads which got me confused, now this will yield an result like this</p>
+
+<pre><code> int[] numbers = {1,1,1,2,2,3,4,4,4,4,4,5,5 };
+            var result = numbers.GroupBy(g =&gt; g).Select(s =&gt; new {
+                key=s.Key,
+                data=s
+            });
+</code></pre>
+
+<p><a href=""https://i.stack.imgur.com/5T2v1.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/5T2v1.png"" alt=""enter image description here""></a></p>
+
+<p>but my question is, how to use other overloads, for instance this</p>
+
+<p><a href=""https://i.stack.imgur.com/D7Cum.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/D7Cum.png"" alt=""enter image description here""></a></p>
+
+<p>how can i use this overload, i have searched many blogs but no blogs explain me all the overloads</p>
+","2711059","","","","","2018-01-03 16:13:35","Understanding overloads of GroupBy in Linq","<c#><linq><linq-group>","1","2","","",""
+"48080770","2","","48080644","2018-01-03 15:54:19","","4","","<p>This is very straightforward task in R.</p>
+
+<pre><code>a&lt;-c(8,16,4)
+b&lt;-c(25,123,120)
+df&lt;-data.frame(a,b)
+
+calculation&lt;-function(a){
+  a^2-1
+}
+
+
+# Method 1
+df$a&lt;-(df$a^2)-1
+
+# Method 2
+df$a&lt;-calculation(df$a)
+</code></pre>
+","4024369","","","","","2018-01-03 15:54:19","","","","0","","",""
+"48080771","1","","","2018-01-03 15:54:20","","1","51","<p>In my project, I have a big div, and there is another div in that div as a shape.</p>
+
+<p>When you click the shape, you did right and you have 1 point. When you click only the background div, I want to play a sound.</p>
+
+<p>When I do (simple example):</p>
+
+<pre><code>var $audioLifeLost = new Audio('Mis.mp3');
+
+#divid.onclick = function (){
+$audioLifeLost.play();
+}
+</code></pre>
+
+<p>it also plays the sound when I hit the shape because I hit both div's at the same time.</p>
+
+<p>Anyway how can I do it?</p>
+","8625368","","8108679","","2018-01-04 12:46:02","2018-01-04 12:46:02","If only div 1 is clicked, play sound","<javascript><html>","2","1","","",""
+"48080773","2","","48078200","2018-01-03 15:54:29","","1","","<p>Since you say that you want to rename several columns in a <code>data.frame</code> you could simple do this by using a function that takes a <code>data.frame</code> and a list of column names to rename:</p>
+
+<pre><code>add_suffix_cat2 &lt;- function(df, vars){ 
+                      names(df)[match(vars, names(df))] &lt;- paste0(vars, ""_cat2"") 
+                      return(df) 
+                   }
+</code></pre>
+
+<p>Then you can call the function like:</p>
+
+<pre><code>mydf &lt;- mtcars
+res &lt;- add_suffix_cat2(mydf, c(""hp"",""mpg""))
+</code></pre>
+
+<p>If you wanted to make the suffix customizable that's simlpe enough to do by adding another parameter to the function.</p>
+","6105720","","","","","2018-01-03 15:54:29","","","","0","","",""
+"48080775","2","","47151483","2018-01-03 15:54:42","","0","","<p>From what I can see, you have the link to the image as </p>
+
+<pre><code>app/home/app/assets/images/AzureAppServiceLogo.png
+</code></pre>
+
+<p>notice that <strong>app</strong> is in the absolute path twice, and this is probably what's causing the 404 error.</p>
+
+<p>Let me know if this resolves the issue</p>
+","5768523","","","","","2018-01-03 15:54:42","","","","2","","",""
+"48080776","2","","47564350","2018-01-03 15:54:43","","2","","<p>The code you have is for the mobile network(2G/3G/4G etc), not for WiFi network.</p>
+
+<p>Try the code below in <strong>Swift4</strong>, it works on my iOS11:</p>
+
+<pre><code>private func wifiStrength() -&gt; Int? {
+    let app = UIApplication.shared
+    var rssi: Int?
+    guard let statusBar = app.value(forKey: ""statusBar"") as? UIView, let foregroundView = statusBar.value(forKey: ""foregroundView"") as? UIView else {
+        return rssi
+    }
+    for view in foregroundView.subviews {
+        if let statusBarDataNetworkItemView = NSClassFromString(""UIStatusBarDataNetworkItemView""), view .isKind(of: statusBarDataNetworkItemView) {
+            if let val = view.value(forKey: ""wifiStrengthRaw"") as? Int {
+                //print(""rssi: \(val)"")
+
+                rssi = val
+                break
+            }
+        }
+    }
+    return rssi
+}
+</code></pre>
+
+<p>How to get the WiFi strength on iPhoneX, check my answer in another post: <a href=""https://stackoverflow.com/questions/44167577/using-private-api-to-read-wifi-rssi-value/48083845#48083845"">Using Private API To read WiFi RSSI Value</a></p>
+","2581578","","2581578","","2018-01-29 09:35:07","2018-01-29 09:35:07","","","","2","","",""
+"48080825","2","","48080771","2018-01-03 15:58:28","","0","","<pre><code>document.getElementById(""divid"").onclick = function (e) {
+  if (e.target == document.getElementById(""divid""))
+    $audioLifeLost.play();
+}
+</code></pre>
+","374310","","","","","2018-01-03 15:58:28","","","","0","","",""
+"48080826","1","","","2018-01-03 15:58:28","","0","74","<p>I create in my firebase console a <strong>Test Template</strong></p>
+
+<p>Firebase -> Test Lab -> Templates</p>
+
+<p><a href=""https://console.firebase.google.com/u/0/project/api-project-XXXXXX/testlab/templates?hl=en"" rel=""nofollow noreferrer"">https://console.firebase.google.com/u/0/project/api-project-XXXXXX/testlab/templates?hl=en</a></p>
+
+<p>With a template name <em>S7_API27_N5_API23</em></p>
+
+<p>Now I like to select this template by name in with the command line tool <strong>gcloud</strong> like :</p>
+
+<p>(this work's) :
+<code>
+gcloud firebase test android run \
+        --type robo \
+        --app app/build/outputs/apk/productFlavor_Name/debug/My_Apk-debug.apk \
+        --device model=Nexus6,version=21,locale=en,orientation=portrait  \
+        --timeout 90s
+</code></p>
+
+<p>This is what I am looking for :
+<code>
+gcloud firebase test android run \
+        --type robo \
+        --app app/build/outputs/apk/productFlavor_Name/debug/My_Apk-debug.apk \
+        --templatename S7_API27_N5_API23  \
+        --timeout 90s
+</code></p>
+
+<p>Is this possible ?</p>
+","421733","","","","","2018-01-04 22:05:08","How to select a test template from command line","<android><firebase><firebase-test-lab>","1","0","","",""
+"48080827","2","","48069406","2018-01-03 15:58:31","","0","","<p>@Knox was onto something...</p>
+
+<p>This behavior occurred because the target field (Passerine_Survey_Observation.Species_Common_Name) - in Design View - was a List Box (under the Properties > Lookup tab). Setting that to Display Control = Text Box resolved the problem. Oops.</p>
+
+<p>Final code:</p>
+
+<pre><code>UPDATE Passerine_Survey_Observation 
+INNER JOIN Species_Codes ON Passerine_Survey_Observation.[SPEC_FK] = Species_Codes.[SPEC] 
+SET Passerine_Survey_Observation.Species_Common_Name = Species_Codes.[COMMONNAME]
+WHERE Passerine_Survey_Observation.Species_Common_Name IS NULL;
+</code></pre>
+","8882028","","8882028","","2018-01-03 16:16:47","2018-01-03 16:16:47","","","","1","","",""
+"48080828","1","","","2018-01-03 15:58:36","","1","35","<p>I'm migrating to GIT from another source code versioning tool and the workflow is a bit different.</p>
+
+<p>With the old tool I had a build that was automatically started everytime a developer made any change in the remote depot. This build was meant to be fast so did not remove the source code and got it again from the depot. Instead I made an update of the code in the disk with the changes in the remote server.</p>
+
+<p>As far as I known this is a <code>pull</code> in GIT. But to be able to make a pull I need to make a <code>clone</code> before. But for the first build or if for any reason I need to remove the source code I really need a <code>clone</code> of the depot.</p>
+
+<p>So may question is...is there any GIT command to perform a clone if there is nothing in the disk but just an update (pull) if I just need to update the current source code???</p>
+
+<p>Thanks.</p>
+","14053","","14053","","2018-01-03 16:04:13","2018-01-03 17:52:34","GIT command for Clone OR Update","<git><bitbucket>","1","3","","",""
+"48080829","1","","","2018-01-03 15:58:36","","1","109","<p>I try to convert string  ""0.0004131955"" to decimal/double/currency with NumberFormatter. It produces nil.</p>
+
+<p>How to convert it?</p>
+
+<p>My sample code is as below:</p>
+
+<pre><code>let formatter = NumberFormatter()
+formatter.locale = Locale.current
+formatter.numberStyle = .currency
+formatter.minimumFractionDigits = 1
+formatter.maximumFractionDigits = 15
+formatter.usesGroupingSeparator = true
+
+//number is nil here
+if let number = formatter.number(from: ""0.0004131955"") {
+   let unitPrice = number.doubleValue        
+}
+</code></pre>
+
+<p>What am I doing wrong?</p>
+","1365362","","1226963","","2018-01-03 16:12:36","2018-01-03 16:15:19","Unable to convert very small string value to decimal with NumberFormatter Swift4","<swift><numberformatter>","2","2","","",""
+"48080830","2","","48080504","2018-01-03 15:58:37","","0","","<p>In theory this is possible using</p>
+
+<p><code>&lt;insert id=""badWayOfInserting""&gt;
+    ${SQL}
+&lt;/insert&gt;</code></p>
+
+<p>and passing a string variable called 'SQL' to badWayOfInserting. Altough not recommendable.</p>
+
+<p>The best option is to use transactions of CDI. You would have a method with @Transactional annotation. More or less like this:</p>
+
+<pre><code>@Transactional
+public void deleteAndInsert(List&lt;Item&gt; listOfItems){
+    db.deleteDB();
+    db.insertItems(listOfItems);
+}
+</code></pre>
+
+<p>CDI transactions are the same as DB ones. It will only commit if everything goes OK.</p>
+","6110433","","","","","2018-01-03 15:58:37","","","","11","","",""
+"48080777","2","","48080644","2018-01-03 15:54:48","","0","","<p>Here is very simple example using your <code>data.frame</code> (say df)</p>
+
+<pre><code>#Define your function as
+calcualtion &lt;- function(x){
+  x*x - 1
+}
+
+#Suppose you want to call it on column A. Use sapply function as
+df$A &lt;- sapply(df$A, calcualtion)
+
+result:
+  ID   A
+1  0  63
+2  1 255
+3  2  15
+</code></pre>
+","8176478","","","","","2018-01-03 15:54:48","","","","3","","",""
+"48080778","2","","48080336","2018-01-03 15:54:53","","0","","<p>The answer you're looking for is a <code>BroadcastReceiver</code>. Check the link below.</p>
+
+<p><a href=""https://stackoverflow.com/questions/10733121/broadcastreceiver-when-wifi-or-3g-network-state-changed"">BroadcastReceiver when wifi or 3g network state changed</a></p>
+
+<p>Hope it helps you to solve your issue and if so, please consider closing your question.</p>
+","4315695","","5599048","","2018-01-03 23:25:02","2018-01-03 23:25:02","","","","1","","",""
+"48080780","1","","","2018-01-03 15:55:00","","0","283","<p>I am new to android programming and Firebase. In my project, I am using firebase to save the user last active time by <code>firebase.database.servervalue.timestamp</code> directly to firebase database using a handler. </p>
+
+<p>When I am displaying both this <code>servervalue.timestamp</code> from this firebase node and <code>system.currentTimeMillis()</code> using Toast, both are returning the same date and time. </p>
+
+<p>In this part, I am confused because both values should not be same. Does <code>serverValue.timestamp</code> save device to date and time (long) in firebase database??? please help me in this context.</p>
+","5496423","","3536236","","2018-01-03 17:16:10","2018-01-03 17:25:48","What time does the firebase.database.ServerValue.timestamp returns?","<android><firebase>","1","2","","",""
+"48080782","1","","","2018-01-03 15:55:18","","2","94","<p>I am writing a Java application in which a user can receive some messages in form of images. There are text messages hidden in these images, using steganographic algorithm. If an image has been edited, before the user has read the message, a warning should pop out. Now, my idea is that, before one user sends the image to another, a the image gets hashed and stored as a value into the receiver's HashMap. Key to the hash value is the path to that image. </p>
+
+<p>When the user receives the image, before the decryption, they first need to hash the selected image, then compare the hash of that image, with the hash previously added to their HashMap. Here is my code:</p>
+
+<pre><code>public String hashTheImage(byte[] image) throws NoSuchAlgorithmException {
+    MessageDigest md = MessageDigest.getInstance(""SHA-256"");
+    return byteArray2Hex(md.digest(image));
+}
+
+private static String byteArray2Hex(final byte[] hash) {
+    Formatter formatter = new Formatter();
+    for (byte b : hash) {
+        formatter.format(""%02x"", b);
+    }
+    return formatter.toString();
+}
+</code></pre>
+
+<p>These methods hash the image. Then I do the following:</p>
+
+<pre><code>receiver.getMap().put(image.getPath(), this.hashTheImage(imageBytes));
+</code></pre>
+
+<p>Now, this is my method where I am trying to check if the two hashes are equal:</p>
+
+<pre><code>private boolean checkForChanges(String path, String newlyGeneratedHash){
+    String receiverHash = receiver.getMap().get(path);
+    if(!newlyGeneratedHash.equals(receiverHash)){
+        JFrame frame = new JFrame();
+        JOptionPane.showMessageDialog(frame, ""Image has been edited!"", 
+            ""ERROR!"", JOptionPane.ERROR_MESSAGE);
+        return false;
+    }
+    return true;
+}
+</code></pre>
+
+<p>Here I get that the receiverHash is null. I know that I am supposed to override hashCode() and equals() method, but I am not sure how, since I only need it for Strings. 
+If anyone can give me an idea, I would really appreciate it. Please don't be rude, comment only if you can and want to help. Thanks</p>
+","9168835","","207421","","2018-01-03 16:38:28","2018-01-03 16:38:28","How to implement hashCode() correctly to use it in a HashMap?","<java><hash><hashmap><hashcode>","0","9","","",""
+"48080783","1","","","2018-01-03 15:55:28","","0","26","<p>I never encountered something similar:</p>
+
+<p>I'm using an API that is spitting out exactly this text 
+(I'm using <code>print_r($content)</code> where content is the result form API)</p>
+
+<pre><code>Request:
+Array
+(
+    [0] =&gt; GET
+    [1] =&gt; https://api.xxx.com/api/v1/xxx
+    [2] =&gt; Array
+        (
+        )
+
+    [3] =&gt; 
+)
+
+Request:
+Array
+(
+    [0] =&gt; GET
+    [1] =&gt; https://api.xxx.com/api/v1/xxx
+    [2] =&gt; Array
+        (
+        )
+
+    [3] =&gt; 
+)
+Array
+(
+    [symbol] =&gt;  XXX
+    [timestamp] =&gt; 1514994289069
+    [datetime] =&gt; 2018-01-03T15:44:49.069+00:00
+etc...
+</code></pre>
+
+<p>how to I get the third array? 
+<code>$content[2]</code> clearly doesn't do the desired output...</p>
+","282772","","620444","","2018-01-03 15:56:18","2018-01-03 15:56:18","select one array out of multiples API spits out","<php><arrays>","0","2","","",""
+"48080784","2","","48052905","2018-01-03 15:55:32","","2","","<p>I assume that you want to add a placeholder to the entire editor, so that when it's empty you can display something like ""Type here..."".</p>
+
+<p>Unfortunately, the <code>attachPlaceholder()</code> function doesn't yet support setting placeholder for the editor's main editable. For now, it's used in cases like image captions:</p>
+
+<p><a href=""https://i.stack.imgur.com/WE9et.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/WE9et.png"" alt=""Screenshot of an editable&#39;s placeholder in an empty image caption""></a></p>
+
+<p>There's a ticket to implement configurable editor's placeholders: <a href=""https://github.com/ckeditor/ckeditor5/issues/479"" rel=""nofollow noreferrer"">https://github.com/ckeditor/ckeditor5/issues/479</a>.</p>
+
+<p>And there's a 3rd party addon which adds a placeholder in a simpler way: <a href=""https://github.com/alexeckermann/ckeditor5-emptyness"" rel=""nofollow noreferrer"">https://github.com/alexeckermann/ckeditor5-emptyness</a>.</p>
+","1464696","","","","","2018-01-03 15:55:32","","","","0","","",""
+"48080785","2","","38896023","2018-01-03 15:55:44","","0","","<p>I see this happening only when I use <em>F5</em> for the execution of the script and I get error. Only then the connection options are disabled for some reason. </p>
+
+<p>Anyway the solution to this state is clicking the <em>Execute</em> button (or context menu button if you right click) as energyguy78 suggested. That should re-connect the tab.</p>
+","5780060","","","","","2018-01-03 15:55:44","","","","0","","",""
+"48080786","2","","48080234","2018-01-03 15:55:45","","3","","<p>Based on your comments it seems something else has ##PChart locked and it has a different schema than what you're using in the posted code.  You need to find what process has a hold of it.  Global temp tables stay in scope across the entire server instance until nothing else is using it.  Check other query windows you may have open, applications processes that use your code, etc.  All processes using that table need to end before it will be released and you can recreate it with a new schema.</p>
+","75852","","","","","2018-01-03 15:55:45","","","","1","","",""
+"48080787","2","","48078869","2018-01-03 15:55:52","","0","","<p>You need to create a dynamic UPDATE statement:</p>
+
+<pre><code>DECLARE
+    @UPDATEList NVARCHAR(MAX) = N''
+    , @DynamicSQL NVARCHAR(MAX) = N'UPDATE ##GlobalTempForCapExPivotResult
+SET ';
+
+SELECT @UPDATEList += N'
+    , '
+    + QUOTENAME(FYYear) + N' = ' + QUOTENAME(FYYear) + N' * 3.5'
+FROM #TempCapEx
+GROUP BY FYYear;
+
+SELECT @UPDATEList = SUBSTRING(@UPDATEList, 6, LEN(@UPDATEList) - 5);
+SELECT @DynamicSQL += @UPDATEList + ';';
+
+EXEC (@DynamicSQL);
+</code></pre>
+
+<p>that updates the global temp table.</p>
+","4435049","","","","","2018-01-03 15:55:52","","","","0","","",""
+"48080788","2","","48079546","2018-01-03 15:56:01","","2","","<blockquote>
+  <p><strong>UPDATE</strong>: It appears signing the MSI with <code>signtool.exe</code> and the <code>/d</code> switch will change this behavior as explained in these answers
+  (thanks to <strong>Phil</strong> for finding this):</p>
+  
+  <ul>
+  <li><a href=""https://stackoverflow.com/questions/4315840/the-uac-prompt-shows-a-temporary-random-program-name-for-msi-can-the-correct-na"">The UAC prompt shows a temporary random Program Name for msi, can the correct name be displayed?</a></li>
+  <li><a href=""https://stackoverflow.com/questions/6863137/odd-program-name-when-installing-signed-msi-installer"">Odd &#39;Program name&#39; when installing signed msi installer</a></li>
+  </ul>
+</blockquote>
+
+<p>Slipstreaming in a relevant link: <a href=""https://stackoverflow.com/questions/51204163/installshield-custom-dialogue-installer"">Installshield Custom Dialogue Installer</a></p>
+
+<hr>
+
+<p>The name you are seeing is probably the random hex name assigned to a copy of the original installation database that is cached on the system in <code>%SystemRoot%\Installer</code> (normally C:\WINDOWS\Installer). This is a ""super hidden"" OS folder, and it should never be touched in any way at all.</p>
+
+<p>A sample path to such a database could be: <code>C:\WINDOWS\Installer\7da655.msi</code>. I am pretty sure this is what you are seeing in your UAC prompt. Please verify or better yet add a picture of it to your question for other people's reference.</p>
+
+<p>This cached database, with the weird name, is used during modify, repair and uninstall operations for the software in question. What WiX is showing you is in every way the correct information - it is what a system administrator might even need to see at some point. However, other setup creation tools do things differently, often showing the vendor and the product GUID instead of the full path to the cached database.</p>
+
+<p>So that was the explanation - now we have to wait for one of the WiX guys to actually answer whether it is possible to change this display type. As such this is more of a comment than an answer, but it should be relevant to understand what is going on. I am also going to have a look now to see if I see any options to change this in WiX.</p>
+
+<p>In my personal opinon the WiX display is superior to some of the other UAC dialogs shown for other MSI files, but I realize you find this information too detailed for your users. I suppose they could hide this path in the ""more information"" section.</p>
+","129130","","129130","","2018-07-06 14:16:55","2018-07-06 14:16:55","","","","6","","",""
+"48080789","2","","48080329","2018-01-03 15:56:01","","1","","<p>As I explained in the comments, this is impossible for arbitrary variables (except of course hard-coding, for example <code>x = 5 ; {'x': x}</code>.</p>
+
+<p>What <em>is</em> possible:</p>
+
+<ul>
+<li><p>Simply use <code>locals()</code> or <code>dir()</code> but you will get information you (probably) don't care about (such as current file path, imported modules, etc).</p></li>
+<li><p>Create a dictionary of specific variables while hard-coding their names:</p>
+
+<pre><code>x = 1
+y = 2
+print({var_name: globals()[var_name] for var_name in ['x', 'y']})
+# {'x': 1, 'y': 2}
+</code></pre></li>
+<li><p>Use a predefined knowledge about the variables you are searching for. For example, get the names of all defined <code>int</code> and <code>float</code>:</p>
+
+<pre><code>a = 1
+b = 2
+c = 3.0
+print({var_name: var_value for var_name, var_value in globals().items() 
+       if isinstance(var_value, (int, float))})
+# {'c': 3.0, 'a': 1, 'b': 2}
+</code></pre></li>
+</ul>
+","1453822","","","","","2018-01-03 15:56:01","","","","0","","",""
+"48080790","2","","15234500","2018-01-03 15:56:03","","1","","<p>More simply, you can use <code>git add -p</code> and utilize the <code>/</code> option to search through your diff for the patches to add.  Its not totally automated, but its easier than other alternatives I've found.</p>
+","","user3853034","","","","2018-01-03 15:56:03","","","","0","","",""
+"48080791","2","","47885771","2018-01-03 15:56:04","","1","","<p>From the docs, it's the effective end date for the credential so I would assume the credential would stop working at that time.</p>
+
+<p><a href=""https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermadapplication?view=azurermps-5.1.1"" rel=""nofollow noreferrer"">https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermadapplication?view=azurermps-5.1.1</a></p>
+
+<p>You can use New-AzureRmADAppCredential to roll the secret before that time.</p>
+
+<p><a href=""https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermadappcredential?view=azurermps-5.1.1"" rel=""nofollow noreferrer"">https://docs.microsoft.com/en-us/powershell/module/azurerm.resources/new-azurermadappcredential?view=azurermps-5.1.1</a></p>
+","1912464","","","","","2018-01-03 15:56:04","","","","1","","",""
+"48080794","2","","48080073","2018-01-03 15:56:06","","1","","<p>Your <code>assert</code> condition is a string which will always pass the test.</p>
+
+<p>You should be checking a condition in the <code>assert</code> </p>
+","285190","","","","","2018-01-03 15:56:06","","","","0","","",""
+"48080795","1","48080930","","2018-01-03 15:56:06","","1","247","<p>I am trying to understand what will be the result of performing a natural join
+between two relations R and S, where they have no common attributes.</p>
+
+<p>By following the below definition, I thought the answer might be an empty set:<br/>
+<a href=""https://i.stack.imgur.com/PoUFw.png"" rel=""nofollow noreferrer"">Natural Join definition.</a>
+<br/>
+My line of thought was because the condition in the 'Select' symbol is not met, the projection of all of the attributes won't take place.<br/>
+When I asked my lecturer about this, he said that the output will be the same as doing a cartezian product between R and S.<br/>
+I can't seem to understand why, would appreciate any help )</p>
+","4786038","","4786038","","2018-01-03 16:03:23","2018-01-03 16:05:35","Relational Algebra: Natural Join having the same result as Cartesian product","<relational-algebra><cartesian-product><natural-join>","2","5","","",""
+"48080796","1","48081479","","2018-01-03 15:56:08","","0","165","<p>Hi I am creating slot filling chatbot where I would like to ask as much open question as possible at the beginning to make my flow the most similar to the normal conversation. 
+<a href=""https://i.stack.imgur.com/sCXVT.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/sCXVT.png"" alt=""enter image description here""></a></p>
+
+<p>How can I achieve such a thing in terms of intents. Should I create three separate intents for case 1,2 and 3 and adding context flows in terms of 2nd and 3rd? Please help </p>
+","4252332","","","","","2018-01-03 16:36:36","Open dialog, slot filling chatbot","<api.ai><dialogflow>","1","0","","",""
+"48080798","2","","48080438","2018-01-03 15:56:13","","1","","<p>Check out <a href=""http://jmeter.apache.org/"" rel=""nofollow noreferrer"">Apache JMeter</a> - it is way more advanced multiprotocol load testing tool which even has record-and-replay capability via built-in <a href=""http://jmeter.apache.org/usermanual/component_reference.html#HTTP(S)_Test_Script_Recorder"" rel=""nofollow noreferrer"">HTTP(S) Test Script Recorder</a>. </p>
+
+<p>JMeter is GUI-based so no programming languages knowledge is required. </p>
+
+<p>See <a href=""http://jmeter.apache.org/usermanual/build-web-test-plan.html#logging_in"" rel=""nofollow noreferrer"">Logging in to a web-site</a> user manual chapter to get the overall idea. </p>
+
+<p>If you find JMeter a viable alternative to Apache Bench I would recommend attending free <a href=""https://www.blazemeter.com/jmeter-tutorial"" rel=""nofollow noreferrer"">JMeter Academy</a> - probably the fastest and the most efficient way of ramping up on JMeter. </p>
+","2897748","","","","","2018-01-03 15:56:13","","","","1","","",""
+"48080831","2","","41063948","2018-01-03 15:58:40","","0","","<p>To fully remove the parameter, you can use </p>
+
+<pre><code>public static URI removeParameterFromURI(URI uri, String param) {
+    UriBuilder uriBuilder = UriBuilder.fromUri(uri);
+    return uriBuilder.replaceQueryParam(param, (Object[]) null).build();
+}
+</code></pre>
+","1354057","","","","","2018-01-03 15:58:40","","","","0","","",""
+"48080832","2","","48080705","2018-01-03 15:58:40","","0","","<p>Create a class with a static method that you can use in both cases like</p>
+
+<pre><code>public class EmpTypeHelper {
+
+    public static String getEmpTypeOrDefault(String emptType) {
+        return empType == null ? ""EMP"" : empType;
+    }
+}
+</code></pre>
+","1045142","","","","","2018-01-03 15:58:40","","","","2","","",""
+"48080833","1","48082772","","2018-01-03 15:58:41","","2","264","<p>I'm currently working off of Mike Bostock's <a href=""https://bl.ocks.org/mbostock/34f08d5e11952a80609169b7917d4172"" rel=""nofollow noreferrer"">Brush &amp; Zoom</a> example although instead of having an overlayed rect object over the svg, I have it attached to my chart so that I can still use mouseover events and whatnot.</p>
+
+<p>I'm having great difficulty combining both brush and zoom functionalities. Both work fine but do not ""remember"" their current state. For instance, if I'm to pan/resize the brush, all is fine with zoom but if I was to then use mouse/touchpad events to zoom, it would jump along the brush and completely lose where I was in the chart.</p>
+
+<p>How would I get the zoom to ""remember"" where it was in the brush viewport, and to work fluidly?</p>
+
+<pre><code>function brushed() {
+    if (d3.event.sourceEvent &amp;&amp; d3.event.sourceEvent.type === ""zoom"") return;
+    var selection = d3.event.selection;
+    x.domain(selection.map(x2.invert, x2));
+    focus.selectAll("".point"")
+        .attr(""cx"", function(d){
+            var time = timeParser(d.timestamp);
+            return x(time);
+        })
+        .attr(""cy"", function(d){
+            return y(d.value);
+        });
+    focus.selectAll("".trendline"")
+        .attr(""d"", function(d){
+            return line(d);
+        });
+    focus.selectAll("".area"")
+        .attr(""d"", function(d){
+            return area(d);
+        });
+    focus.select("".axis.x"").call(xAxis);
+    svg.select("".zoom"").call(zoom.transform, d3.zoomIdentity
+        .scale(width / (selection[1] - selection[0]))
+        .translate(-selection[0], 0));
+}
+
+function zoomed() {
+    if (d3.event.sourceEvent &amp;&amp; d3.event.sourceEvent.type === ""brush"") return;
+    var t = d3.event.transform;
+    x.domain(t.rescaleX(x2).domain());
+    focus.selectAll("".point"")
+        .attr(""cx"", function(d){
+            var time = timeParser(d.timestamp);
+            return x(time);
+        })
+        .attr(""cy"", function(d){
+            return y(d.value);
+        });
+    focus.selectAll("".trendline"")
+        .attr(""d"", function(d){
+            return line(d);
+        });
+    focus.selectAll("".area"")
+        .attr(""d"", function(d){
+            return area(d);
+        });
+    focus.select("".axis.x"").call(xAxis);
+    context.select("".brush"").call(brush.move, x.range().map(t.invertX, t));
+}
+</code></pre>
+
+<p>And here's how the chart looks to give a sort of rough idea:</p>
+
+<p><a href=""https://i.stack.imgur.com/0MLoX.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/0MLoX.png"" alt=""enter image description here""></a></p>
+","8111837","","","","","2018-01-03 19:14:09","D3.js: Combining Zoom/Brush","<javascript><d3.js><svg>","1","0","","",""
+"48080834","2","","48080769","2018-01-03 15:58:48","","3","","<p>The <code>elementSelector</code> lets you <em>project</em> the <em>elements</em> (your numbers).</p>
+
+<pre><code>int[] numbers = {1,1,1,2,2,3,4,4,4,4,4,5,5 };
+var result = numbers.GroupBy(g =&gt; g, i =&gt; 2 * i); // project each number to the doubled value
+</code></pre>
+
+<p>resulting in</p>
+
+<pre><code>3 times 2    (2 * 1)
+2 times 4    (2 * 2)
+1 time  6    (2 * 3)
+5 times 8    (2 * 4)
+2 times 10   (2 * 5)
+</code></pre>
+
+<p>I personally prefer the overload taking a <code>resultSelector</code> over the extra call to <code>Select</code>:</p>
+
+<pre><code>int[] numbers = {1,1,1,2,2,3,4,4,4,4,4,5,5 };
+var result = numbers.GroupBy(g =&gt; g, (key, g) =&gt; new {
+    key,
+    data=g
+ });
+</code></pre>
+
+<p>The <code>resultSelector</code> is equivalent to the subsequent <code>Select</code> call in your example, but it takes the key and the sequence of elemetns for that key as separate parameters, while <code>Select</code> works on the resulting <code>IGrouping&lt;&gt;</code>.</p>
+","5528593","","5528593","","2018-01-03 16:13:35","2018-01-03 16:13:35","","","","1","","",""
+"48080835","2","","48080667","2018-01-03 15:58:51","","0","","<p>The code below goes through the XML of your question.</p>
+
+<pre><code>&lt;?PHP
+$link = 'yourxmlfile.xml'; //XML link
+$xml = simplexml_load_file($link); //load xml
+
+
+//Loop
+foreach($xml -&gt; article as $item){ 
+    echo ""&lt;strong&gt;A:&lt;/strong&gt; "".utf8_decode($item -&gt;a).""&lt;br /&gt;"";
+    echo ""&lt;strong&gt;B:&lt;/strong&gt; "".utf8_decode($item -&gt;b).""&lt;br /&gt;"";
+    echo ""&lt;strong&gt;C:&lt;/strong&gt; "".utf8_decode($item -&gt;c).""&lt;br /&gt;"";
+    echo ""&lt;br /&gt;"";
+}
+</code></pre>
+","9168878","","","","","2018-01-03 15:58:51","","","","0","","",""
+"48080836","2","","48080805","2018-01-03 15:58:54","","3","","<p>You aren't exporting the function so it doesn't exist on the <code>require</code>d module object. Assuming you're using ES5, use <a href=""https://nodejs.org/api/modules.html#modules_module_exports"" rel=""nofollow noreferrer""><code>module.exports</code></a> which contains the module's exports:</p>
+
+<pre><code>function squareArea(side) {
+  var sArea = side * side;
+  return sArea;
+}
+module.exports = {
+  squareArea: squareArea
+};
+</code></pre>
+
+<p>You could also shorten it to this using the <a href=""https://nodejs.org/api/modules.html#modules_exports_shortcut"" rel=""nofollow noreferrer""><code>exports</code></a> shortcut:</p>
+
+<pre><code>exports.squareArea = squareArea;
+</code></pre>
+","5647260","","","","","2018-01-03 15:58:54","","","","0","","",""
+"48080837","2","","25417348","2018-01-03 15:59:04","","2","","<p>To give a solution with <code>removeItemWidget</code>:</p>
+
+<pre><code>QList&lt;QListWidgetItem*&gt; items = ui-&gt;listWidget-&gt;selectedItems();
+
+foreach(QListWidgetItem* item, items){
+    ui-&gt;listWidget-&gt;removeItemWidget(item);
+    delete item; // Qt documentation warnings you to destroy item to effectively remove it from QListWidget.
+}
+</code></pre>
+","4240817","","","","","2018-01-03 15:59:04","","","","0","","",""
+"48080838","2","","48077958","2018-01-03 15:59:04","","1","","<p>You do avoid the ODR violation with the anonymous namespace, as it creates a new separate set of objects in each file where it is included. The advantage of  an <code>inline</code> object is that there will only be one in total.</p>
+
+<p>However, if you only use the <code>constexpr</code> values as constants, you will not notice much of a difference. And a nice compiler might avoid storing the constants in the data area anyway.</p>
+
+<p>Passing references or pointers around and comparing addresses could make a difference, like Tobi says. But perhaps you can avoid comparing the addresses of two constant values?</p>
+","597607","","","","","2018-01-03 15:59:04","","","","0","","",""
+"48080839","1","","","2018-01-03 15:59:05","","0","55","<p>I need to store few tables of strings in python (each table contains few million records). Let the header be (""A"", ""B"", ""C"") and (""A, ""B"") is the data primary key. Then I need following operations to proceed fast:</p>
+
+<ol>
+<li>Add new record (need O(1) complexity).</li>
+<li>Find / update, delete record with (A=""spam"", B=""eggs"") (need O(1) complexity).</li>
+<li>Find all records with (A=""spam"", C=""foo"") (need O(k) complexity, where k is the number of result rows).</li>
+</ol>
+
+<p>I see a solution based on nested dicts structure for each index. It fits my needs, but I think, there is a better existing solution.</p>
+","5775637","","","","","2018-01-03 16:44:26","Proper way to store table in python efficiently: low memory usage and fast search by few complex indexes","<python>","1","4","","",""
+"48080840","1","48081029","","2018-01-03 15:59:08","","0","42","<p>I'm new to programming and I'm programming with Visual Studio. I'm trying to get an input from user (a name of a site like google.com) and search for the site name toward my tables (I have different domain tables such as .com , .org , etc). </p>
+
+<p>So, I'm trying to write this stored procedure which selects from a table without actual table name (I'm trying to pass table name from input to stored procedure) here is my stored procedure:</p>
+
+<pre><code>CREATE PROCEDURE test
+    @link nvarchar(50)
+AS
+    SELECT * 
+    FROM @link
+</code></pre>
+
+<p>I have defined <code>linksg</code> (set and get) like this:</p>
+
+<pre><code>public string linksg
+{
+    get { return link; }
+    set { link = value; }
+}
+</code></pre>
+
+<p>and this is how I defined <code>linksg</code> in a function (my <code>search_sitedomain</code> function takes a domain like .com and gives a link to a table which includes your sitename like .com table):</p>
+
+<pre><code>public void search_sitedomain()
+{
+    SqlConnection con = new SqlConnection(""Data Source=SM;Initial Catalog=mohandesi-net;Integrated Security=True;Pooling=False"");
+
+    SqlCommand cmd = new SqlCommand(""search_sitedomain"", con);
+    cmd.CommandType = CommandType.StoredProcedure;
+    cmd.Parameters.AddWithValue(""@domain"", domain);
+
+    con.Open();
+    string link = Convert.ToString(cmd.ExecuteScalar());
+    linksg = link;
+    MessageBox.Show(link);
+}
+</code></pre>
+
+<p>The <code>search_sitedomain</code> function works perfectly fine and returns the link but my stored procedure doesn't work like it can't replace <code>@link</code> with a tablename (like .com)</p>
+
+<p>So what am I doing wrong?</p>
+","8558580","","13302","","2018-01-03 16:40:22","2018-01-03 16:40:22","Passing tablename to a stored procedure c#","<c#><stored-procedures>","1","4","","",""
+"48080842","2","","48079808","2018-01-03 15:59:12","","0","","<p>Hellow,</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>^[0-9]+\. (.*)[\r\n]+a\)[\s]+(.*)[\s]+b\)[\s]+(.*)[\s]+c\)[\s]+(.*)[\s]+d\)[\s]+(.*)[\s]+e\)[\s]+(.*)[\s]*</code></pre>
+</div>
+</div>
+</p>
+
+<p><a href=""https://regex101.com/r/XPsbde/3"" rel=""nofollow noreferrer"">Try it !</a></p>
+
+<pre><code>$re = '/^[0-9]+\. (.*)[\r\n]+a\)[\s]+(.*)[\s]+b\)[\s]+(.*)[\s]+c\)[\s]+(.*)    [\s]+d\)[\s]+(.*)[\s]+e\)[\s]+(.*)[\s]*/m';
+$str = '1. A car averages 27 miles per gallon. If gas costs $4.04 per gallon, which of the following is closest to how much the gas would cost for this car to travel 2,727 typical miles?
+
+a) $44.44 b) $109.08 c) $118.80
+d) $408.04 e) 
+$444.40
+
+2. When x = 3 and y = 5, by how much does the value of 3x2 – 2y exceed the value of 2x2 – 3y ?
+a) 4
+b) 14
+c) 16
+d) 20 e) 50';
+
+preg_match_all($re, $str, $matches, PREG_SET_ORDER, 0);
+
+// Print the entire match result
+var_dump($matches);
+</code></pre>
+","8324070","","8324070","","2018-01-04 12:18:13","2018-01-04 12:18:13","","","","1","","",""
+"48080843","2","","45178695","2018-01-03 15:59:15","","1","","<p>I think you are missing the CLI version. Please try:</p>
+
+<pre><code>npm i csso-cli
+</code></pre>
+
+<p>to install it.</p>
+","1588163","","","","","2018-01-03 15:59:15","","","","0","","",""
+"48080844","1","48082297","","2018-01-03 15:59:17","","-1","40","<p>So I'm trying to write a little script to add a class based on whether or not a list item's span id contains any of the words in a list of words. </p>
+
+<p>The list has the basic structure: </p>
+
+<pre><code>&lt;div id=""main_list""&gt;
+    &lt;li class&gt;
+        &lt;a data-item_number_id=""555000"" class=""item""  &lt;span id=""displayname""&gt;greyblackhammer&lt;/span&gt;&lt;/a&gt;
+    &lt;li class&gt;
+        &lt;a data-item_number_id=""555002"" class=""item""  &lt;span id=""displayname""&gt;grey_green_hammer&lt;/span&gt;&lt;/a&gt;
+    &lt;li class&gt;
+        &lt;a data-item_number_id=""555004"" class=""item""  &lt;span id=""displayname""&gt;red_orangehammer&lt;/span&gt;&lt;/a&gt;
+</code></pre>
+
+<p>With thousands of entries. </p>
+
+<p>Let's say I have:</p>
+
+<pre><code>var list_of_words = [""Green"", ""black"", ""other_words""]
+</code></pre>
+
+<p>I want to be able to search through the list of span ids (they can contain any mixture of spaces, upper and lowercase, underscores, etc), and, if they contain any of the strings in my list of words, add a ""starred"" class to their parent, so - in this example it would be: </p>
+
+<pre><code> &lt;div id=""main_list""&gt;
+    &lt;li class =""starred""&gt;
+        &lt;a data-item_number_id=""555000"" class=""item""  &lt;span id=""displayname""&gt;greyblackhammer&lt;/span&gt;&lt;/a&gt;
+    &lt;li class=""starred""&gt;
+        &lt;a data-item_number_id=""555002"" class=""item""  &lt;span id=""displayname""&gt;grey_green_hammer&lt;/span&gt;&lt;/a&gt;
+    &lt;li class&gt;
+        &lt;a data-item_number_id=""555002"" class=""item""  &lt;span id=""displayname""&gt;red_orangehammer&lt;/span&gt;&lt;/a&gt;
+</code></pre>
+
+<p>So, case doesn't matter, spacing doesn't matter - just whether or not the span id contains the desired string in some way. </p>
+
+<p>I'm not that familiar with jQuery, so I haven't gotten very far. Here's what I have: </p>
+
+<pre><code> ids_to_star = [""Green"", ""black""];
+
+ function star_matching_span_ids(){
+
+var matching_ids = $('#main_list').find(""div:contains(ids_to_star)"");
+   $.each(matching_ids, function (){
+       $(this).parent('li').addClass('starred');
+   });
+}
+</code></pre>
+
+<p>Obviously this doesn't work...it doesn't even correctly select the span ids. Hopefully you kind folks can point me in the right direction. </p>
+","1710726","","1710726","","2018-01-03 16:07:59","2018-01-03 17:39:14","Find all divs with a span id that contains any of a matching list of words","<jquery><html><css>","1","2","","",""
+"48080845","2","","48080388","2018-01-03 15:59:19","","2","","<p>this is another method.</p>
+
+<pre><code>Sub test()
+    Dim rngT As Range
+    Dim rngDB() As Range, n As Integer, i As Integer
+
+    If UF1_Location_and_Role.CheckBox6.Value Then
+        Set rngT = Range(""b"" &amp; Rows.Count).End(xlUp)(2)
+        rngT.Resize(5) = ""India""
+        n = n + 1
+        ReDim Preserve rngDB(1 To n)
+        Set rngDB(n) = rngT.Resize(5)
+    End If
+    If UF1_Location_and_Role.CheckBox7.Value Then
+        Set rngT = Range(""b"" &amp; Rows.Count).End(xlUp)(2)
+        rngT.Resize(5) = ""Germany""
+        n = n + 1
+        ReDim Preserve rngDB(1 To n)
+        Set rngDB(n) = rngT.Resize(5)
+    End If
+    If UF1_Location_and_Role.CheckBox8.Value Then
+        Set rngT = Range(""b"" &amp; Rows.Count).End(xlUp)(2)
+        rngT.Resize(5) = ""Hongkong""
+        n = n + 1
+        ReDim Preserve rngDB(1 To n)
+        Set rngDB(n) = rngT.Resize(5)
+    End If
+    Application.DisplayAlerts = False
+    For i = 1 To n
+        rngDB(i).Merge
+    Next i
+    Application.DisplayAlerts = True
+End Sub
+</code></pre>
+","8107092","","8107092","","2018-01-03 17:24:16","2018-01-03 17:24:16","","","","3","","",""
+"48080846","1","","","2018-01-03 15:59:20","","1","50","<p>I'm currently using the ngDoCheck() lifecycle hook and it is fired alot of times. There is a certain situation when I do no longer need this lifecycle hook.</p>
+
+<p>So my question is: Can I cancel this lifecycle hook?</p>
+","5976604","","","","","2018-01-07 15:22:31","Is it possible to cancel an Angular 4 lifecycle hook?","<angular>","2","2","","",""
+"48080848","2","","48079833","2018-01-03 15:59:26","","1","","<p>Set the body's <code>innerHTML</code> to the <code>documentElement.innerHTML</code> like so:</p>
+
+<pre><code>window.document.body.innerHTML = new_html.documentElement.innerHTML
+</code></pre>
+","666181","","","","","2018-01-03 15:59:26","","","","0","","",""
+"48080849","2","","233243","2018-01-03 15:59:29","","0","","<p><code>\b([a-z])?([a-z])?([a-z])?\2\1\b/gi</code></p>
+
+<p>Matches 5 letter palindromes such as refer and kayak. It does this using (non-greedy) matching of any three letters, followed by the 2nd and 1st matched letters.</p>
+
+<p><a href=""https://regex101.com/r/SjrxXx/2"" rel=""nofollow noreferrer"">Link to regex101 site using this</a></p>
+","4464616","","","","","2018-01-03 15:59:29","","","","0","","",""
+"48080850","2","","48079515","2018-01-03 15:59:29","","0","","<p>Formulas are just Custom Functions return value(s), you need to solve that with Script or hide it manually.</p>
+
+<p>Check that may help you</p>
+
+<ul>
+<li><a href=""https://stackoverflow.com/questions/29972799/hide-row-in-google-sheets-if-cell-contains-no-multiple-sheets"">Hide Row in Google Sheets if Cell Contains &quot;no&quot; - Multiple Sheets</a></li>
+<li><a href=""https://stackoverflow.com/questions/18707027/filter-or-hide-row"">Filter Or Hide Row</a></li>
+</ul>
+","","user6637260","1595451","","2018-01-04 23:55:30","2018-01-04 23:55:30","","","","1","","",""
+"48080852","2","","48080161","2018-01-03 15:59:30","","1","","<p>It seems that you want to customize Admob Interstitial? If so, unfortunately you can not do it, since Admob interstitial ads are full-screen ads and you have no control over it. </p>
+
+<p>You should check Native ads if you need to customize the look and layout of the ads. The Firebase Native ads Advanced is now open to every one to use: <a href=""https://developers.google.com/admob/android/native-advanced"" rel=""nofollow noreferrer"">https://developers.google.com/admob/android/native-advanced</a> </p>
+","9165520","","","","","2018-01-03 15:59:30","","","","1","","",""
+"48080853","2","","48077375","2018-01-03 15:59:32","","2","","<p>The column in indexeddb is a key of object and table is object store. In your case lets say the key is - ArticleId and the column ArticleId is indexed by JsStore.</p>
+
+<p>Now lets see about index in idb - </p>
+
+<blockquote>
+  <p>An index is a specialized object store for looking up records in
+  another object store, called the referenced object store. The index is
+  a persistent key-value storage where the value part of its records is
+  the key part of a record in the referenced object store. The records
+  in an index are automatically populated whenever records in the
+  referenced object store are inserted, updated, or deleted. Each record
+  in an index can point to only one record in its referenced object
+  store, but several indexes can reference the same object store. When
+  the object store changes, all indexes that refer to the object store
+  are automatically updated.</p>
+</blockquote>
+
+<p>So basically when you add index on a key, an special object store is maintained by indexeddb in order to search the records.</p>
+
+<p>When you define column in JsStore - JsStore automatically add the index on that column, so that we can search on that column.</p>
+
+<p>So the data is not repeated in columns and tables. The column is just referencing to the respective primary key , and using primary key it can access the actual stored value. The browser is only showing relationship between data.  </p>
+
+<p>Hope this will give you more info about indexeddb columns, index and how they are stored.</p>
+
+<p>For more Info, please take a look at MDN Article - <a href=""https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB"" rel=""nofollow noreferrer"">https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Basic_Concepts_Behind_IndexedDB</a></p>
+","4393136","","4393136","","2018-01-03 17:19:05","2018-01-03 17:19:05","","","","1","","",""
+"48080854","2","","23895810","2018-01-03 15:59:44","","0","","<p>I've experienced the same issue after upgrading from mysql 5.1 connector to 6.0.6 and the way to solve is just to add : <code>.withoutProcedureColumnMetaDataAccess()</code> in this way : </p>
+
+<pre><code>SimpleJdbcCall jdbcCall = new SimpleJdbcCall(getJdbcTemplate())
+                                    .withSchemaName(""thu"")
+                                    .withProcedureName(""productGetter"")
+                                    .withoutProcedureColumnMetaDataAccess();
+
+    jdbcCall.addDeclaredParameter(new SqlParameter(""maxPrice"", Types.DOUBLE));
+    jdbcCall.addDeclaredParameter(new SqlParameter(""minPrice"", Types.DOUBLE));
+
+    Map&lt;String, Object&gt; params=new HashMap&lt;String, Object&gt;();
+    params.put(""maxPrice"", maxPrice);
+    params.put(""minPrice"", minPrice);
+
+
+    jdbcCall.execute(params);
+</code></pre>
+","330280","","","","","2018-01-03 15:59:44","","","","0","","",""
+"48080855","2","","48075599","2018-01-03 15:59:46","","0","","<p>You are correct that the wrong username and password were ultimately used to authenticate the request. Running the command <code>net helpmsg 1326</code> (1326 is the <code>sc-win32-status</code> value from the log entry you provided) yields ""<em>The user name or password is incorrect.</em>""</p>
+
+<p>Also interesting is the request/response logged before that. The substatus value 2 for a 401 means ""<em>Access is denied due to server configuration favoring an alternate authentication method.</em>"" according to <a href=""https://www.microsoft.com/technet/prodtechnol/WindowsServer2003/Library/IIS/c9511f97-d898-4aed-b0a8-979ce30d85b5.mspx?mfr=true"" rel=""nofollow noreferrer"">TechNet</a>. And <code>net helpmsg 1322</code> yields ""<em>This operation is disallowed as it could result in an administration account being disabled, deleted or unable to logon.</em>""</p>
+
+<ol>
+<li>Review (or re-review) the instructions at <a href=""https://docs.microsoft.com/en-us/iis/publish/using-web-deploy/configure-the-web-deployment-handler"" rel=""nofollow noreferrer"">https://docs.microsoft.com/en-us/iis/publish/using-web-deploy/configure-the-web-deployment-handler</a></li>
+<li>If your deployment is still not working, take a look at <a href=""https://docs.microsoft.com/en-us/iis/publish/troubleshooting-web-deploy/troubleshooting-common-problems-with-web-deploy"" rel=""nofollow noreferrer"">Microsoft's <em>Troubleshooting Common Problems with Web Deploy</em></a>. </li>
+</ol>
+","704808","","","","","2018-01-03 15:59:46","","","","1","","",""
+"48080858","1","","","2018-01-03 16:00:02","","1","102","<p>Is there anyway to show label as required when validating a form?
+I'm asking this because I have this translated labels in my form and it would be easier if I can show those labels when user missed one instead of standard ""Required"" text(which is not translated).</p>
+
+<p>I want to replace <code>[Required(ErrorMessage = ""*Requird*"")]</code> whit the translated value of <code>labelText: questions.number</code></p>
+
+<p>Here is my code: <br> <br>
+formIndex.chtml</p>
+
+<pre><code>&lt;div class=""form-group""&gt;
+        @Html.LabelFor(model =&gt; model.number, labelText: questions.number, htmlAttributes: new { @class = ""control-label col-md-2"" })
+
+        &lt;div class=""col-md-6""&gt;
+            @Html.TextBoxFor(model =&gt; model.number, new { @class = ""form-control"", @PlaceHolder = ""9010"" , @type=""number"" , @Value = """" })
+            @Html.ValidationMessageFor(model =&gt; model.number, """", new { @class = ""text-danger"" })
+        &lt;/div&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p><br> 
+Answers.cs</p>
+
+<pre><code>[Required(ErrorMessage = ""*Requird*"")]
+public int number { get; set; }
+</code></pre>
+","4529104","","","","","2018-01-03 16:00:02","Required field validation with label name in MVC asp.net","<c#><html><asp.net><asp.net-mvc><razor>","0","3","","",""
+"48080859","2","","48080631","2018-01-03 16:00:05","","3","","<p><code>mapReduceTriplets</code> belonged to legacy API and has been removed from the public API. Specifically if you check <a href=""https://spark.apache.org/docs/2.2.0/graphx-programming-guide.html#map-reduce-triplets-transition-guide-legacy"" rel=""nofollow noreferrer"">the current documentation</a>:</p>
+
+<blockquote>
+  <p>In earlier versions of GraphX neighborhood aggregation was accomplished using the mapReduceTriplets operator</p>
+</blockquote>
+","9168935","","","","","2018-01-03 16:00:05","","","","1","","",""
+"48080860","2","","48080567","2018-01-03 16:00:05","","0","","<p>You can use <code>.str</code> and treat the whole columns like string to split at the dot.
+Now, apply a function that takes the number string and turns into a new year value if possible.</p>
+
+<p>Starting dataframe:</p>
+
+<pre><code>   Month
+0    Apr
+1  Apr.1
+2  Apr.2
+</code></pre>
+
+<p>Solution:</p>
+
+<pre><code>def get_year(entry):
+    value = 2015
+    try:
+        value += int(entry[-1])
+    finally:
+        return str(value)
+
+df['Year'] = df.Month.str.split('.').apply(get_year)
+</code></pre>
+
+<p>Now <code>df</code> is:</p>
+
+<pre><code>   Month  Year
+0    Apr  2015
+1  Apr.1  2016
+2  Apr.2  2017
+</code></pre>
+","837534","","837534","","2018-01-03 16:08:08","2018-01-03 16:08:08","","","","0","","",""
+"48080861","5","","","2018-01-03 16:00:12","","0","","","-1","","-1","","2018-01-03 16:00:12","2018-01-03 16:00:12","","","","0","","",""
+"48080862","4","","","2018-01-03 16:00:12","","0","","Questions related to the usage of Filestack. A web service provides an out of the box file uploading widget that will connect to your user’s local drive, Facebook, Instagram, Google Drive, Dropbox, and Web Image Search. Once implemented, you can further customize your file picker with many parameters.","2646226","","2646226","","2018-01-04 10:11:11","2018-01-04 10:11:11","","","","0","","",""
+"48080864","1","","","2018-01-03 16:00:13","","1","276","<p>I have this error when I run tests on a conda environment which I built from specs in <code>environment.yml</code></p>
+
+<pre><code>File ""utils.py"", line 5, in &lt;module&gt;
+    import pycurl
+ImportError: pycurl: libcurl link-time version (7.29.0) is older than compile-time version (7.55.1)
+</code></pre>
+
+<p>The environment.yml file used to build the conda env:</p>
+
+<pre><code>name: indices_python
+channels:
+- defaults
+- conda-forge
+dependencies:
+- coverage 
+- coveralls
+- nco
+- netcdf4
+- nose
+- numba
+- numpy
+- pandas
+- pycurl
+- pynco
+- python=3
+- scipy
+</code></pre>
+
+<p>The command I'm running (on Linux):</p>
+
+<pre><code>$ python -W ignore -m unittest tests/test_*.py
+</code></pre>
+
+<p>Can anyone suggest how to fix this and/or how to prevent this from happening in the future?</p>
+
+<p>Thanks in advance for your help.</p>
+","85248","","","","","2018-01-03 16:00:13","How to fix? ImportError: pycurl: libcurl link-time version is older than compile-time version","<python-3.x><anaconda><python-import><importerror><pycurl>","0","0","","",""
+"48080865","1","48094340","","2018-01-03 16:00:13","","0","2103","<p>I try to analyze one module of a multi module project in Jenkins with <a href=""https://plugins.jenkins.io/sonar"" rel=""nofollow noreferrer"">SonarQube Scanner</a> plug-in (version 2.5). Unfortunately, Jenkins picks the wrong module as working directory. </p>
+
+<p>In this particular case, I could change the order of the modules, but in general (more than one analyzed module) it is not working. So I want to fix the problem with the property <code>sonar.projectBaseDir</code>, see <a href=""https://docs.sonarqube.org/display/SCAN/Advanced+SonarQube+Scanner+Usages"" rel=""nofollow noreferrer"">Advanced SonarQube Scanner Usages</a>:</p>
+
+<blockquote>
+  <h2>Alternate Analysis Directory</h2>
+  
+  <p>If the files to be analyzed are not in the directory where the analysis starts from, use the <code>sonar.projectBaseDir</code> property to move analysis to a different directory. E.G. analysis begins from <code>jenkins/jobs/myjob/workspace</code> but the files to be analyzed are in <code>ftpdrop/cobol/project1</code>.</p>
+  
+  <p><strong>sonar-project.properties</strong></p>
+  
+  <p>sonar.projectBaseDir=/home/ftpdrop/cobol/project1<br>
+  sonar.sources=src<br>
+  sonar.cobol.copy.directories=/copy  </p>
+</blockquote>
+
+<p>I tried following ways to set the <code>sonar.projectBaseDir</code> property to right module (<code>module2</code> instead of <code>module1</code>):</p>
+
+<ol>
+<li><p><code>sonar.projectBaseDir</code> in <code>sonar-project.properties</code> file</p>
+
+<p>But it doesn't work. The property in <code>sonar-project.properties</code> file is ignored. The log shows that the property is overriden with JVM option:</p>
+
+<p></p>
+
+<pre><code>/Users/test/jenkinsslave/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner_2.8/bin/sonar-scanner -X -e -Dsonar.host.url=http://sonarqube:9090 -Dproject.settings=/Users/test/jenkinsslave/workspace/Test/module2/sonar-project.properties -Dsonar.projectBaseDir=/Users/test/jenkinsslave/workspace/Test/module1
+</code></pre>
+
+<p>I think that is a bug in  SonarQube Scanner plug-in, because <code>project.settings</code> is incompatible with  <code>sonar.projectBaseDir</code>, see <a href=""https://docs.sonarqube.org/display/SCAN/Advanced+SonarQube+Scanner+Usages"" rel=""nofollow noreferrer"">Advanced SonarQube Scanner Usages</a>:</p>
+
+<blockquote>
+  <p>The property <code>project.settings</code> can be used to specify the path to the project configuration file (this option is incompatible with the <code>project.home</code> and <code>sonar.projectBaseDir</code> properties).</p>
+</blockquote></li>
+<li><p><code>sonar.projectBaseDir</code> as <em>JVM Options</em></p>
+
+<p>But it doesn't work. The property is ignored. The log shows that the property is overriden:</p>
+
+<p></p>
+
+<pre><code>/Users/test/jenkinsslave/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner_2.8/bin/sonar-scanner -X -e -Dsonar.host.url=http://sonarqube:9090 -Dsonar.projectBaseDir=/Users/test/jenkinsslave/workspace/Test/module1
+</code></pre></li>
+<li><p><code>sonar.projectBaseDir</code> as <em>Additional arguments</em></p>
+
+<p>But it doesn't work. The log shows that the property is configured twice: </p>
+
+<p></p>
+
+<pre><code>/Users/test/jenkinsslave/tools/hudson.plugins.sonar.SonarRunnerInstallation/SonarQube_Scanner_2.8/bin/sonar-scanner -Dsonar.projectBaseDir=/Users/test/jenkinsslave/workspace/Test/module2 -X -e -Dsonar.host.url=http://sonarqube:9090 -Dsonar.projectBaseDir=/Users/test/jenkinsslave/workspace/Test/module1
+</code></pre>
+
+<p>I think that is a bug in SonarQube Scanner plug-in, because it should not add <code>sonar.projectBaseDir</code> option if there is already such option.</p></li>
+</ol>
+","5277820","","5277820","","2018-01-03 20:39:26","2018-01-04 11:31:22","How to set sonar.projectBaseDir in SonarQube Scanner for Jenkins?","<sonarqube><sonarqube-scan>","1","0","1","",""
+"48080866","1","48081213","","2018-01-03 16:00:13","","0","83","<p>We have a project in which there are some components and one of them is named <code>Racket.qml</code> which is as below:</p>
+
+<pre><code>import QtQuick 2.9
+
+Rectangle {
+    id: root
+    width: 15; height: 65
+    property int oldY: y
+    property bool yUwards: false
+    property bool yDwards: false
+
+    onYChanged: {
+        if(y &gt; oldY)  yDwards = true
+        else if (y &lt; oldY)  yUwards = true
+        oldY = y
+    }
+
+    Item {
+        x: root.x - 50
+        y: root.y - 50
+        width: 100
+        height: 200
+
+        MouseArea {
+            anchors.fill: parent
+            drag.target: root
+            focus: true
+            hoverEnabled: true
+            pressAndHoldInterval: 0
+            drag.axis: Drag.YAxis
+            drag.minimumY: table.y
+            drag.maximumY: table.height - height - 10
+        }
+    }
+}
+</code></pre>
+
+<p>I've used that component in <code>main.qml</code> this way:</p>
+
+<pre><code>import QtQuick 2.9
+import QtQuick.Window 2.2
+import QtQuick.Controls 2.1
+
+Window {
+    id: window
+    title: qsTr(""Test"")
+    color: ""gray""
+
+    Rectangle {
+        id: table
+        width: window.width / 1.15; height: window.height / 1.15
+        x: window.x + 100; y: 10;
+
+        Racket {
+            id: blackRacket
+            anchors.left: table.left
+            anchors.leftMargin: width * 2
+            y: height
+            color: ""black""
+        }
+        Racket {
+            id: redRacket
+            anchors.right: table.right
+            anchors.rightMargin: width * 2
+            y: height
+            color: ""red""
+        }
+      ...
+</code></pre>
+
+<p>My purpose was just to widen the area of the Rackets but now when I run the program I can't drag the rackets!</p>
+
+<p>What can the problem be please?</p>
+","4989541","","6622587","","2018-01-03 16:46:56","2018-01-03 16:46:56","The QML MouseArea property doesn't handle the ""target""","<qt><qml><qt-quick><qqmlcomponent><mousearea>","1","0","","",""
+"48080867","2","","48076930","2018-01-03 16:00:14","","0","","<p>First, I hope you recognize that by creating a new model each time you add a node, the diagram is discarding all of the old Nodes and Links and creating new Nodes and Links for all of the data in the model. That's a very inefficient way to build up a tree -- it's better to just call <a href=""https://gojs.net/latest/api/symbols/Model.html#addNodeData"" rel=""nofollow noreferrer"">Model.addNodeData</a> with each new node data object.</p>
+
+<p>If there is a data Binding in your node template that depends on the ""share"" data property, then you can modify a node by calling <a href=""https://gojs.net/latest/api/symbols/Model.html#setDataProperty"" rel=""nofollow noreferrer"">Model.setDataProperty</a>:</p>
+
+<pre><code>myDiagram.model.setDataProperty(someItem, ""share"", 17);
+</code></pre>
+
+<p>I highly recommend reading <a href=""https://gojs.net/learn"" rel=""nofollow noreferrer"">https://gojs.net/learn</a> and all of the pages of the Introduction, starting at <a href=""https://gojs.net/intro"" rel=""nofollow noreferrer"">https://gojs.net/intro</a>, to understand how you can define your node template to depend on your data properties.</p>
+","5082978","","","","","2018-01-03 16:00:14","","","","1","","",""
+"48080868","1","48081123","","2018-01-03 16:00:15","","-2","64","<p>I have a problem with the loop in python. I want create a list x[X0,X1,....Xn], with this algorithm:</p>
+
+<pre><code>X1=X0-(5+X0*2); X2=X1-(5+X1*2);.....
+</code></pre>
+
+<p>I try this but the result is not correct.</p>
+
+<pre><code>a=list(np.empty(10))
+a[0]=1
+for i in range(10):
+        a.append(a[i]-(5+a[i]*2))
+        print (a [i])
+</code></pre>
+
+<p>If you manually iterating the result gives:</p>
+
+<pre><code>[1,-6,1,-6, ....]
+</code></pre>
+
+<p>But after loop it gives:</p>
+
+<pre><code>[1,-1.29074375768e-231,2.19254982219e-314,.....]
+</code></pre>
+
+<p>The loop are easy in C but I did not understand the functioning in Python, if you have an idea ?</p>
+","9117892","","9117892","","2018-01-03 16:24:39","2018-01-03 16:31:09","How can I code loop in python","<python><python-3.x>","4","4","","",""
+"48080869","2","","48044670","2018-01-03 16:00:15","","6","","<p>Those aren't great tutorials for the latest versions of <code>gensim</code>. In particular, it's a bad idea to be calling <code>train()</code> multiple times in a loop with your own manual management of <code>alpha</code>/<code>min_alpha</code>. It's easy to mess up – the wrong things will happen in your code, for example – and offers no benefit for most users. Don't change <code>min_alpha</code> from the default, and call <code>train()</code> exactly once – it'll then do exactly <code>epochs</code> iterations, decaying the learning-rate <code>alpha</code> from its max to min values properly. </p>
+
+<p>Your specific error is because your <code>TaggedLineSentence</code> class doesn't have a <code>sentences</code> property – at least not until after <code>to_array()</code> is called – and yet the code is trying to access that non-existent property. </p>
+
+<p>The whole <code>to_array()</code>/<code>sentences_perm()</code> approach is a bit broken. The reason for using such an iterable class is typically to keep a large dataset out of main-memory, streaming it from disk. But <code>to_array()</code> then just loads everything, caching it <em>inside</em> the class - eliminating the iterable benefit. If you can afford that, because the full dataset easily fits in memory, you can just do...</p>
+
+<pre><code>sentences = list(TaggedLineSentence(sources)
+</code></pre>
+
+<p>...to iterate-from-disk once, then keep the corpus in an in-memory list. </p>
+
+<p>And shuffling repeatedly during training isn't usually needed. Only if the training data has some existing clumping – like all the examples with certain words/topics are stuck together at the top or bottom of the ordering – is the native ordering likely to cause training problems. And in that case, a single shuffle, before any training, should be enough to remove the clumping. So again assuming your data fits in memory, you can just do...</p>
+
+<pre><code>sentences = random.shuffle(list(TaggedLineSentence(sources)
+</code></pre>
+
+<p>...once, then you've got a <code>sentences</code> that's fine to pass to <code>Doc2Vec</code> in both <code>build_vocab()</code> and <code>train()</code> (once) below. </p>
+","130288","","","","","2018-01-03 16:00:15","","","","0","","",""
+"48080870","1","48083696","","2018-01-03 16:00:16","","0","70","<p>So it looks like this:<a href=""https://i.stack.imgur.com/RkMqI.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/RkMqI.png"" alt=""enter image description here""></a></p>
+
+<p>this is the example code of a message:</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-css lang-css prettyprint-override""><code>.allMsg {
+  width: 100%;
+}
+
+.self {
+  border-radius: 1rem;
+  background-color: #28a745;
+  text-align: right;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.friend {
+  text-align: left;
+}
+
+#chatWith {
+  text-align: center;
+  font-family: sans-serif;
+  font-size: 40px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;div class='allMsg'&gt;
+  &lt;p class='self chatMsg'&gt;Hello&lt;/p&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+</p>
+
+<p>How can i make the border as big as the text inside ... I thought the padding was going to work but unfortunately it didn't so please help me.</p>
+","8142599","","616443","","2018-01-03 16:01:03","2018-01-03 20:19:19","How to make border as big as text in it","<html><css><html5><css3><border>","2","2","","",""
+"48080871","2","","48079120","2018-01-03 16:00:17","","1","","<h2>ChromeDriver driver = new ChromeDriver();</h2>
+
+<p>If you use <code>ChromeDriver driver = new ChromeDriver();</code> the <em>ChromeDriver</em> instance which will get created through that we will be only able to invoke and act on the methods implemented by <em>ChromeDriver</em> and supported by <em>Chrome Browser</em> only. To act with other browsers we have to specifically create individual objects as below :</p>
+
+<ul>
+<li><code>FirefoxDriver driver =  new FirefoxDriver();</code></li>
+<li><code>InternetExplorerDriver driver = new InternetExplorerDriver();</code></li>
+</ul>
+
+<hr>
+
+<h2><code>WebDriver Interface</code></h2>
+
+<p>From <em>Selenium</em> perspective, the <strong>WebDriver Interface</strong> is similar like a agreement which the 3rd party <em>Browser Vendors</em> like <em>Mozilla</em>, <em>Chrome</em>, <em>Internet Explorer</em>, <em>Safari</em>, etc have to adhere and implement the same. This would in-turn help the end-users to use the exposed APIs to write a common code and implement the functionalities across all the available <code>Browsers</code> without any change.</p>
+
+<hr>
+
+<h2>Why <code>WebDriver driver = new ChromeDriver();</code></h2>
+
+<p>Through <code>WebDriver driver = new ChromeDriver();</code> we are creating an instance of the <em>WebDriver</em> interface and <strong>casting</strong> it to <strong>ChromeDriver Class</strong>. All the <em>Browser Drivers</em> like <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/firefox/FirefoxDriver.html"" rel=""nofollow noreferrer"">FirefoxDriver</a>, <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/chrome/ChromeDriver.html"" rel=""nofollow noreferrer"">ChromeDriver</a>, <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/ie/InternetExplorerDriver.html"" rel=""nofollow noreferrer"">InternetExplorerDriver</a>, <a href=""http://phantomjs.org/"" rel=""nofollow noreferrer"">PhantomJSDriver</a>, <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/safari/SafariDriver.html"" rel=""nofollow noreferrer"">SafariDriver</a> etc implemented the <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/WebDriver.html"" rel=""nofollow noreferrer"">WebDriver</a> interface (actually the <a href=""https://seleniumhq.github.io/selenium/docs/api/java/org/openqa/selenium/remote/RemoteWebDriver.html"" rel=""nofollow noreferrer"">RemoteWebDriver</a> class implements <strong>WebDriver Interface</strong> and the <em>Browser Drivers</em> extends <strong>RemoteWebDriver</strong>). So if we use <code>WebDriver driver</code>, then we can use the already initialized <strong>driver</strong> (as common object variable) for all browsers we want to automate e.g. Mozilla, Chrome, InternetExplorer, PhantomJS, Safari.</p>
+
+<pre><code>WebDriver driver = new FirefoxDriver();
+driver = new ChromeDriver();
+driver = new FirefoxDriver();
+driver = new SafariDriver();
+</code></pre>
+
+<hr>
+
+<h2>Trivia <code>WebDriver Interface</code></h2>
+
+<p>As per current scenario, we have to instantiate the implementations of <strong>WebDriver Interface</strong> directly. As per the current practice we write our <em>Automated Test Script</em> against this interface so that in future we may <strong>swap in</strong> a more fully featured <em>Browser</em> when there is a requirement for one.</p>
+","7429447","","7429447","","2018-10-14 16:37:09","2018-10-14 16:37:09","","","","1","","",""
+"48080872","2","","48080846","2018-01-03 16:00:22","","3","","<p>No, lifecycle hooks can not be canceled.</p>
+
+<p>If you don't need it anymore, just return without executing anything.</p>
+","217408","","","","","2018-01-03 16:00:22","","","","0","","",""
+"48080873","1","","","2018-01-03 16:00:23","","0","19","<p>I am making an application to show the Images from API's and display in different Tabs in View pager and is using the <code>RecyclerView</code> . 
+I am facing the following problems:</p>
+
+<ol>
+<li>1st - The problem is that how do i load the data and store it until the app is not destroyed. So as to restrict the more API hits on changing the tabs and coming back to previous tab. For ex- if there are 4 tabs A, B, C, D, then if user moves from A to B then from B to C and then coming back to A receives the old data without making any new request.</li>
+<li>2nd - I have also implemented the Native ads using the following links: <a href=""https://codelabs.developers.google.com/codelabs/admob-native-advanced-feed-android/index.html#0"" rel=""nofollow noreferrer"">Admob Native Advanced Ads in an Android feed</a>. It adds the ads in between the API data list so the problem is when i change the tab then on coming back to old tab it re-adds the ads in the list of data.</li>
+</ol>
+
+<p>After searching for few days i found that <code>LoaderManager</code> or <code>AsynTaskLoader</code> could solve my problem. But didn't found any help on it's implementation. I even don't
+know that if it will really solve my problem.</p>
+
+<p>Kindly help or suggest me some good tutorials or API which can solve my problems.</p>
+","7545745","","","","","2018-01-03 16:00:23","How to load data for different Tabs and store so as to restrict more api hits","<android><android-recyclerview><admob><loader><asynctaskloader>","0","0","","",""
+"48080874","1","","","2018-01-03 16:00:24","","0","124","<p>I have been developing an app with SharpShell Context menu handler that adds and removes certain functions to the explorer context menu. I am trying to create an interface so that the user can choose what to add depending on what is currently available but i cannot figure out how to display the native explorer context menu in the UI. The app is written in VB.net but i can translate C#. Any help would be appreciated.</p>
+","9168915","","1228","","2018-01-03 16:06:00","2018-01-04 13:01:00","How to host explorer context menu in app?","<c#><vb.net><sharpshell>","1","0","1","",""
+"48080875","2","","48015020","2018-01-03 16:00:28","","0","","<p>ok I completely removed this part</p>
+
+<pre><code>  ""content_scripts"": [
+{
+    ""matches"": [""&lt;all_urls&gt;""],
+    ""js"": [""activate-np-chrome.js""]
+}],
+""web_accessible_resources"": [""np-chrome.js""]
+</code></pre>
+
+<p>and now it works, because I didn't know that content_scripts actually inject and fire the script for every single tab ever, whereas i just needed to fire my script when the user clicks my browser button</p>
+","282772","","","","","2018-01-03 16:00:28","","","","0","","",""
+"48080877","2","","48080092","2018-01-03 16:00:33","","0","","<p>I'm happy that I found a good solution explained in details here:
+<a href=""https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba"" rel=""nofollow noreferrer"">https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba</a></p>
+
+<p>Basically you have to install jq or jiq, then type <code>kubectl get no -o json | jid -q | pbcopy</code>.
+The fun part begins: you type . and item, etc will be proposed for you to choose, you can easily construct your filter syntax.</p>
+","5018506","","","","","2018-01-03 16:00:33","","","","0","","",""
+"48080878","1","48081055","","2018-01-03 16:00:43","","-3","70","<p>I am trying to set some variables as character and others as numeric, what I currently have is;</p>
+
+<pre><code>colschar &lt;- c(1:2, 68:72)    
+colsnum &lt;- c(3:67) 
+subset &lt;- as.data.frame(lapply(data[, colschar], as.character), (data[, colsnum], as.numeric))
+</code></pre>
+
+<p>which returns an error.
+I am trying to set columns 1:2 and 68:72 as a character and columns 3:67 all as numeric.</p>
+","6447399","","","","","2018-01-03 16:16:10","as.numeric and as.character across different columns","<r>","2","4","","",""
+"48080879","1","","","2018-01-03 16:00:48","","1","439","<p>I am using <code>child_process.spawn</code> for running some app and I want to execute some actions after this app was started. But <code>spawn</code> blocks main process</p>
+
+<pre><code>const spawnAsync = Promise.promisify(require('child_process').spawn);
+console.log('BEFORE');   
+await spawnAsync('../node_modules/.bin/some-app', ['-p', '3333'], {
+    detached: true
+});
+console.log('AFTER');
+</code></pre>
+
+<p>In my console, I see <code>BEFORE</code> and <code>AFTER</code> would be logged only after killing process on <code>3333</code> port. I don't want to wait spawned process, I want to do some actions after <code>spawnSync</code> calling.</p>
+","2417883","","","","","2018-01-03 16:10:47","nodejs: do not wait spawned process","<node.js><child-process>","1","4","","",""
+"48080880","1","","","2018-01-03 16:00:54","","1","32","<p>My task is to make ship image dragged and dropped on the grid to occupy few cells, however I stil have only accomplished drag and drop to one cell. I tried to add droppable=""true"" and  ondragover=""allowDrop(event)"" to every cell but it gave the same result. Can you please help me make it drop on multiple cells?</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData(""text"", ev.target.id);
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData(""text"");
+    ev.target.appendChild(document.getElementById(data));
+}</code></pre>
+<pre class=""snippet-code-css lang-css prettyprint-override""><code>.table-bordered {
+    background-color: darkcyan;
+    min-width: 441px;
+}
+
+.dropTarget {
+    overflow:hidden;
+    position:relative;
+}
+
+.shipContainerClass{
+    min-width: 441px;
+    min-height: 441px;
+}
+
+.cellClass {
+    min-width: 40px;
+    min-height: 40px;
+    max-height: 40px;
+    max-width: 40px;
+    height: 40px;
+    width: 40px;
+    text-align:center;
+    background-color: lightblue;
+}</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;script src=""https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js""&gt;&lt;/script&gt;
+&lt;link rel=""stylesheet"" href=""https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css""&gt;
+&lt;script src=""https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js""&gt;&lt;/script&gt;
+
+
+&lt;div&gt; 
+&lt;table class=""table-bordered dropTarget"" id=""yourTableId"" ondrop=""drop(event)"" ondragover=""allowDrop(event)""&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;A&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;B&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;C&lt;/td&gt; 
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;D&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;E&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;F&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;G&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;H&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;I&lt;/td&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;J&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt; 
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;1&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I1"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J1"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt; 
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;2&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I2"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J2"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;3&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I3"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J3"" style=""text-align:center""&gt;&lt;/td&gt; 
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;4&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I4"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J4"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;5&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I5"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J5"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;6&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I6"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J6"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;7&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I7"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J7"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;8&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I8"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J8"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;9&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I9"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J9"" style=""text-align:center""&gt;&lt;/td&gt; 
+   &lt;/tr&gt;
+   &lt;tr&gt;
+      &lt;td class=""cellClass"" style=""text-align:center""&gt;10&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""A10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""B10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""C10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""D10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""E10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""F10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""G10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""H10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""I10"" style=""text-align:center""&gt;&lt;/td&gt;
+      &lt;td class=""cellClass"" data-location=""J10"" style=""text-align:center""&gt;&lt;/td&gt;
+   &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;div class=""shipsContainerClass"" ondrop=""drop(event)"" ondragover=""allowDrop(event)""&gt;
+   &lt;div id=""drop1"" style=""background-image:url('http://boomboomboat.com/themes/default/s-v.png');    background-size:75px 710px; background-position-x: 1px; background-position-y: 0px; height:200px; width: 40px; overflow: hidden;"" draggable=""true"" ondragstart=""drag(event)""&gt;
+   &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+</div>
+</div>
+</p>
+","9143078","","","","","2018-01-03 16:00:54","How to drag an element on few cells of the grid","<javascript><jquery><html><css><drag-and-drop>","0","1","","",""
+"48080881","2","","48080805","2018-01-03 16:00:57","","1","","<p>You need to export the function to make it available to others. Add the following to the bottom of your definition of <code>m-p-formulas-js</code> module:</p>
+
+<pre><code>module.exports = {
+    squareArea
+}
+</code></pre>
+","3306454","","","","","2018-01-03 16:00:57","","","","0","","",""
+"48080882","1","48083234","","2018-01-03 16:01:10","","0","57","<p>We're doing a proof of concept test on Apache NiFi.  The font for the layout screen looks like it's about 10 pt, which is way too small</p>
+
+<p>I can zoom the screen to 140%, but that makes everything bigger, and a lot less useful</p>
+
+<p>How Do I simply change the font used?</p>
+","661740","","","","","2018-01-04 05:39:53","how do you change the default font used by apache nifi","<apache-nifi>","1","0","","",""
+"48080883","2","","48080688","2018-01-03 16:01:12","","1","","<p>Perhaps it is related to a typo:</p>
+
+<p>You're looping through <code>member in row.teams</code> but there is no <code>s</code> in the json provided. Try replacing your loop for <code>member in row.team</code>.</p>
+","5399585","","","","","2018-01-03 16:01:12","","","","0","","",""
+"48080884","2","","48080738","2018-01-03 16:01:21","","-1","","<p>Use Try and catch function of the javascript to handle the specifi errors
+<a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Control_flow_and_error_handling"" rel=""nofollow noreferrer"">here</a>
+is the link about the error handling in javascript.</p>
+","8047827","","","","","2018-01-03 16:01:21","","","","1","","",""
+"48080886","2","","48080731","2018-01-03 16:01:31","","0","","<p>Try this</p>
+
+<pre><code>app.use(multer({
+  dest: './uploads/',
+  ""rename"" : function (fieldname, filename, req, res) {
+    return path.join(fieldname, req.params.user_id+"".txt"");
+  }
+})
+</code></pre>
+","449897","","","","","2018-01-03 16:01:31","","","","4","","",""
+"48080887","1","","","2018-01-03 16:01:32","","0","42","<p>My native Android app has <strong>multiple instances</strong> on some phones (Samsung galaxy note 2 – android 5.0 Samsung galaxy note 4 – android xx Xiaomi Redmi 4x – android 7.1.2.). On most other phones it is ok. The app consumes quite a lot of memory and CPU so I can not have the multiple instances running, otherwise it is very slow.</p>
+
+<p>I tried to use  android:launchMode=""singleInstance"" in my Manifest in every Activity. But this is not helping. I attache the Manifest file and screenshot. </p>
+
+<p>I would be very happy if you could help me. Cheers.</p>
+
+<p><img src=""https://i.stack.imgur.com/H8A3Z.jpg"" alt=""""></p>
+
+<pre><code>&lt;manifest xmlns:android=""http://schemas.android.com/apk/res/android""
+package=""pekostudio.dogtrace""&gt;
+
+&lt;uses-permission android:name=""android.permission.ACCESS_COARSE_LOCATION"" /&gt;
+&lt;uses-permission android:name=""android.permission.ACCESS_FINE_LOCATION"" /&gt;
+&lt;uses-permission android:name=""android.permission.INTERNET"" /&gt;
+&lt;uses-permission android:name=""com.google.android.providers.gsf.permission.READ_GSERVICES"" /&gt;
+&lt;uses-permission android:name=""android.permission.RECEIVE_BOOT_COMPLETED"" /&gt;
+&lt;uses-permission android:name=""android.permission.ACCESS_NETWORK_STATE"" /&gt;
+&lt;uses-permission android:name=""android.permission.WRITE_EXTERNAL_STORAGE"" /&gt;
+&lt;uses-permission android:name=""android.permission.READ_EXTERNAL_STORAGE"" /&gt;
+&lt;uses-permission android:name=""android.permission.BLUETOOTH"" /&gt;
+&lt;uses-permission android:name=""android.permission.BLUETOOTH_ADMIN"" /&gt;
+
+&lt;uses-feature android:name=""android.hardware.location.gps"" /&gt;
+&lt;uses-feature android:name=""android.hardware.bluetooth_le"" /&gt;
+
+&lt;application
+    android:allowBackup=""true""
+    android:hardwareAccelerated=""true""
+    android:icon=""@mipmap/ic_launcher""
+    android:label=""@string/app_name""
+    android:largeHeap=""true""
+    android:roundIcon=""@mipmap/ic_launcher""
+    android:supportsRtl=""true""
+    android:launchMode=""singleInstance""
+    android:resizeableActivity=""false""
+    android:theme=""@style/AppTheme""&gt;
+
+    &lt;meta-data
+        android:name=""com.google.android.geo.API_KEY""
+        android:value=""@string/google_maps_key"" /&gt;
+
+    &lt;receiver
+        android:name="".Bluetooth.GetAllCollarsService$GetRawBluetoothDataReceiver""
+        android:enabled=""true""&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=""pekostudio.dogtrace.BLUETOOTH_RAW_DATA"" /&gt;
+        &lt;/intent-filter&gt;
+    &lt;/receiver&gt;
+
+    &lt;service
+        android:name="".Utils.LocationFinder""
+        android:exported=""false"" /&gt;
+    &lt;service
+        android:name="".Bluetooth.GetAllCollarsService""
+        android:exported=""false"" /&gt;
+
+    &lt;service
+        android:name="".Bluetooth.BluetoothLeService""
+        android:enabled=""true""
+        android:stopWithTask=""true"" /&gt;
+
+    &lt;service
+        android:name="".MapDownload.DownloadService""
+        android:enabled=""true""
+        android:exported=""true"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.GoogleMapActivity""
+        android:configChanges=""orientation""
+        android:label=""@string/app_name""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/AppTheme.NoActionBar"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.SplashActivity""
+        android:configChanges=""orientation""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/SplashTheme""
+        android:launchMode=""singleInstance""&gt;
+        &lt;intent-filter&gt;
+            &lt;action android:name=""android.intent.action.MAIN"" /&gt;
+
+            &lt;category android:name=""android.intent.category.LAUNCHER"" /&gt;
+        &lt;/intent-filter&gt;
+    &lt;/activity&gt;
+
+    &lt;activity
+        android:name="".Activities.OfflineMap""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/AppTheme.NoActionBar"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.CompassActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/AppTheme.NoActionBar"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.AnimalDetailActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:parentActivityName="".Activities.GoogleMapActivity""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/AppTheme.NoActionBar""/&gt;
+
+    &lt;activity
+        android:name="".Activities.SettingsActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:parentActivityName="".Activities.GoogleMapActivity""
+        android:screenOrientation=""portrait""&gt;
+        &lt;meta-data
+            android:name=""android.support.PARENT_ACTIVITY""
+            android:value=""pekostudio.dogtrace.Activities.GoogleMapActivity"" /&gt;
+    &lt;/activity&gt;
+
+    &lt;activity
+        android:name="".Activities.EditAnimalsActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.EditAnimalActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait"" /&gt;
+
+    &lt;activity
+        android:name="".Activities.DeviceScanActivity""
+        android:configChanges=""orientation""
+        android:screenOrientation=""portrait""
+        android:launchMode=""singleInstance""
+        android:theme=""@style/AppTheme.NoActionBar"" /&gt;
+
+    &lt;activity android:name="".Activities.AvailableMapsListActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""/&gt;
+
+    &lt;activity android:name="".Activities.AboutActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""/&gt;
+
+    &lt;activity android:name="".Activities.CalibrateActivity""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""/&gt;
+
+    &lt;activity
+        android:name="".Activities.MapMarkerPreview""
+        android:configChanges=""orientation""
+        android:launchMode=""singleInstance""
+        android:screenOrientation=""portrait""
+        android:theme=""@style/AppTheme.NoActionBar"" /&gt;
+
+&lt;/application&gt;
+</code></pre>
+
+<p></p>
+","8609978","","2649012","","2018-01-03 16:21:00","2018-01-03 16:21:00","Disable multiple instances of an app","<android><android-activity><singleinstance>","0","4","","",""
+"48080888","1","","","2018-01-03 16:01:35","","0","245","<p>Hi I am working building chatbot using Aws Lex and lambda.
+I am using lexmodelbuildingservice.putIntent API to create new Intent. But when i test my Lambda function. I get below error:</p>
+
+<pre><code>BadRequestException: Lex is unable to access the Lambda function arn:aws:lambda:us-east-1:XXXXXXXXXXXX:function:chatBotResponse in the context of intent arn:aws:lex:us-east-1:XXXXXXXXXXXX:intent:BenefitsTwotwo:$LATEST.  Please check the resource-based policy on the function
+</code></pre>
+
+<p>I am using below code in my params:</p>
+
+<pre><code>fulfillmentActivity: {
+        codeHook: {
+            uri: ""arn:aws:lambda:us-east-1:XXXXXXXXXXXX:function:chatBotResponse"",
+            messageVersion: ""1.0""
+         },
+     type: ""CodeHook""     
+    }
+</code></pre>
+
+<p>Can anybody please tell me how to access and enable lambda arn using nodejs.</p>
+
+<p>Thanks!</p>
+","6204245","","3196845","","2018-01-04 08:54:12","2018-01-11 13:01:58","BadRequestException: Lex is unable to access the Lambda function","<node.js><amazon-web-services><aws-lambda><aws-sdk><amazon-lex>","1","0","","",""
+"48080889","1","48084016","","2018-01-03 16:01:37","","2","77","<h1>Context:</h1>
+
+<p>I'm trying to write a function that will allow the user of the function to define a certain type using <em>no typescript type assertions</em> (just plain old javascript syntax). Basically, I'm trying to write something like React's PropTypes but I want to map the type defined with these ""PropTypes"" to a type that can be enforced with typescript.</p>
+
+<p>Maybe it's easier to understand what I'm trying to do by seeing the code. Below <code>defineFunction</code> is a function that returns a function that takes in an object defined by ""PropTypes""`.</p>
+
+<pre><code>interface PropType&lt;T&gt; { isOptional: PropType&lt;T | undefined&gt; }
+type V&lt;Props&gt; = {[K in keyof Props]: PropType&lt;Props[K]&gt;};
+interface PropTypes {
+  string: PropType&lt;string&gt;,
+  number: PropType&lt;number&gt;,
+  bool: PropType&lt;boolean&gt;,
+  shape: &lt;R&gt;(definer: (types: PropTypes) =&gt; V&lt;R&gt;) =&gt; PropType&lt;R&gt;
+}
+
+// the only purpose of this function is to capture the type and map it appropriately
+// it does do anything else
+function defineFunction&lt;Props, R&gt;(props: (types: PropTypes) =&gt; V&lt;Props&gt;, func: (prop: Props) =&gt; R) {
+  return func;
+}
+
+// define a function
+const myFunction = defineFunction(
+  // this is the interface definition that will be mapped
+  // to the actual required props of the function
+  types =&gt; ({
+    stringParam: types.string,
+    optionalNumberParam: types.number.isOptional,
+    objectParam: types.shape(types =&gt; ({
+      nestedParam: types.string,
+    }))
+  }),
+  // this is the function definition. the type of `props`
+  // is the result of the mapped type above
+  props =&gt; {
+    props.objectParam.nestedParam
+    return props.stringParam;
+  }
+);
+
+// use function
+myFunction({
+  stringParam: '',
+  optionalNumberParam: 0,
+  objectParam: {
+    nestedParam: ''
+  }
+});
+</code></pre>
+
+<p>Here is the resulting type of <code>myFunction</code> found by hovering over the type in VS Code:</p>
+
+<pre><code>const myFunction: (prop: {
+    stringParam: string;
+    optionalNumberParam: number | undefined;
+    objectParam: {
+        nestedParam: string;
+    };
+}) =&gt; string
+</code></pre>
+
+<h1>Question:</h1>
+
+<p>There is an issue with the code above--<code>optionalNumberParam</code> is correctly defined as <code>number | undefined</code> but it is not actually optional!</p>
+
+<p>If I omit the <code>optionalNumberParam</code>, the typescript compiler will yell at me.</p>
+
+<p><a href=""https://i.stack.imgur.com/rNbOQ.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/rNbOQ.png"" alt=""enter image description here""></a></p>
+
+<h3>Is there anyway to assert that a type is optional instead of just <code>T | undefined</code>?</h3>
+
+<hr>
+
+<p>Replying to <code>cale_b</code>'s comment: </p>
+
+<blockquote>
+  <p>Just a thought - have you tried optionalNumberParam?: types.number.isOptional</p>
+</blockquote>
+
+<p>Yes and it's invalid syntax:</p>
+
+<p><a href=""https://i.stack.imgur.com/LynVW.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/LynVW.png"" alt=""enter image description here""></a></p>
+
+<p>And to clarify, this <code>defineFunction</code> should let the user define a type using <em>no typescript type assertions</em>--instead everything should be inferred using mapped types. The <code>?</code> is typescript only. I'm trying to write this function so that--theoretically--javascript users could define proptypes and still have the typescript compiler enforce those proptypes.</p>
+","5776910","","5776910","","2018-01-03 16:17:40","2018-01-03 19:34:34","How can I map some parameters to be optional?","<javascript><typescript><mapped-types>","1","5","","",""
+"48080890","1","","","2018-01-03 16:01:43","","0","109","<p>I am using Symfony 2.6.9, Doctrine 2.3.6 and PHPUnit 3.7.38. I am trying to write unit tests for a service that interacts with the DB. I have successfully run the code in my development environment but when trying to run similar code in PHPUnit I get the following error:</p>
+
+<blockquote>
+  <p>There was 1 error:</p>
+  
+  <p>1) \Tests\Service\ProcessorServiceTest::testProcessor
+  Doctrine\DBAL\DBALException: An exception occurred while executing
+  'INSERT INTO categories (name, description, type) VALUES (?, ?, ?)':</p>
+  
+  <p>SQLSTATE[HY000]: General error: 1 no such table: categories</p>
+  
+  <p>/api/vendor/doctrine/dbal/lib/Doctrine/DBAL/DBALException.php:47
+  /api/vendor/doctrine/dbal/lib/Doctrine/DBAL/Statement.php:71
+  /api/vendor/doctrine/dbal/lib/Doctrine/DBAL/Connection.php:598
+  /api/vendor/doctrine/orm/lib/Doctrine/ORM/Persisters/BasicEntityPersister.php:263
+  /api/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php:929
+  /api/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php:318
+  /api/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php:355
+  //Tests/Service/ProcessorServiceTest.php:34</p>
+  
+  <p>Caused by PDOException: SQLSTATE[HY000]: General error: 1 no such
+  table: categories</p>
+</blockquote>
+
+<p>I have created a test database which is a copy of my development database (both MySQL) but suspect that PHPUnit is not pointed to that database correctly.  I have the following line in my phpunit.xml already:</p>
+
+<pre><code>&lt;php&gt;
+    &lt;env name=""DATABASE_URL"" value=""mysql://USERNAME:PASSWORD@DATABASEURL/test?charset=utf8mb4&amp;amp;serverVersion=5.7"" /&gt;
+&lt;/php&gt;
+</code></pre>
+
+<p>The test database should have all the tables set up already (I have already verified this via the console). Is there something else I need to do to point PHPUnit correctly? </p>
+
+<p>For reference I wrote the tests using Symfony's KernelTestCase so my tests extend the Symfony\Bundle\FrameworkBundle\Test\KernelTestCase class.</p>
+","9168797","","1213708","","2018-01-03 16:06:05","2018-01-03 16:06:05","How to point PHPUnit to a test DB?","<php><symfony><doctrine><phpunit>","0","2","","",""
+"48080891","2","","48080480","2018-01-03 16:01:50","","0","","<p>You can use <code>itertools.combinations</code> to get every unique combination of two items from a list (in this case a list of the even indices). The items will be yielded in lexicographic order of the input, so if the input is sorted, the output will be as well.</p>
+
+<pre><code>from itertools import combinations
+a = []
+empty = [1, ""A"", 2, ""B"", 1, ""C""]
+for x,y in combinations(range(0,len(a),2),2): #take combinations in sets of 2 from the even indices
+    if a[x] == a[y]:
+        empty += (a[x+1], a[y+1]) #this could fail if you have an odd number of items in the list a</code></pre>
+
+<p>If you want to stop after matching a single pair, simply add <code>break</code> after you append items to <code>empty</code> in the ""if"" statement.</p>
+","3220135","","3220135","","2018-01-03 16:15:45","2018-01-03 16:15:45","","","","0","","",""
+"48080892","1","48117090","","2018-01-03 16:01:57","","0","36","<p>I have a CSV list with a few thousand names (first, last) and I would like to search for them in SQL. How can I do this easiest?</p>
+
+<p>Edit: I'm using oracle obiee so I'm somewhat limited. Not sure if I can just load a csv into a temporary table since my access is limited. Will try this tomorrow at work since I just left. Using join on it sounds quite clever to my beginner ears though. </p>
+","7027346","","7027346","","2018-01-03 16:10:53","2018-01-05 15:58:57","Search for a long list of names in SQL","<sql><search>","2","2","","",""
+"48080893","2","","48080191","2018-01-03 16:01:57","","1","","<p>If your number is represented as a javascript string, you can do</p>
+
+<pre><code>const [before, after] = floatAsString.split('.');
+</code></pre>
+
+<p>If it is a number, you use</p>
+
+<pre><code>const [before, after] = float.toFixed(18).split('.');
+</code></pre>
+
+<p>I would advice against using floating point calculations that involve subtraction, because they can yield small errors in the output. Consider the following example:</p>
+
+<pre><code>const float = 1.4543;
+const integerPart = float | 0; // this removes the fractional part
+const fraction = float - integerPart;
+console.log(fraction); // logs 0.4542999999999999, which is not the actual fraction, but is very close to it
+</code></pre>
+","5533076","","","","","2018-01-03 16:01:57","","","","1","","",""
+"48080898","1","","","2018-01-03 16:02:07","","0","124","<p>I am trying to create a textblock that shows a tooltip of the textblock's text when its being trimmed.  I have the actual visibility part of this taken care of in a converter.  My problem is binding the ToolTip's content to its partent textblock's text.  I have been fiddling with different relative paths for awhile now and can never get anything but a blank tooltip.  The text shows up fine when I want if I hardcode something in the tooltips content.</p>
+
+<pre><code>&lt;Style x:Key=""InfoToolTipBaseTextBlockStyle"" TargetType=""{x:Type TextBlock}"" BasedOn=""{StaticResource TextBlockBase}""&gt;
+    &lt;Setter Property=""ToolTip""&gt;
+        &lt;Setter.Value&gt;
+            &lt;ToolTip Visibility=""{Binding RelativeSource={RelativeSource Self}, Path=PlacementTarget, Converter={StaticResource TrimmedVisibilityConverter}}"" Content=""{Binding Path=Text, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TextBlock}}}""/&gt;                
+        &lt;/Setter.Value&gt;
+    &lt;/Setter&gt;
+&lt;/Style&gt;
+</code></pre>
+","841320","","","","","2018-01-03 19:57:36","How to bind ToolTip content in a custom textblock styles property setter","<c#><xaml><xaml-binding>","2","0","","",""
+"48080899","1","48084892","","2018-01-03 16:02:10","","1","85","<p>DISCLAIMER:</p>
+
+<p>I'm using python 3!</p>
+
+<p>FUNDEMENTAL CODE:</p>
+
+<p>So I have this code:</p>
+
+<pre><code>def login(userlogin):
+
+    with open('usernames.txt') as input_data: # Grabs username from usernames.txt CHANGE DOESN'T WORK FOR MULTIPLE PEOPLE
+        for user in input_data:
+            if user.strip() == userlogin:
+                break
+
+        for user in input_data:
+            if user.strip() == '0':
+                break
+
+    print(user)
+
+while(True):
+    userinput = input('')
+    login(userinput)
+</code></pre>
+
+<p>and also .txt file in the same directory, called usernames.txt which you can see here:</p>
+
+<pre><code>admin010
+guest020
+admin01030
+user040
+</code></pre>
+
+<p>DESIRE:</p>
+
+<p>I want the code to output the username corresponding in the .txt file based on the name inputted, so for example, if you inputted <code>'admin'</code> it would find text in the text document that starts with <code>admin</code> and find its ending which is always a <code>'0'</code> and output <code>admin010</code>. However, I want it to make sure, when you type <code>admin01</code> it would output <code>admin01030</code>. So the usernames are in the form, <code>name + value</code> (2 digits i.e. a value of 7 would be 07) <code>+ a zero</code> (<code>'0'</code> string).</p>
+
+<p>PROBLEM:</p>
+
+<p>The code isn't working, no matter my input it always outputs the last word in the .txt document. I'm not sure why, any help would be great.</p>
+","","user9168866","","user9168866","2018-01-03 21:03:24","2018-01-03 21:03:24","How to grab a certain word from a .txt file given what it begins and ends with","<python><file><parsing><text><tkinter>","4","4","","",""
+"48080900","2","","47969130","2018-01-03 16:02:10","","7","","<h3>TL; DR</h3>
+
+<p>You may compile all files into a single <code>*.ts</code> file as shown at <a href=""https://stackoverflow.com/questions/12926830/typescript-compiling-as-a-single-js-file"">this post</a>.</p>
+
+<h3>Continuous Integration Approach</h3>
+
+<p>Swagger code generator simplifies maintenance because it allows you to think in terms of <em>continuous integrations</em>.</p>
+
+<p>You should not be worried about code review or aesthetics (because it is a machine generated code), but about:</p>
+
+<ul>
+<li>API versioning</li>
+<li>Functions, methods and classes signatures</li>
+<li>Documentation</li>
+</ul>
+
+<p>If you are working with a CI system such as Jenkins or Ansible, you could automatically deploy the library to a <a href=""https://docs.npmjs.com/private-modules/intro"" rel=""noreferrer"">private NPM account</a> (for JS and TS) or <a href=""https://inthecheesefactory.com/blog/how-to-setup-private-maven-repository/en"" rel=""noreferrer"">Maven server</a> (for Java and Kotlin).</p>
+
+<p><a href=""https://i.stack.imgur.com/DHvAN.png"" rel=""noreferrer""><img src=""https://i.stack.imgur.com/DHvAN.png"" alt=""Private Maven""></a></p>
+
+<p>Keeping the package version number consistently updated will allow the IDE to correctly prompt the user about updates on the API.</p>
+
+<p><a href=""https://i.stack.imgur.com/w3O7E.gif"" rel=""noreferrer""><img src=""https://i.stack.imgur.com/w3O7E.gif"" alt=""enter image description here""></a></p>
+","2886392","","","","","2018-01-03 16:02:10","","","","2","","",""
+"48080901","1","","","2018-01-03 16:02:31","","1","312","<p>I am working with <code>Spring Framework</code> about <code>Rest</code>.</p>
+
+<p>I have the scenario about testing when the <code>request</code> is a <code>GET</code> and <code>Accept</code> is either <code>empty</code> or <code>null</code>.</p>
+
+<p>It is closely related with:</p>
+
+<ul>
+<li><a href=""https://stackoverflow.com/questions/48054312/getmapping-is-called-even-when-accept-is-defined-how-null"">@GetMapping is called even when Accept is defined how null</a></li>
+</ul>
+
+<p>I have read the following:</p>
+
+<ul>
+<li><a href=""https://stackoverflow.com/questions/12130910/how-to-interpret-empty-http-accept-header"">How to interpret empty HTTP Accept header?</a></li>
+<li><a href=""https://stackoverflow.com/questions/14772634/what-does-accept-mean-under-client-section-of-request-headers"">What does 'Accept: <em>/</em>' mean under Client section of Request Headers?</a></li>
+</ul>
+
+<p>Seems the following options how solutions are valid:</p>
+
+<ol>
+<li><code>400 Bad Request</code>  </li>
+<li><code>406 Not Acceptable</code> </li>
+<li>Consider the <code>empty</code> or <code>null</code> value of <code>Accept</code> how <code>*/*</code> instead</li>
+</ol>
+
+<p>Three options, that's the reason of this post.</p>
+
+<p>Between the two first, I consider more appropriate <code>406 Not Acceptable</code>, it because it is <em>specific</em> or <em>tight</em> for <code>Accept</code>. I mean what media type represents <code>empty</code> or <code>null</code>? it is not a known media type such as <code>xml</code> or <code>json</code></p>
+
+<p>The third option seems illogic, according with the following points (<em>according my own points of view, perhaps I am wrong or missing something</em>):</p>
+
+<p>The <strong>server</strong> has a handler method for <code>GET</code> that returns either <code>XML</code> or <code>json</code>, such as:</p>
+
+<pre><code>@GetMapping(path=""/{id}"",
+            produces={MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_UTF8_VALUE})
+public @ResponseBody Persona findOneById(@PathVariable String id){
+    return personaService.findOneById(id);
+}
+</code></pre>
+
+<p>The <strong>client</strong> <em>should have clear from the beginning</em> that it would do the <code>request</code> and handle the <code>response</code> either <code>XML</code> or <code>json</code>, according the <code>Accept</code> sent through the <code>request</code>. </p>
+
+<p>Thus, for any reason if the <code>request</code> sent has the <code>Accept</code> how <code>empty</code> (lets assume <em>wrong coding</em>), It is the third point (<code>*/*</code>) that I can't understand: ""let the server return any media type""; even with that, lets assume the server returns <code>XML</code> and the client just can handle <code>JSON</code> instead, but of course that <code>Accept</code> how <code>Json</code> wasn't specified from the beginning. So the client once received the <code>response</code> should receive an exception, <em>but observe that the server did the work unnecessarily</em></p>
+
+<p>Thus: How handle correctly HTTP Accept header when empty or null?</p>
+","3665178","","3665178","","2018-01-04 20:04:18","2018-01-04 20:04:18","How handle correctly HTTP Accept header when is either empty or null?","<rest><spring-mvc><http><http-headers><spring-rest>","0","0","","",""
+"48080903","2","","14572413","2018-01-03 16:02:35","","13","","<p><a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/Trim"" rel=""noreferrer"">String.trim()</a> does in fact remove newlines (and all other whitespace). Maybe it didn't used to? It definitely does at the time of writing. From the linked documentation (emphasis added):</p>
+
+<blockquote>
+  <p>The trim() method removes whitespace from both ends of a string. Whitespace in this context is all the whitespace characters (space, tab, no-break space, etc.) <em>and all the line terminator characters (LF, CR, etc.).</em></p>
+</blockquote>
+
+<hr>
+
+<p>If you want to trim all newlines plus other potential whitespace, you can use the following:</p>
+
+<pre><code>return str.trim();
+</code></pre>
+
+<p>If you want to <em>only</em> trim newlines, you can use a solution that targets newlines specifically.</p>
+","2448294","","2448294","","2018-05-09 19:37:28","2018-05-09 19:37:28","","","","2","","",""
+"48080905","1","","","2018-01-03 16:02:39","","0","116","<p>I have a SignalR hub to send group notification, I want to test SignalR Groups.
+Below is the Hub server code :</p>
+
+<pre><code>[HubName(""MyHubServer"")]
+public class HubServer : Hub
+{
+    public override Task OnConnected()
+    {
+        // My code OnConnected
+        return base.OnConnected();
+    }
+
+    public override Task OnDisconnected(bool stopCalled)
+    {
+        // My code OnDisconnected
+        return base.OnDisconnected(stopCalled);
+    }
+
+    public string JoinGroup(string connectionId, string groupName)
+    {
+        Groups.Add(connectionId, groupName).Wait();
+        return connectionId + "" joined "" + groupName;
+    }
+
+    public string LeaveGroup(string connectionId, string groupName)
+    {
+        Groups.Remove(connectionId, groupName).Wait();
+        return connectionId + "" removed "" + groupName;
+    }
+
+    public string LeaveGroup(string connectionId, string groupName, string customerId = ""0"")
+    {
+        Groups.Remove(connectionId, customerId).Wait();
+        return connectionId + "" removed "" + groupName;
+    }
+}
+</code></pre>
+
+<p>Server Code to send message to Group (I'll call this code to send message to group after joining group) :</p>
+
+<pre><code>Hub.Clients.Group(""Associate"").BroadcastAssociateNotification(JsonConvert.SerializeObject(notifications));
+</code></pre>
+
+<p>Now I want to test SignalR server Group to join group and receive message as server sends message to that group.
+Below is the code I'm using to test the same, with this code I'm getting error as ""A task was canceled"" at line <strong>Groups.Add(connectionId, groupName).Wait();</strong></p>
+
+<pre><code>static void Main(string[] args)
+{
+    MainAsync().Wait();
+    Console.ReadLine();
+}
+
+static async Task MainAsync()
+{
+    try
+    {
+        var hubConnection = new HubConnection(""http://localhost:12923/"");
+        IHubProxy stockTickerHubProxy = hubConnection.CreateHubProxy(""MyHubServer"");
+        stockTickerHubProxy.On&lt;string&gt;(""Associate"", data =&gt; Console.WriteLine(""Notification received : "", data));
+        hubConnection.Start().Wait();
+
+        await stockTickerHubProxy.Invoke(""JoinGroup"", ""123456"", ""Associate"");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        Console.ReadLine();
+    }
+}
+</code></pre>
+","2555902","","","","","2018-01-03 17:40:49","C# Console Application to test SignalR Groups","<c#><asp.net><signalr><signalr-hub><signalr.client>","1","2","1","",""
+"48080906","1","","","2018-01-03 16:02:43","","2","2284","<p>I have the following code for demo purposes, showing a simple form row with error messages and a submit button:</p>
+
+<pre class=""lang-html prettyprint-override""><code>&lt;form [ngFormOptions]=""{updateOn: 'submit'}""&gt;
+   &lt;tid-form-row&gt;
+      &lt;label tid-ui-label for=""temperatureInput""&gt;Temperature:&lt;/label&gt;
+      &lt;input [tid-ui-input]=""{required: true}"" id=""temperatureInput"" name=""temperatureName"" placeholder=""20,4""
+             [(ngModel)]=""temperatureModel"" #temperature=""ngModel"" [tidDigits]=""{integer: 2, fraction: 1}"" required&gt;
+      &lt;ng-template #hint&gt;
+         &lt;small tid-ui-hint&gt;The yellow color indicates that this field is required.&lt;/small&gt;
+      &lt;/ng-template&gt;
+      &lt;div tid-ui-error *ngIf=""temperature.invalid &amp;&amp; (temperature.dirty || temperature.touched); else hint""&gt;
+         &lt;span *ngIf=""temperature?.errors.required""&gt;Field is required.&lt;/span&gt;
+         &lt;span *ngIf=""temperature?.errors.tidDigits""&gt;Must be max 2 integer digits and max 1 fraction digit.&lt;/span&gt;
+      &lt;/div&gt;
+   &lt;/tid-form-row&gt;
+   &lt;tid-button type=""submit""&gt;Check validation&lt;/tid-button&gt;
+&lt;/form&gt;
+</code></pre>
+
+<p>where <code>tidDigits</code> is a <a href=""https://angular.io/guide/form-validation#custom-validators"" rel=""nofollow noreferrer"">custom ValidatorDirective</a> with this <code>ValidatorFactory</code>:</p>
+
+<pre><code>export function digitsValidator(config: any): ValidatorFn {
+  return (control: AbstractControl): {[key: string]: any} =&gt; {
+    const value = control.value;
+    const errorObject: any = {tidDigits: {value: control.value}};
+    let passed = true;
+
+    if (value) {
+      const [integer, fraction] = value.split(',');
+      if (config.integer &amp;&amp; config.integer &gt;= 0) {
+        if (integer.length &gt; config.integer) {
+          passed = false;
+          errorObject.tidDigits.integer = integer.length;
+        }
+      }
+      if (config &amp;&amp; config.fraction &amp;&amp; config.fraction &gt;= 0) {
+        if (fraction.length &gt; config.fraction) {
+          passed = false;
+          errorObject.tidDigits.fraction = fraction.length;
+        }
+      }
+    }
+    return passed ? null : errorObject;
+  };
+}
+</code></pre>
+
+<p>I want the demo to show the different error messages when the user clicks the submit button. For this is a demo form, I do not want the form to submit at all.</p>
+
+<p>The error messages show up correctly (after pressing the submit button) when the field is empty (<code>required</code>-Validator) or e.g. 20,44 is entered (<code>tidDigits</code>-Validator). However, if a valid value is entered (e.g. 20,4), the form submits - i.e. the page is reloaded and the field name is appended to the URL: <code>/tid-form-row?temperatureName=20,4</code></p>
+
+<p><strong>Is there any way to prevent a form from submitting at all?</strong></p>
+
+<p>I tried <code>(ngSubmit)=""onSubmit()""</code> with <code>onSubmit() { return false; }</code> and also <code>(ngSubmit)=""$event.preventDefault()""</code> as stated <a href=""https://stackoverflow.com/questions/40909585/angular-2-how-to-prevent-a-form-from-submitting-on-keypress-enter"">here</a>, but it did not work. Any other ideas?</p>
+","2725515","","1771634","","2018-01-03 17:23:15","2018-07-04 12:15:36","Prevent Submitting Form after Validation in Angular 5","<angular><forms><typescript><angular5>","2","0","","",""
+"48080907","2","","47477018","2018-01-03 16:02:49","","1","","<p>You can use the catch operator of rxjs to do this:</p>
+
+<pre><code>intercept(request: HttpRequest&lt;any&gt;, next: HttpHandler): Observable&lt;HttpEvent&lt;any&gt;&gt; {
+
+    return next.handle(request)
+        .catch((error, source) =&gt; {
+
+            if (error instanceof HttpErrorResponse &amp;&amp;
+                error.status == 401 &amp;&amp;
+                !error.url.includes(""/signin"")) {
+
+                this.router.navigate([""/signin""]);
+                return Observable.empty();
+            }
+            else {
+
+                return Observable.throw(error);
+            }
+        });
+}
+</code></pre>
+","934407","","","","","2018-01-03 16:02:49","","","","1","","",""
+"48080908","1","48081147","","2018-01-03 16:02:49","","-1","37","<p>I want the string <code>index.xml</code> to be appended when I see something ending in <code>/feed/</code> and starting with <code>http://a.b.c</code> </p>
+
+<p>Using the command line I wrote, and works, this</p>
+
+<pre><code>echo ""http://a.b.c/blabla/feed/"" | sed -e 's#\(http://a.b.c/.*/feed/\)#\1index.xml#g'
+</code></pre>
+
+<p>I don't know how to transform this code so that it works in a script using -i and a file as parameter.</p>
+
+<p>I tried the following but it works only if the searched string is on a line alone, while I need to transform also strings between other text. What's the correct code? </p>
+
+<pre><code>#!/bin/bash
+
+sed -i 's#\(""http://a.b.c/.*/feed/""\)#""\1index.xml""#g' $1
+</code></pre>
+","472317","","472317","","2018-01-03 16:15:56","2018-01-03 16:16:22","Sed command from command line into script","<bash><sed>","1","6","","",""
+"48080909","2","","48077518","2018-01-03 16:03:00","","0","","<p>You can optimize your R version by sampling the largest possible number of days in one shot.</p>
+
+<p>The following code is faster than yours. Statistically I sample the majority of the days before the loop. The remaining days are sampled in the loop but the loop is likely to run only once. Maybe twice.</p>
+
+<p>Moreover it is easy to rewrite with Rcpp.</p>
+
+<pre><code>sample_r2= function(n = 12, min_dist = 5, seed = 42)
+{
+  available_days = seq(365)
+
+  res = sort(sample(available_days, n))
+  y = diff(res)
+  res = res[y &gt;= min_dist]
+
+  while (length(res) &lt; n)
+  {
+    forbidden_days = sapply(res, function(x){ x + -(min_dist-1):(min_dist-1) } )
+    available_days = setdiff(available_days, forbidden_days)
+
+    days = sample(available_days, n - length(res))
+    res = sort(c(res, days))
+
+    y = diff(res)
+    res = res[y &gt;= min_dist]
+  }
+
+  return(res)
+}
+</code></pre>
+
+<p>Btw maybe there are some issues in my code. But I think the idea is correct.</p>
+","8442410","","8442410","","2018-01-03 16:36:46","2018-01-03 16:36:46","","","","2","","",""
+"48080910","1","","","2018-01-03 16:03:01","","0","203","<p>My question is very similar to <a href=""https://stackoverflow.com/questions/9923385/combine-2-excel-tables-into-one-appending-the-data"">this question</a>, but instead of having just 2 table I have roughly 20 tables. The aim is still to combine them together, so creating one big table with the content of just three columns of the 20 tables. All the tables have different sizes, but they all have CODE, DESCRIPTION and PRICE, and these three columns should be grouped together and combined into a new table containing CODE, DESCRIPTION and PRICE of all the 20 tables (the tables are already preprocessed and do not contain duplicates, so I just need to combine them one on top of the other). </p>
+
+<p>Thank you!</p>
+","9168900","","-1","","2018-07-09 18:41:45","2018-05-14 10:59:52","Combine multiple Excel tables into one appending the data?","<excel><excel-vba><excel-formula><vba>","0","1","1","",""
+"48080911","1","","","2018-01-03 16:03:01","","1","36","<p>I have many sheets in Qlik Sense and I need to modify the name of a master measure.</p>
+
+<p>How can I find all sheets/visualizations where that master measure is used? So I know what will it affect.</p>
+","6937526","","","","","2018-01-11 08:33:45","QS: Find the sheets that use the master item","<qlikview><qliksense>","2","0","","",""
+"48080912","2","","48080584","2018-01-03 16:03:02","","1","","<p>$ rm -rf app/cache/* </p>
+
+<pre><code>#MyCompany\MyBundle2\Resources\Config\services.yml
+
+services:
+    ipad.registerchecksum:
+        class: MyCompany\MyBundle2\Services\Registerchecksum
+
+    ipad.download_history:
+        class: Your Service
+        arguments: [""@ipad.registerchecksum""]
+</code></pre>
+","2436688","","","","","2018-01-03 16:03:02","","","","3","","",""
+"48080914","1","","","2018-01-03 16:03:08","","2","377","<p>I'm trying to detect the landmarks of human face by using OpenCV_Contrib.
+However, there are some problems to detect face landmarks.</p>
+
+<p>I received one answer that I need to use ""<a href=""https://github.com/opencv/opencv_3rdparty/blob/8afa57abc8229d611c4937165d20e2a2d9fc5a12/face_landmark_model.dat"" rel=""nofollow noreferrer"">https://github.com/opencv/opencv_3rdparty/blob/8afa57abc8229d611c4937165d20e2a2d9fc5a12/face_landmark_model.dat</a>"" before.</p>
+
+<p>It works, but it detects wrong face landmarks.
+<a href=""https://i.stack.imgur.com/Y3HTk.png"" rel=""nofollow noreferrer"">enter image description here</a></p>
+
+<p>For making it perfect, I have to find
+What model is needed for facemark->loadmodel(""loadmodel"")
+*68 points of face</p>
+
+<p>How can I call FacemarkKazemi->loadModel();</p>
+
+<p>Please, solve my curiosity.</p>
+
+<pre><code>bool myDetector(cv::InputArray image, cv::OutputArray faces, cv::CascadeClassifier *face_cascade){
+    cv::Mat gray;
+    if (image.channels() &gt; 1)
+        cvtColor(image, gray, CV_BGR2GRAY);
+    else
+        gray = image.getMat().clone();
+    equalizeHist(gray, gray);
+    std::vector&lt;cv::Rect&gt; faces_;
+    face_cascade-&gt;detectMultiScale(gray, faces_, 1.1, 3, 0, cv::Size(30, 30));
+    cv::Mat(faces_).copyTo(faces);
+    return true;
+}
+- (UIImage *) detectFacialLandmark:(UIImage *) image{
+    double CurrentTime = CACurrentMediaTime();
+    NSString *pathToFaceCascade = [[NSBundle mainBundle] pathForResource:@""haarcascade_frontalface_alt"" ofType:@""xml""];
+    NSString *pathToFaceModel = [[NSBundle mainBundle] pathForResource:@""face_landmark_model"" ofType:@""dat""];
+    cv::Mat faceImage;
+    UIImageToMat(image, faceImage);
+    cv::CascadeClassifier face_cascade;
+    face_cascade.load([pathToFaceCascade UTF8String]);
+    cv::face::FacemarkKazemi::Params params;
+    cv::Ptr&lt;cv::face::FacemarkKazemi&gt; facemark = cv::face::FacemarkKazemi::create(params);
+    facemark-&gt;setFaceDetector((cv::face::FN_FaceDetector)myDetector, &amp;face_cascade);
+
+    facemark-&gt;loadModel([pathToFaceModel UTF8String]);
+    std::vector&lt;cv::Rect&gt; faces;
+    facemark-&gt;getFaces(faceImage,faces);
+    std::vector&lt; std::vector&lt;cv::Point2f&gt; &gt; shapes;
+    if(faces.size() &gt; 0){
+        if(facemark-&gt;fit(faceImage,faces,shapes))
+        {
+            for( size_t i = 0; i &lt; faces.size(); i++ )
+            {
+                cv::rectangle(faceImage, faces[i], cvScalar(255, 0, 0));
+            }
+            for(unsigned long i=0;i&lt;faces.size();i++){
+                for(unsigned long k=0;k&lt;shapes[i].size();k++)
+                    cv::circle(faceImage,shapes[i][k],5,cv::Scalar(0,0,255),cv::FILLED);
+            }
+        }
+    }
+    else{
+
+    }
+    UIImage *returnImage = MatToUIImage(faceImage);
+    NSLog(@""test processing time : %f"", (CACurrentMediaTime() - CurrentTime));
+    return returnImage;
+}
+</code></pre>
+","9152129","","","","","2018-01-03 16:03:08","What model is needed to detect facemark by using OpenCV_Contrib?","<opencv><model><load><keypoint><opencv-contrib>","0","1","1","",""
+"48080916","1","48086818","","2018-01-03 16:03:13","","0","82","<p>Symfony / Doctrine - Repository not returning data. </p>
+
+<p>I have successfully retrieved data from another entity/repository previously, but can't seem to fetch data from this particular repository. I have cleared cache in console and I have registered the repository with the entity class (with annotation). </p>
+
+<p>Testing the DQL as SQL returns results as expected, meaning parameters passed into query will return results I desire through SQL query, just not DQL query.</p>
+
+<p>The one difference between the route that is accessing this repository in comparison to past successful repository queries is the ""parameter bag"" is being passed through request ""attributes"" in this repository and in the successful previous repository queries the query parameters were passed through request ""query - Parameter Bag"" in the request. I am not sure it is even part of the repository query problem however.</p>
+
+<p>The Controller</p>
+
+<pre><code>/**
+ * Open the modal dialog for selecting strip width
+ * @Route(""/select/{materialId}/{gaugeId}/{rangeUpper}/{rangeLower}"", defaults={""materialId"" = 0, ""gaugeId"" = 0, ""rangeUpper"" = 0, ""rangeLower"" = 0}, name=""material-stock_selectWidth"")
+ * @Method(""GET"")
+ */
+public function selectStripWidthAction (Request $request)
+{
+    $em = $this-&gt;getDoctrine()-&gt;getManager();
+
+    $materialStocks = $em-&gt;getRepository('UniflyteBundle:MaterialStock')-&gt;findAllByParams($request);
+
+
+
+    return $this-&gt;render('materialstock/dialog/select.html.twig', [
+        'MaterialStock' =&gt; $materialStocks,
+    ]);
+}
+</code></pre>
+
+<p>The Repository</p>
+
+<pre><code>public function findAllByParams (Request $request)
+{
+
+    $criteria = $request-&gt;query-&gt;get('uniflytebundle_material-stock_selectWidth');
+
+    $criteria = ($request-&gt;get('materialId') == 0 ? [] : ['materialId' =&gt; $request-&gt;get('materialId')]);
+    $criteria = array_merge(($request-&gt;get('gaugeId') == 0 ? [] : ['gaugeId' =&gt; $request-&gt;get('gaugeId')]), $criteria);
+    $criteria = array_merge(($request-&gt;get('rangeUpper') == 0 ? [] : ['rangeUpper' =&gt; $request-&gt;get('rangeUpper')]), $criteria);
+    $criteria = array_merge(($request-&gt;get('rangeLower') == 0 ? [] : ['rangeLower' =&gt; $request-&gt;get('rangeLower')]), $criteria);
+    $criteria = array_filter($criteria);
+
+    $query = $this-&gt;createQueryBuilder('ms');
+
+    if (!empty($criteria)) {
+        if (!empty($criteria['materialId']) &amp;&amp; !empty($criteria['gaugeId']) &amp;&amp; !empty($criteria['rangeUpper']) &amp;&amp; !empty($criteria['rangeLower'])) {
+            $query
+              -&gt;where('ms.material = :materialId')
+              -&gt;andWhere('ms.gauge = :gaugeId')
+              -&gt;andWhere('ms.widthDecimal &lt;= :upperIdentifier')
+              -&gt;andWhere('ms.widthDecimal &gt;= :lowerIdentifier')
+              -&gt;setParameter('materialId', $criteria['materialId'])
+              -&gt;setParameter('gaugeId', $criteria['gaugeId'])
+              -&gt;setParameter('upperIdentifier', $criteria['rangeUpper'])
+              -&gt;setParameter('lowerIdentifier', $criteria['rangeLower'])
+            ;
+        }
+    }
+    return $query-&gt;orderBy('ms.widthDecimal', 'DESC');
+}
+</code></pre>
+
+<p>Displaying results</p>
+
+<pre><code>&lt;select&gt;
+    {% for MaterialStock in MaterialStock %}
+        &lt;option&gt;{{ MaterialStock.widthDecimal }}&lt;/option&gt;
+    {% endfor %}
+&lt;/select&gt;
+</code></pre>
+
+<p>A dump() from the controller showing queryBuilder.</p>
+
+<pre><code>MaterialStockController.php on line 139:
+array:1 [▼
+""materialStocks"" =&gt; QueryBuilder {#613 ▼
+-_em: EntityManager {#757 …11}
+-_dqlParts: array:9 [▼
+  ""distinct"" =&gt; false
+  ""select"" =&gt; array:1 [▶]
+  ""from"" =&gt; array:1 [▶]
+  ""join"" =&gt; []
+  ""set"" =&gt; []
+  ""where"" =&gt; Andx {#642 ▼
+    #separator: "" AND ""
+    #allowedClasses: array:4 [▶]
+    #preSeparator: ""(""
+    #postSeparator: "")""
+    #parts: array:4 [▼
+      0 =&gt; ""ms.material = :materialId""
+      1 =&gt; ""ms.gauge = :gaugeId""
+      2 =&gt; ""ms.widthDecimal &lt;= :upperIdentifier""
+      3 =&gt; ""ms.widthDecimal &gt;= :lowerIdentifier""
+    ]
+  }
+  ""groupBy"" =&gt; []
+  ""having"" =&gt; null
+  ""orderBy"" =&gt; array:1 [▶]
+]
+-_type: 0
+-_state: 0
+-_dql: null
+-parameters: ArrayCollection {#646 ▼
+  -elements: array:4 [▼
+    0 =&gt; Parameter {#645 ▼
+      -name: ""materialId""
+      -value: ""1""
+      -type: 2
+    }
+    1 =&gt; Parameter {#644 ▼
+      -name: ""gaugeId""
+      -value: ""7""
+      -type: 2
+    }
+    2 =&gt; Parameter {#648 ▼
+      -name: ""upperIdentifier""
+      -value: ""3.75""
+      -type: 2
+    }
+    3 =&gt; Parameter {#643 ▼
+      -name: ""lowerIdentifier""
+      -value: ""3.5""
+      -type: 2
+    }
+  ]
+}
+-_firstResult: null
+-_maxResults: null
+-joinRootAliases: []
+#cacheable: false
+#cacheRegion: null
+#cacheMode: null
+#lifetime: 0
+</code></pre>
+
+<p>}
+]</p>
+
+<p>Registering Repository in Entity Class</p>
+
+<pre><code>@ORM\Entity(repositoryClass=""UniflyteBundle\Repository\MaterialStockRepository"")
+</code></pre>
+
+<p>What am I doing wrong here?</p>
+
+<p>I appreciate any time/energy/thought/suggestions invested on this challenge. Thank you in advance. </p>
+","8400312","","","","","2018-01-03 23:53:12","query accessing repository not returning data","<symfony><doctrine><repository>","2","1","","",""
+"48080917","1","","","2018-01-03 16:03:17","","0","284","<p>I have a requirement like I have couple of suite.xml files in a source folder </p>
+
+<pre><code>/src/main/suite/suite1.xml , /src/main/suite/suite2.xml 
+</code></pre>
+
+<p>where each suite file contain only TestClass Names </p>
+
+<pre><code>Suite1.xml contains
+ &lt;test name=""Sanity_Automation_Suite"" preserve-order=""true""&gt;
+            &lt;classes&gt;
+                &lt;class
+                    name=""com.package.test.module.TestClass1"" /&gt;
+            &lt;/classes&gt;
+        &lt;/test&gt;
+</code></pre>
+
+<hr>
+
+<p>TestClass1 has few test-methods like testMethod1(), testMethod2(), testMethod3()...</p>
+
+<hr>
+
+<p>I have mentioned the surefire plugin in my pom.xml as below.</p>
+
+<pre><code>        &lt;plugin&gt;
+               &lt;groupId&gt;org.apache.maven.plugins&lt;/groupId&gt;
+                &lt;artifactId&gt;maven-surefire-plugin&lt;/artifactId&gt;
+                &lt;version&gt;2.20.1&lt;/version&gt;
+                &lt;configuration&gt;
+                    &lt;suiteXmlFiles&gt;
+                        &lt;suiteXmlFile&gt;${suiteXmlFile}&lt;/suiteXmlFile&gt;
+                    &lt;/suiteXmlFiles&gt;
+                &lt;/configuration&gt;
+        &lt;/plugin&gt;
+</code></pre>
+
+<p>so that I can use any suite.xml file at the runtime in maven command. </p>
+
+<p>When I execute the command </p>
+
+<pre><code>mvn test -DsuiteXmlFile=src/main/suites/suite1.xml -Dtest=com.package.test.module.TestClass1#testMethod3()
+</code></pre>
+
+<p>I am getting below error</p>
+
+<pre><code>**Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:2.20.1:test (default-test) on project testAutomation: No tests were executed!  (Set -DfailIfNoTests=false to ignore this error.)**
+</code></pre>
+
+<p>can Anyone suggest how can I achieve this with above setup.The goal I want to achieve is that, I want to execute any test-method in a testclass mentioned in my suite.xml</p>

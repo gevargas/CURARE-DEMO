@@ -1,0 +1,2082 @@
+Id,PostTypeId,AcceptedAnswerId,ParentId,CreationDate,DeletionDate,Score,ViewCount,Body,OwnerUserId,OwnerDisplayName,LastEditorUserId,LastEditorDisplayName,LastEditDate,LastActivityDate,Title,Tags,AnswerCount,CommentCount,FavoriteCount,ClosedDate,CommunityOwnedDate
+"48155065","1","48155066","","2018-01-02 11:57:23","","1","160","<p>I'm trying to update a Google Sheets add-on that gets AWS prices (<a href=""https://github.com/reeve/gs-aws-pricing-helper"" rel=""nofollow noreferrer"">https://github.com/reeve/gs-aws-pricing-helper</a>)</p>
+
+<p>This has a dependency of <a href=""https://github.com/brucemcpherson/cCacheHandler"" rel=""nofollow noreferrer"">https://github.com/brucemcpherson/cCacheHandler</a></p>
+
+<p>I've created a new project on my sheet and added all of the scripts from the AWS Pricing project. Using a function then fails with</p>
+
+<pre><code>Error
+ReferenceError: ""cCacheHandler"" is not defined. (line 48).
+</code></pre>
+
+<p>Any idea how this kind of dependency is installed?</p>
+","246754","Anonymouslemming","","","","2018-01-08 17:21:17","How to add dependencies for Google Docs add-on development?","<google-sheets>","1","0","","",""
+"48054253","2","","47975006","2018-01-02 00:00:30","","1","","<p>Well, you can do something similar using some tricks with overwriting the value of <code>this</code>. You probably should never try to do that though, <code>vtable</code> pointers aren't meant to be modified by hand.</p>
+
+<p>To do what you described, we need to have the pointer to A's <code>vtable</code>. Our object <code>p</code> has only pointer to B's <code>vtable</code>, so we need to store second pointer in a field within A's constructor.</p>
+
+<p>Here is the code:</p>
+
+<pre><code>#include &lt;iostream&gt;
+struct A{
+    virtual void foo() { std::cout &lt;&lt; ""A::foo()"" &lt;&lt; std::endl; }
+    int *a_vtable_ptr;
+    // First, save value of A's vtable pointer in a separate variable.
+    A() { a_vtable_ptr = *(int**)this; }
+};
+
+struct B:A{
+    virtual void foo() { std::cout &lt;&lt; ""B::foo()"" &lt;&lt; std::endl; }
+    void callBase(void (A::*f)()){
+        int *my_vtable_ptr = *(int**)this;
+        // Then modify vtable pointer of given object to one that corresponds to class A.
+        *(int**)this = a_vtable_ptr;
+        (this-&gt;*f)(); // Call the method as usual.
+        // Restore the original vtable pointer.
+        *(int**)this = my_vtable_ptr;
+    }
+};
+
+// Function main() is not modified.
+int main(){
+    B* p=new B();
+    void (A::*f)() = &amp;A::foo;
+    p-&gt;callBase(f);
+}
+</code></pre>
+
+<p>Output:</p>
+
+<pre><code>A::foo()
+
+Process finished with exit code 0
+</code></pre>
+","4722212","","","","","2018-01-02 00:00:30","","","","0","","",""
+"48054254","2","","48017991","2018-01-02 00:00:55","","1","","<p>Use the <code>unicodeScalars</code> view on the string:</p>
+
+<pre><code>let message1 = ""c\u{0327}"".decomposedStringWithCanonicalMapping
+for scalar in message1.unicodeScalars {
+    print(scalar) // print c and Combining Cedilla separately
+}
+
+let message2 = ""c\u{0327}"".precomposedStringWithCanonicalMapping
+for scalar in message2.unicodeScalars {
+    print(scalar) // print Latin Small Letter C with Cedilla
+}
+</code></pre>
+
+<p>Note that not all composite characters have a precomposed form, as noted by <a href=""https://developer.apple.com/library/content/qa/qa1235/_index.html"" rel=""nofollow noreferrer"">Apple's Technical Q&amp;A</a>:</p>
+
+<blockquote>
+  <p><strong>Important:</strong> Do not convert to precomposed Unicode in an attempt to simplify your text processing. Precomposed Unicode can still contain composite characters. For example, there is no precomposed equivalent of U+0065 U+030A (LATIN SMALL LETTER E followed by COMBINING RING ABOVE)</p>
+</blockquote>
+","2538939","","","","","2018-01-02 00:00:55","","","","1","","",""
+"48054255","2","","48054203","2018-01-02 00:01:09","","1","","<p>The error is telling you that you must have initialised the homeController property before you call super.init() which you don't do.</p>
+
+<p>Change the code to this:</p>
+
+<pre><code>override init(){
+    self.homeController = HomeController()
+    super.init()
+    collectionView.dataSource = self
+    collectionView.delegate = self
+
+    collectionView.register(SettingsCell.self, forCellWithReuseIdentifier: cellID)
+}
+</code></pre>
+","8111753","","","","","2018-01-02 00:01:09","","","","7","","",""
+"48054258","2","","48054235","2018-01-02 00:01:43","","0","","<p>I'd personally save JUST the id as the key instead of title and storyId combined. I also wouldn't save the id inside of that as you can simply get a hold of the id by accessing the key like so <code>let id = snapshot.key</code>. Simply store the author and title inside it to be more efficient.</p>
+","6406541","","","","","2018-01-02 00:01:43","","","","3","","",""
+"48054259","2","","48049009","2018-01-02 00:01:50","","1","","<p>More precisely, as explained in ""<a href=""http://www-01.ibm.com/support/docview.wss?uid=swg21407966"" rel=""nofollow noreferrer"">How to find oid and uuid of an element in IBM Rational ClearCase</a>""</p>
+
+<blockquote>
+  <p>Every single object in a ClearCase VOB is referenced by its oid (""object ID"").<br>
+  The oid is unique inside the VOB.<br>
+  <strong>This does not apply only to file, but to all objects in the VOB.</strong></p>
+  
+  <ul>
+  <li>Element</li>
+  <li>Version</li>
+  <li>Metadata</li>
+  </ul>
+  
+  <p>ClearCase uses the oid internally. The oid is invisible for common user's operation. However, in some error messages, you see a reference to an oid. </p>
+</blockquote>
+
+<p>To find the oid from an object, you use :</p>
+
+<pre><code>cleartool dump &lt;object&gt;
+</code></pre>
+
+<p>To find the object from an oid, you use :</p>
+
+<pre><code>cleartool dump oid:&lt;object&gt;
+</code></pre>
+
+<p>For theses commands to work, you need to be in a view and in the corresponding VOB. This is necessary in order to generate the path/file name.</p>
+
+<p><code>&lt;object&gt;</code> can be anything defined as an object for ClearCase. Like for instance:</p>
+
+<ul>
+<li>element <code>&lt;file&gt;@@</code></li>
+<li>version <code>&lt;file&gt;</code> or <code>&lt;file&gt;@@\main\......</code></li>
+<li>type <code>lbtype:&lt;name&gt;</code></li>
+<li>VOB or replica object <code>vob:&lt;vobtag&gt;</code></li>
+</ul>
+
+<p>You can also run ""<code>cleartool describe -long oid:&lt;oid&gt;</code>"" on the oid while set in a view to the root of the VOB to which the element resides, and the output will return an element name.<br>
+See ""<a href=""http://www-01.ibm.com/support/docview.wss?uid=swg21234502"" rel=""nofollow noreferrer"">Identifying elements by the source container path</a>""</p>
+","6309","","","","","2018-01-02 00:01:50","","","","5","","",""
+"48054262","2","","48054241","2018-01-02 00:03:09","","1","","<p>If you would like the whole name to be alphabetic you can simply add an <code>if</code> statement like this:</p>
+
+<pre><code>if not name.isalpha():
+    print(""wrong, your name can only include alphabetic characters"")
+</code></pre>
+
+<p>Or better fitting your short example:</p>
+
+<pre><code>if not name.isalpha():
+    raise ValueError
+</code></pre>
+
+<p>This will only accept input strings that don't contain any number at all.</p>
+
+<p>If you would like to allow digits in your <code>name</code> as long as the name begins with a letter you could also have something like the following:</p>
+
+<pre><code>if len(name) &lt; 1 or not name.isalnum() or not name[0].isalpha():
+    raise ValueError
+</code></pre>
+
+<p>This checks first whether the name is at least 1 character long, then it checks whether the whole name consists solely of alphabetic characters and numbers, followed by a final check to see if the first character is an alphabetic character.</p>
+","9129289","","9129289","","2018-01-02 00:17:02","2018-01-02 00:17:02","","","","0","","",""
+"48054263","2","","48052531","2018-01-02 00:03:29","","0","","<p><code>realm.copyFromRealm()</code> was added in 0.87.0 (and <code>insert()</code> was added in 1.1.0), so you are using a version that is older than that. You most likely have this in your dependencies (in your module-level gradle file:</p>
+
+<pre><code>dependencies {
+    compile 'io.realm:realm-android:0.82.2' 
+    // up to 0.87.5, although you have something older than 0.87.0
+}
+</code></pre>
+
+<hr>
+
+<p>Instead you should have the following, especially if this is a new project:</p>
+
+<pre><code>buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath ""io.realm:realm-gradle-plugin:4.3.1""
+    }
+}
+</code></pre>
+
+<p>And</p>
+
+<pre><code>apply plugin: 'com.android.application'
+...
+apply plugin: 'realm-android'
+</code></pre>
+
+<hr>
+
+<p>If this is an old project with an old version of Realm, you might want to read through <a href=""https://stackoverflow.com/a/39974275/2413303"">my version migration guide</a>.</p>
+
+<hr>
+
+<p>Btw, your code would have a ton of <a href=""https://medium.com/@Zhuinden/understanding-realm-version-retention-and-synchronization-9a513c2445bb"" rel=""nofollow noreferrer"">cryptic errors</a> over time, so here is how you should fix it (use try-with-resources):</p>
+
+<pre><code>        .flatMap(cooks -&gt; {
+            try(Realm realm = Realm.getDefaultInstance()) {
+                realm.executeTransaction(r -&gt; {
+                    r.delete(PizzaViewDB.class);
+                    //But here there is an error
+                    r.insert(cooks);
+            });
+            return io.reactivex.Observable.just(cooks);
+        })
+        .onErrorResumeNext(throwable -&gt; {
+            try(Realm realm = Realm.getDefaultInstance()) {
+                // you *might* need realm.refresh() here but probably not
+                RealmResults&lt;PizzaViewDB&gt; results = realm.where(PizzaViewDB.class).findAll();
+                return io.reactivex.Observable.just(realm.copyFromRealm(results));
+            }
+        })
+</code></pre>
+","2413303","","2413303","","2018-01-02 01:10:56","2018-01-02 01:10:56","","","","0","","",""
+"48054268","2","","466345","2018-01-02 00:04:19","","10","","<p>I personally like the solution using the <code>parser</code> module, which is the second Answer to this question and is beautiful, as you don't have to construct any string literals to get it working. However, one downside is that it is 90% slower than the accepted answer with <code>strptime</code>.</p>
+
+<pre><code>from dateutil import parser
+from datetime import datetime
+import timeit
+
+def dt():
+    dt = parser.parse(""Jun 1 2005  1:33PM"")
+def strptime():
+    datetime_object = datetime.strptime('Jun 1 2005  1:33PM', '%b %d %Y %I:%M%p')
+
+print(timeit.timeit(stmt=dt, number=10**5))
+print(timeit.timeit(stmt=strptime, number=10**5))
+&gt;10.70296801342902
+&gt;1.3627995655316933
+</code></pre>
+
+<p>As long as you are not doing this <em>a million</em> times over and over again, I still  think the <code>parser</code> method is more convenient and will handle most of the time formats automatically.</p>
+","1767754","","63550","","2018-05-23 23:06:10","2018-05-23 23:06:10","","","","0","","",""
+"48054269","1","48054285","","2018-01-02 00:04:57","","0","46","<p>If I use <strong>tempfile.gettempdir()</strong> I receive the path to the Temp directory but the path is written with only small letters:</p>
+
+<pre><code>c:\\users\\test\\appdata\\local\\temp
+</code></pre>
+
+<p>My problem is that I have a program that work with lists and add exception rules which are case sensitive. I need the path to be written as it's written in the CMD on the computer and if I use <strong>os.path.dirname(os.path.abspath())</strong></p>
+
+<pre><code>C:\\Users\\Test\\AppData\\Local\\Temp
+</code></pre>
+
+<p>Any ideas how this can be achieved?</p>
+","6502077","","","","","2018-01-02 00:08:27","Get TEMP directory path (case sensitive)","<python>","1","1","","",""
+"48054270","1","","","2018-01-02 00:05:24","","-2","326","<p>I am trying to load the table from MySQL db using pyspark. I have written the below code:</p>
+
+<pre><code>from  pyspark.sql import SparkSession
+from pyspark.sql import SQLContext
+
+hostname='localhost'
+jdbcPort=3306
+dbname='db'
+username='user'
+password='password'
+
+#jdbc_url = ""jdbc:mysql://{0}:{1}/{2}"".format(hostname, jdbcPort, dbname)
+url=""jdbc:mysql://""
+# For SQLServer, pass in the ""driver"" option
+# driverClass = ""com.microsoft.sqlserver.jdbc.SQLServerDriver""
+# Add ""driver"" : driverClass
+connectionProperties = {
+  ""user"" : username,
+  ""password"" : password
+}
+pushdown_query = ""select * from table LIMIT 10;""
+df = spark.read.jdbc(url=url, dbtable=pushdown_query, properties=connectionProperties)
+#sqlContext=SQLContext(sc)
+#df=sqlContext.read.jdbc(url=url, table=pushdown_query, properties=properties)
+display(df)
+</code></pre>
+
+<p>But I am getting the below error:</p>
+
+<pre><code>    ---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+&lt;ipython-input-21-70890f1cf807&gt; in &lt;module&gt;()
+     15 }
+     16 pushdown_query = ""select * from table LIMIT 10;""
+---&gt; 17 df = spark.read.jdbc(url=url, dbtable=pushdown_query, properties=connectionProperties)
+     18 #sqlContext=SQLContext(sc)
+     19 #df=sqlContext.read.jdbc(url=url, table=pushdown_query, properties=properties)
+
+AttributeError: 'property' object has no attribute 'jdbc'
+</code></pre>
+
+<p>Can anyone help me with this error?</p>
+
+<p>Thanks</p>
+","8479497","","","","","2018-01-02 08:34:06","Load data from the MySql db using pyspark in python 3","<mysql><python-3.x><pyspark><apache-spark-sql>","1","3","","",""
+"48054272","1","48054481","","2018-01-02 00:05:53","","1","298","<p>I'm trying to implement a basic queue using tables, in SQL Server. I have ""tasks"" that I want to add to my ""queue"". Here is my <code>Task</code> table, followed by my <code>TaskQueue</code> table ...</p>
+
+<pre><code>CREATE TABLE Task (
+  Id INT PRIMARY KEY IDENTITY(1, 1),
+  JobId INT NOT NULL REFERENCES Job (Id) ON DELETE CASCADE,
+  Payload NVARCHAR(MAX) NOT NULL,
+  PayloadType NVARCHAR(MAX) NOT NULL,
+  DateCreated DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE TaskQueue (
+  TaskId INT UNIQUE NOT NULL REFERENCES Task (Id) ON DELETE CASCADE,
+  DateCreated DATETIME2 NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+</code></pre>
+
+<p>As you can see, the queue itself is nothing but a table, as described <a href=""https://web.archive.org/web/20170616125556/http://rusanu.com/2010/03/26/using-tables-as-queues/"" rel=""nofollow noreferrer"">here</a> by Remus Rusanu.</p>
+
+<p>I'm not concerned with order of items, so the enqueue procedure is just as Remus recommends. Below is my dequeue procedure ...</p>
+
+<pre><code>CREATE TYPE DequeueTaskPayloadType AS TABLE (
+  PayloadType NVARCHAR(MAX) NOT NULL
+);
+
+CREATE PROCEDURE DequeueTask
+  @payloadTypes DequeueTaskPayloadType READONLY
+AS
+  SET NOCOUNT ON;
+  WITH NextTask AS (
+    SELECT TOP 1 q.*
+    FROM TaskQueue AS q WITH (ROWLOCK, READPAST)
+    JOIN Task AS t ON t.Id = q.TaskId AND t.PayloadType IN (
+      SELECT PayloadType
+      FROM @payloadTypes))
+  DELETE FROM NextTask
+  OUTPUT deleted.*;
+</code></pre>
+
+<p>My dequeue method differs from Remus' in that I need to include a <code>JOIN</code> so that I can dequeue records that have an appropriate filter - the filter can be seen in my query, but basically the <code>Task</code> has a <code>PayloadType</code> and I want the stored procedure to require an argument through which I can dequeue tasks with a specific payload type.</p>
+
+<p>My problem is that when I execute my <code>DequeueTask</code> stored procedure, I get the following error ...</p>
+
+<blockquote>
+  <p>View or function 'NextTask' is not updatable because the modification
+  affects multiple base tables.</p>
+</blockquote>
+
+<p>I understand that my <code>NextTask</code> CTE is basically a view here but I do not understand why this affects multiple base tables. I do think it's obvious that it has to do with me using a <code>JOIN</code>, but I guess my question is ...</p>
+
+<p>How can I <code>DELETE</code> from a CTE in which a <code>JOIN</code> exists?</p>
+","294120","","","user177800","2018-01-02 00:08:52","2018-01-02 01:09:20","How can I DELETE from a CTE in which a JOIN exists?","<sql-server><stored-procedures><common-table-expression>","1","0","","2018-01-02 07:18:41",""
+"48054274","2","","8356722","2018-01-02 00:06:08","","0","","<h1>tl;dr</h1>
+
+<pre><code>LocalDate.now( ZoneId.of( ""Pacific/Auckland"" ) )
+         .minusYears( 1 )
+         .previousOrSame( DayOfWeek.MONDAY )
+</code></pre>
+
+<h1>java.time</h1>
+
+<p>The <a href=""http://www.joda.org/joda-time/"" rel=""nofollow noreferrer"">Joda-Time</a> project is now in <a href=""https://en.wikipedia.org/wiki/Maintenance_mode"" rel=""nofollow noreferrer"">maintenance mode</a>, with the team advising migration to the <a href=""http://docs.oracle.com/javase/9/docs/api/java/time/package-summary.html"" rel=""nofollow noreferrer"">java.time</a> classes. </p>
+
+<h1><code>LocalDate</code></h1>
+
+<p>The <a href=""https://docs.oracle.com/javase/9/docs/api/java/time/LocalDate.html"" rel=""nofollow noreferrer""><code>LocalDate</code></a> class represents a date-only value without time-of-day and without time zone.</p>
+
+<p>A time zone is crucial in determining a date. For any given moment, the date varies around the globe by zone. For example, a few minutes after midnight in <a href=""https://en.wikipedia.org/wiki/Europe/Paris"" rel=""nofollow noreferrer"">Paris France</a> is a new day while still “yesterday” in <a href=""https://en.wikipedia.org/wiki/America/Montreal"" rel=""nofollow noreferrer"">Montréal Québec</a>.</p>
+
+<p>Specify a <a href=""https://en.wikipedia.org/wiki/List_of_tz_zones_by_name"" rel=""nofollow noreferrer"">proper time zone name</a> in the format of <code>continent/region</code>, such as <a href=""https://en.wikipedia.org/wiki/America/Montreal"" rel=""nofollow noreferrer""><code>America/Montreal</code></a>, <a href=""https://en.wikipedia.org/wiki/Africa/Casablanca"" rel=""nofollow noreferrer""><code>Africa/Casablanca</code></a>, or <code>Pacific/Auckland</code>. Never use the 3-4 letter abbreviation such as <code>EST</code> or <code>IST</code> as they are <em>not</em> true time zones, not standardized, and not even unique(!). </p>
+
+<pre><code>ZoneId z = ZoneId.of( ""America/Montreal"" );
+LocalDate today = LocalDate.now( z );
+</code></pre>
+
+<h1>Year ago</h1>
+
+<p>The java.time classes can do math.</p>
+
+<pre><code>LocalDate yearAgo = today.minusYears( 1 ) ;
+</code></pre>
+
+<h1>Day of week</h1>
+
+<p>Determine today’s day-of-week.</p>
+
+<pre><code>DayOfWeek dow = today.getDayOfWeek() ;
+</code></pre>
+
+<p>To adjust into different date-time values, use a <a href=""https://docs.oracle.com/javase/9/docs/api/java/time/temporal/TemporalAdjuster.html"" rel=""nofollow noreferrer""><code>TemporalAdjuster</code></a> implementation. One for your purpose is found in <a href=""https://docs.oracle.com/javase/9/docs/api/java/time/temporal/TemporalAdjusters.html"" rel=""nofollow noreferrer""><code>TemporalAdjusters</code></a> class.</p>
+
+<pre><code>LocalDate previousOrSameDay = yearAgo.with( TemporalAdjusters.previousOrSame( dow ) ;
+</code></pre>
+
+<p>Or get the following day-of-week.</p>
+
+<pre><code>LocalDate nextOrSameDay = yearAgo.with( TemporalAdjusters.nextOrSame( dow ) ;
+</code></pre>
+
+<p>You need to define your rules for going to next or previous.</p>
+
+<pre><code>Set&lt; DayOfWeek &gt; previous = EnumSet.range( DayOfWeek.MONDAY , DayOfWeek.THURSDAY ) ;  // Collect Mon, Tue, Wed, and Thu.
+Set&lt; DayOfWeek &gt; next = EnumSet.complementOf​( previous) ;  // Collect Fri, Sat, Sun.
+</code></pre>
+
+<p>Then test your day-of-week.</p>
+
+<pre><code>LocalDate ld ;
+if( previous.contains( dow ) ) {
+    ld = yearAgo.with( TemporalAdjusters.previousOrSame( dow ) ;
+} else if ( next.contains( dow ) ) {
+    ld = yearAgo.with( TemporalAdjusters.nextOrSame( dow ) ;
+} else {
+    // Handle unexpected error.
+    System.out.println( ""Unexpectedly reached IF-ELSE for day-of-week: "" + dow ) ;
+}
+</code></pre>
+
+<hr>
+
+<h1>About java.time</h1>
+
+<p>The <a href=""http://docs.oracle.com/javase/9/docs/api/java/time/package-summary.html"" rel=""nofollow noreferrer"">java.time</a> framework is built into Java 8 and later. These classes supplant the troublesome old <a href=""https://en.wikipedia.org/wiki/Legacy_system"" rel=""nofollow noreferrer"">legacy</a> date-time classes such as <a href=""https://docs.oracle.com/javase/9/docs/api/java/util/Date.html"" rel=""nofollow noreferrer""><code>java.util.Date</code></a>, <a href=""https://docs.oracle.com/javase/9/docs/api/java/util/Calendar.html"" rel=""nofollow noreferrer""><code>Calendar</code></a>, &amp; <a href=""http://docs.oracle.com/javase/9/docs/api/java/text/SimpleDateFormat.html"" rel=""nofollow noreferrer""><code>SimpleDateFormat</code></a>.</p>
+
+<p>The <a href=""http://www.joda.org/joda-time/"" rel=""nofollow noreferrer"">Joda-Time</a> project, now in <a href=""https://en.wikipedia.org/wiki/Maintenance_mode"" rel=""nofollow noreferrer"">maintenance mode</a>, advises migration to the <a href=""http://docs.oracle.com/javase/9/docs/api/java/time/package-summary.html"" rel=""nofollow noreferrer"">java.time</a> classes.</p>
+
+<p>To learn more, see the <a href=""http://docs.oracle.com/javase/tutorial/datetime/TOC.html"" rel=""nofollow noreferrer"">Oracle Tutorial</a>. And search Stack Overflow for many examples and explanations. Specification is <a href=""https://jcp.org/en/jsr/detail?id=310"" rel=""nofollow noreferrer"">JSR 310</a>.</p>
+
+<p>Where to obtain the java.time classes? </p>
+
+<ul>
+<li><a href=""https://en.wikipedia.org/wiki/Java_version_history#Java_SE_8"" rel=""nofollow noreferrer""><strong>Java SE 8</strong></a>, <a href=""https://en.wikipedia.org/wiki/Java_version_history#Java_SE_9"" rel=""nofollow noreferrer""><strong>Java SE 9</strong></a>, and later
+
+<ul>
+<li>Built-in. </li>
+<li>Part of the standard Java API with a bundled implementation.</li>
+<li>Java 9 adds some minor features and fixes.</li>
+</ul></li>
+<li><a href=""https://en.wikipedia.org/wiki/Java_version_history#Java_SE_6"" rel=""nofollow noreferrer""><strong>Java SE 6</strong></a> and <a href=""https://en.wikipedia.org/wiki/Java_version_history#Java_SE_7"" rel=""nofollow noreferrer""><strong>Java SE 7</strong></a>
+
+<ul>
+<li>Much of the java.time functionality is back-ported to Java 6 &amp; 7 in <a href=""http://www.threeten.org/threetenbp/"" rel=""nofollow noreferrer""><strong><em>ThreeTen-Backport</em></strong></a>.</li>
+</ul></li>
+<li><a href=""https://en.wikipedia.org/wiki/Android_(operating_system)"" rel=""nofollow noreferrer""><strong>Android</strong></a>
+
+<ul>
+<li>The <a href=""https://github.com/JakeWharton/ThreeTenABP"" rel=""nofollow noreferrer""><strong><em>ThreeTenABP</em></strong></a> project adapts <em>ThreeTen-Backport</em> (mentioned above) for Android specifically.</li>
+<li>See <a href=""http://stackoverflow.com/q/38922754/642706""><em>How to use ThreeTenABP…</em></a>.</li>
+</ul></li>
+</ul>
+
+<p>The <a href=""http://www.threeten.org/threeten-extra/"" rel=""nofollow noreferrer""><strong>ThreeTen-Extra</strong></a> project extends java.time with additional classes. This project is a proving ground for possible future additions to java.time. You may find some useful classes here such as <a href=""http://www.threeten.org/threeten-extra/apidocs/org/threeten/extra/Interval.html"" rel=""nofollow noreferrer""><code>Interval</code></a>, <a href=""http://www.threeten.org/threeten-extra/apidocs/org/threeten/extra/YearWeek.html"" rel=""nofollow noreferrer""><code>YearWeek</code></a>, <a href=""http://www.threeten.org/threeten-extra/apidocs/org/threeten/extra/YearQuarter.html"" rel=""nofollow noreferrer""><code>YearQuarter</code></a>, and <a href=""http://www.threeten.org/threeten-extra/apidocs/index.html"" rel=""nofollow noreferrer"">more</a>.</p>
+","642706","","642706","","2018-01-03 23:31:23","2018-01-03 23:31:23","","","","0","","",""
+"48054275","2","","48054241","2018-01-02 00:06:10","","0","","<p>A string with a number in it is still a valid string - it's a string representing that number as text.</p>
+
+<p>If you want to check that the name is not a string composed just of digits, then the following code will work:</p>
+
+<pre><code>while True:
+    try:
+        name = input('Insert name: ')
+        if name.isdigit():
+            raise ValueError
+</code></pre>
+","3306454","","","","","2018-01-02 00:06:10","","","","0","","",""
+"48054276","2","","10318852","2018-01-02 00:06:30","","-1","","<p>I tried it, I loaded a 2nd tree into the same table.  On one hand, Django MPTT gave new tree_id's to the new tree branches.  So in that way, it seemed to work.  On the other hand, now the names of the nodes do NOT show up using the template from the Django MPTT site. (I attach a screen shot.) The template worked perfectly when there was only one tree in the table.  I made no change to any code and such, I just put a 2nd tree in the table, and presto! no names on the listing.<a href=""https://i.stack.imgur.com/LLj7h.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/LLj7h.png"" alt=""enter image description here""></a></p>
+
+<p>The structure of the tree looks the same.  I also get no names when I access the other tree, which I can access OK, except there are no names.</p>
+
+<p>Here is the model definition:</p>
+
+<pre><code>class EbayCategory(MPTTModel):
+    iCategoryID     = models.PositiveIntegerField( 'ebay category number',
+                        db_index=True )
+    name            = models.CharField(
+                        'ebay category description', max_length = 50 )
+    iLevel          = models.PositiveSmallIntegerField(
+                        'ebay level (top is 1, lower levels are bigger numbers)' )
+    iParentID       = models.PositiveIntegerField( 'ebay parent category' )
+    bLeafCategory   = models.BooleanField( 'leaf category?' )
+    iTreeVersion    = models.PositiveSmallIntegerField( 
+                        'category tree version' )
+    iMarket         = models.ForeignKey( Market, verbose_name = 'ebay market' )
+    iSupercededBy   = models.PositiveIntegerField(
+                        'superceded by this ebay category', null = True )
+    parent          = TreeForeignKey( 'self',
+                        null=True, blank=True, related_name='children',
+                        db_index=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta():
+        verbose_name_plural = 'ebay categories'
+        db_table        = 'ebay_categories'
+        unique_together = ('iCategoryID', 'iMarket',)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+</code></pre>
+
+<p>All the columns except parent come in from the ebay API.</p>
+
+<p>At this point, I have no categories that have been superceded, so the iSupercededBy column is null for all rows. I have not experienced an ebay catetory list update yet, so all the rows for each market are the same ebay tree version (the current one).</p>
+
+<p>The view selects by market and ebay tree version (both values come from the Markets table):</p>
+
+<pre><code>def show_ebay_categories(request, sMarket):
+    iMarket = Market.objects.get( cMarket = sMarket.upper() )
+    context = { 'nodes':EbayCategory.objects.filter(
+        iMarket = iMarket, iTreeVersion = iMarket.iCategoryVer ) }
+    return render(request, 'ebaycategories/ebay_categories.html', context)
+</code></pre>
+
+<p>Running the same code, against a copy of the database from before adding in the 2nd tree, the names show up.</p>
+
+<p><a href=""https://i.stack.imgur.com/dWd2q.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/dWd2q.png"" alt=""ebay categories -- today, using database copy before adding 2nd tree""></a></p>
+
+<p>It seem adding the 2nd tree corrupted the table in a way that rebuild cannot fix.  I deleted the 2nd tree.  Still no names.  I rebuilt the tree:</p>
+
+<p><a href=""https://stackoverflow.com/questions/5541432/how-do-i-rebuild-my-django-mptt-tree"">How do I rebuild my django-mptt tree?</a></p>
+
+<p>Still no names. I truncated the table, then re-uploaded the first tree (ebay USA categories).  Still no names.  I rebuilt the tree again.  Still no names.</p>
+
+<p>What worked:  Adding a root node to each category listing (tree) when importing the data. (The data downloaded from ebay did not include a root node,)</p>
+
+<p><a href=""https://i.stack.imgur.com/eA1A2.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/eA1A2.png"" alt=""ebay categories with root node""></a></p>
+
+<p>Note ""EBAY-US version 117 Root"" at the top of the listing.</p>
+
+<p>I generated the listing AFTER importing into the same table a 2nd tree. So yes it can work.</p>
+","6366075","","6366075","","2018-01-15 17:32:21","2018-01-15 17:32:21","","","","0","","",""
+"48054277","1","","","2018-01-02 00:06:39","","-1","173","<p>Is there anything wrong with doing something like this? I am basically just trying to assert that these elements exist and if not then return false:</p>
+
+<pre><code>public static bool IsAllDataPresent()
+{
+    try
+    {
+        Driver.Instance.FindElement(By.Id(""id-a"");
+        Driver.Instance.FindElement(By.Id(""id-b"");
+        Driver.Instance.FindElement(By.Id(""id-c"");
+        return true;
+    }
+    catch (NoSuchElementException)
+    {
+        return false;
+    }
+}
+</code></pre>
+
+<p>Is this is wrong then any help would be greatly appreciated. I am new to try catch.</p>
+","5020359","","2386774","","2018-01-02 04:55:53","2018-01-02 10:05:09","Multi checks in a try catch statement - is this okay?","<c#><selenium-webdriver><try-catch>","3","2","","",""
+"48054278","2","","2803852","2018-01-02 00:06:55","","12","","<p>If you are lazy and don't want to fight with string literals, you can just go with the <code>parser</code> module. </p>
+
+<pre><code>from dateutil import parser
+dt = parser.parse(""Jun 1 2005  1:33PM"")
+print(dt.year, dt.month, dt.day,dt.hour, dt.minute, dt.second)
+&gt;2005 6 1 13 33 0
+</code></pre>
+
+<p>Just <strong>a side note</strong>, as we are trying to match <code>any</code> string representation, it is 10x slower than <code>strptime</code></p>
+","1767754","","1767754","","2018-01-18 05:21:12","2018-01-18 05:21:12","","","","0","","",""
+"48054279","2","","48051983","2018-01-02 00:07:29","","0","","<p>Thanks everyone for the answers! The issue seems to be related to the browser we were using to test the call (Chrome Canary v65.0.3309.2 with security disabled to allow cross origin requests).
+We changed the config to run the app in other browsers and the HttpClient is working fine now... -.-</p>
+","6875164","","","","","2018-01-02 00:07:29","","","","0","","",""
+"48054280","2","","48054238","2018-01-02 00:07:39","","1","","<p>This seems expected: GitHub will not show the content (or a diff) of a file larger than a certain size (over 1MB).</p>
+
+<p>See <a href=""https://github.com/nodejs/node/issues/5533"" rel=""nofollow noreferrer"">nodejs/node issue 5533</a> and <a href=""https://github.com/nodejs/node/pull/6337"" rel=""nofollow noreferrer"">nodejs/node PR 6337</a> as an example.</p>
+
+<p>How that file was added (drag and drop or regular push) will not change what is a server-side policy.</p>
+","6309","","","","","2018-01-02 00:07:39","","","","0","","",""
+"48054281","2","","48054243","2018-01-02 00:07:40","","0","","<p>Here you have it twice!</p>
+
+<pre><code>&lt;include
+    android:id=""@+id/noteTitleTxt""  // &lt;-----------------
+    layout=""@layout/content_note_taker"" /&gt;
+
+&lt;EditText
+    android:id=""@+id/noteTitleTxt""  // &lt;-----------------
+</code></pre>
+
+<p>Just remove the one id in your <code>include</code> tag. While not shown in your post, I bet its top container is <code>RelativeLayout</code>.</p>
+","4325010","","4325010","","2018-01-02 00:20:28","2018-01-02 00:20:28","","","","2","","",""
+"48054282","1","","","2018-01-02 00:07:49","","3","1891","<p>I am trying to build an app with a simple click function. I added the handler to the buttons in the users.html page, and the app runs until I arrive at the page where I can click on either of the two handled buttons. When I click on the buttons, I get the error noted below, that it is not a function.</p>
+
+<p>I defined the function onLoadUser() in the users.ts file. The class is exported. </p>
+
+<p><strong>Technology</strong></p>
+
+<ul>
+<li>Ionic 3</li>
+<li>Angular2</li>
+</ul>
+
+<p><strong>Error</strong></p>
+
+<p><a href=""https://i.stack.imgur.com/F6r0L.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/F6r0L.png"" alt=""TypeError: not a function""></a></p>
+
+<p><strong>Directory structure</strong></p>
+
+<p><a href=""https://i.stack.imgur.com/m8brU.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/m8brU.png"" alt=""Directory Structure""></a></p>
+
+<p><strong>users.html</strong></p>
+
+<pre><code>&lt;ion-header&gt;
+
+  &lt;ion-navbar&gt;
+    &lt;ion-title&gt;The Users&lt;/ion-title&gt;
+  &lt;/ion-navbar&gt;
+
+&lt;/ion-header&gt;
+
+&lt;ion-content padding&gt;
+  &lt;button ion-button (click)=""onLoadUser('Max')""&gt;User 'Max'&lt;/button&gt;
+  &lt;hr&gt;
+  &lt;button ion-button (click)=""onLoadUser('Anna')""&gt;User 'Anna'&lt;/button&gt;
+&lt;/ion-content&gt;
+
+&lt;ion-footer padding&gt;
+  &lt;p&gt;The Footer&lt;/p&gt;
+&lt;/ion-footer&gt;
+</code></pre>
+
+<p><strong>users.ts</strong></p>
+
+<pre><code>import { Component } from '@angular/core';
+
+import { NavController } from ""ionic-angular"";
+
+import { UserPage } from ""./user/user"";
+
+@Component({
+  selector: 'page-users',
+  templateUrl: 'users.html'
+})
+
+export class UsersPage {
+  constructor (private navCtrl: NavController) {}
+
+  onLoadUser(name: string) {
+    this.navCtrl.push(UserPage, {userName: name});
+  }
+}
+</code></pre>
+
+<p>How can I connect the onLoadUser function to the button click event?</p>
+","7112012","","5535245","","2018-01-02 00:41:46","2018-11-08 07:59:10","Angular 2 and Ionic 3 - TypeError: (...) is not a function","<angular><ionic-framework><ionic3>","1","8","","",""
+"48054283","2","","47783811","2018-01-02 00:07:58","","0","","<p>MDN has good documentation on how this works in vanilla js.  You could start with something like this: <a href=""https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API"" rel=""nofollow noreferrer"">https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API</a>.</p>
+
+<p>It's unclear exactly what you're asking, though.  How exactly do you want this div to appear - rendered somewhere on the page after clicking the button, then later dragged, or immediately in a dragging state, or something else?</p>
+
+<p>The drag/drop API will support both of what I described above, but getting each to work requires different approaches.  Clarification here would help.</p>
+","4702606","","","","","2018-01-02 00:07:58","","","","0","","",""
+"48054284","1","","","2018-01-02 00:08:22","","0","32","<p>Sorry for my poor english. I have little problem with colspan </p>
+
+<p>tr tag's default display is table-row but in my table, items except th should be</p>
+
+<p>displayed vertically. So I added display:inline-block to tr which contain </p>
+
+<p>td and display:block to td. </p>
+
+<p>and now, adding colspan to td doesn't work. Nothing changes</p>
+
+<p>this is my jsfiddle:
+<a href=""https://jsfiddle.net/ffa7h0ub/1/"" rel=""nofollow noreferrer"">https://jsfiddle.net/ffa7h0ub/1/</a></p>
+
+<p>Codes for those who can't visit the link</p>
+
+<pre><code>            &lt;section id=""Groups""&gt;
+
+            &lt;table&gt;
+                &lt;tr&gt;
+                    &lt;th class=""hidden""&gt;&lt;/th&gt;
+                    &lt;th id=""DiagonalLine""&gt;&lt;span&gt; Teams &lt;/span&gt;&lt;span&gt;Results&lt;/span&gt;&lt;/th&gt;
+                    &lt;th&gt;W&lt;/th&gt;
+                    &lt;th&gt;D&lt;/th&gt;
+                    &lt;th&gt;L&lt;/th&gt;
+                    &lt;th&gt;GF&lt;/th&gt;
+                    &lt;th&gt;GA&lt;/th&gt;
+                    &lt;th&gt;P&lt;/th&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td class=""groups groupA""&gt;Group A&lt;/td&gt;
+                    &lt;td class=""groups groupB""&gt;Group B&lt;/td&gt;
+                    &lt;td class=""groups groupC""&gt;Group C&lt;/td&gt;
+                    &lt;td class=""groups groupD""&gt;Group D&lt;/td&gt;
+                    &lt;td class=""groups groupE""&gt;Group E&lt;/td&gt;
+                    &lt;td class=""groups groupF""&gt;Group F&lt;/td&gt;
+                    &lt;td class=""groups groupG""&gt;Group G&lt;/td&gt;
+                    &lt;td class=""groups groupH""&gt;Group H&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td colspan=""2""&gt;Russia&lt;/td&gt;
+                    &lt;td colspan=""2""&gt;Saudi Arabia&lt;/td&gt;
+                    &lt;td colspan=""2""&gt;Egypt&lt;/td&gt;
+                    &lt;td colspan=""2""&gt;Uruguay&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;Portugal&lt;/td&gt;
+                    &lt;td&gt;Spain&lt;/td&gt;
+                    &lt;td&gt;Morocco&lt;/td&gt;
+                    &lt;td&gt;Iran&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                    &lt;td&gt;0&lt;/td&gt;
+                &lt;/tr&gt;
+            &lt;/table&gt;
+
+        &lt;/section&gt;
+</code></pre>
+
+<p>CSS:</p>
+
+<pre><code>section#Groups tr:not(:first-child){
+  display:inline-block;
+  vertical-align:top;
+}
+section#Groups td{
+  display:block;
+}
+ section#Groups th.hidden{
+  width:40px;
+}
+section#Groups th{
+ display:inline-block;
+}
+</code></pre>
+
+<p>Tried change display:block to display:table-row but didn't work. </p>
+","8896007","","","","","2018-01-02 00:08:22","How to add colspan to <td> If I am making a table which <tr>s are displaying vertically","<html><css>","0","4","","",""
+"48054285","2","","48054269","2018-01-02 00:08:27","","2","","<p>You could use <code>os.environ</code> to access environment variables, so in this case</p>
+
+<pre><code>os.environ['TEMP']
+</code></pre>
+","2296458","","","","","2018-01-02 00:08:27","","","","3","","",""
+"48054286","1","","","2018-01-02 00:08:38","","1","236","<p>As Described <a href=""https://doc.akka.io/docs/akka/2.5.3/scala/guide/actors-intro.html"" rel=""nofollow noreferrer"">here</a></p>
+
+<blockquote>
+  <p>While locks seem to be the natural remedy to uphold encapsulation with multiple threads, in practice, they are inefficient and easily lead to deadlocks in any application of real-world scale.</p>
+</blockquote>
+
+<p>My question simply, is akka really a solution for a deadlock.</p>
+
+<p>I know as long as akka actors treat objects as completely decoupled, that code never meets a deadlock scenario. But, in the imperative programming also we can simply decouple them and lock separately without keeping a lock inside another lock, so that won't be a deadlock scenario at all in traditional programming paradigm also. what's the real use case of this statement? Do we find any use case, which can cause deadlock scenario in traditional programming but prevent using akka actor model?</p>
+
+<p>P.S I am very new to akka but, I can understand the call stack, shared memory and threading issues in traditional programming is very costly in the modern computer architecture and akka is a good solution in performance-wise. But curious to know this special statement also.</p>
+","2810472","","","","","2018-01-08 13:52:29","Is akka really a solution for a deadlock?","<java><multithreading><scala><akka><reactive-programming>","1","4","1","",""
+"48054288","1","","","2018-01-02 00:09:10","","0","468","<p>Does anyone know a way to bootstrap Weld in a Spring Boot Jar application with embedded Tomcat.</p>
+
+<p>I have tried to use org.jboss.weld.environment.servlet.Listener with</p>
+
+<pre><code>import org.jboss.weld.environment.servlet.Listener; 
+
+@SpringBootApplication
+public class MyApplication
+{
+  public static void main(String[] args)
+  {
+    SpringApplication.run(MyApplication.class, args);
+  }
+
+  @Bean
+  public Listener weldListener()
+  {
+    return new Listener();
+  }
+}
+</code></pre>
+
+<p>But I get the following error:</p>
+
+<pre><code>java.lang.RuntimeException: WELD-ENV-001104: Cannot get StandardContext from ServletContext.
+    at org.jboss.weld.environment.tomcat.WeldForwardingInstanceManager.getStandardContext(WeldForwardingInstanceManager.java:104) ~[weld-servlet-2.4.6.Final.jar:2.4.6.Final]
+...
+Caused by: java.lang.ClassCastException: org.apache.catalina.core.StandardContext$NoPluggabilityServletContext cannot be cast to org.apache.catalina.core.ApplicationContextFacade
+    at org.jboss.weld.environment.tomcat.WeldForwardingInstanceManager.getStandardContext(WeldForwardingInstanceManager.java:101) ~[weld-servlet-2.4.6.Final.jar:2.4.6.Final]
+... 13 common frames omitted
+</code></pre>
+","1907872","","","","","2018-02-17 04:58:54","Bootstrap Weld in a Spring Boot environment","<tomcat><spring-boot><cdi><weld>","2","5","","",""
+"48054289","2","","48054218","2018-01-02 00:09:29","","4","","<p>Try to uninstall bcrypt completely with:</p>
+
+<pre><code>gem uninstall bcrypt-ruby
+gem uninstall bcrypt
+</code></pre>
+
+<p>Be sure all versions are uninstalled, then run</p>
+
+<pre><code>gem install bcrypt --platform=ruby
+</code></pre>
+
+<p>Try to run <code>bundle install</code>. After this worked you could try to run <code>rake db:migrate</code> again.</p>
+","4630127","","479863","","2018-01-02 01:21:02","2018-01-02 01:21:02","","","","0","","",""
+"48054290","1","48054305","","2018-01-02 00:09:58","","1","563","<p>I have a service that uses Observable to get data from database. It seems that it gets data only once . I would that it listen when a user adds data to the DB then stream to Angular.</p>
+
+<p>service to get all data</p>
+
+<pre><code>getAllProj(): Observable&lt;NouveauProjet[]&gt; {
+  return this.http.get&lt;NouveauProjet[]&gt;(
+    ""http://127.0.0.1:8081/api/proj/projets""
+  );
+}
+</code></pre>
+
+<p>service to add data</p>
+
+<pre><code>addProj(nouveauProjet: NouveauProjet): Observable&lt;any&gt; {
+  return this.http.post&lt;NouveauProjet[]&gt;(
+    ""http://127.0.0.1:8081/api/proj/projets"",
+    nouveauProjet
+  );
+}
+</code></pre>
+
+<p>When I use my services I only subscribe to them</p>
+
+<pre><code>getAllProj() {
+  this.ajoutProj.getAllProj().subscribe(
+    response =&gt; {
+      console.log(""hello""+response);
+      this.nouveauProjet=response;
+    },
+    error =&gt; console.log(error)
+);
+</code></pre>
+
+<p>I thought that Observable still listen to server when a new data is added to DB but it's not the case, so How can I transform my observable to a data stream.</p>
+","8111396","","","","","2018-01-02 00:15:37","Create data stream in Angular","<angular><rxjs><observable><angular2-observables><data-stream>","1","0","","",""
+"48054291","1","48088756","","2018-01-02 00:10:11","","3","2140","<p>I'm currently trying to build a signed release APK on Windows using Flutter. I've performed the tasks outlined in the in the documentation on the flutter site. When I run the build command here's the output I get. It seems to be around the firebase plugins. Any ideas?</p>
+
+<h1>pubspec.yaml</h1>
+
+<pre><code>dependencies:
+  flutter:
+    sdk: flutter
+  firebase_auth: 0.4.0
+  firebase_database: ^0.3.0
+</code></pre>
+
+<h1>Flutter Doctor Output</h1>
+
+<pre><code>    C:\Users\myuser\projects\myflutterapp&gt;flutter doctor
+    [√] Flutter (on Microsoft Windows [Version 10.0.16299.125], locale en-US, channel alpha)
+        • Flutter at C:\Users\myuser\flutter
+        • Framework revision 8f65fec5f5 (3 weeks ago), 2017-12-12 09:50:14 -0800
+        • Engine revision edaecdc8b8
+        • Tools Dart version 1.25.0-dev.11.0
+        • Engine Dart version 2.0.0-edge.d8ae797298c3a6cf8dc9f4558707bd2672224d3e
+
+    [√] Android toolchain - develop for Android devices (Android SDK 27.0.1)
+        • Android SDK at C:\Users\myuser\AppData\Local\Android\Sdk
+        • Android NDK at C:\Users\myuser\AppData\Local\Android\Sdk\ndk-bundle
+        • Platform android-27, build-tools 27.0.1
+        • ANDROID_HOME = C:\Users\myuser\AppData\Local\Android\Sdk
+        • Java binary at: C:\Program Files\Android\Android Studio\jre\bin\java
+        • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-915-b01)
+
+    [√] Android Studio (version 3.0)
+        • Android Studio at C:\Program Files\Android\Android Studio
+        • Java version OpenJDK Runtime Environment (build 1.8.0_152-release-915-b01)
+
+    [-] Connected devices
+        • None
+</code></pre>
+
+<h1>Error Log Information</h1>
+
+<pre><code>    C:\Users\myuser\projects\myflutterapp&gt;flutter build apk --release
+    Initializing gradle...                                0.9s
+    Resolving dependencies...                             1.1s
+    Running 'gradlew assembleRelease'...
+    Configuration 'debugCompile' in project ':app' is deprecated. Use 'debugImplementation' instead.
+    Configuration 'profileCompile' in project ':app' is deprecated. Use 'profileImplementation' instead.
+    Configuration 'releaseCompile' in project ':app' is deprecated. Use 'releaseImplementation' instead.
+    Configuration 'compile' in project ':app' is deprecated. Use 'implementation' instead.
+    registerResGeneratingTask is deprecated, use registerGeneratedFolders(FileCollection)
+    registerResGeneratingTask is deprecated, use registerGeneratedFolders(FileCollection)
+    registerResGeneratingTask is deprecated, use registerGeneratedFolders(FileCollection)
+    Configuration 'debugProvided' in project ':firebase_auth' is deprecated. Use 'debugCompileOnly' instead.
+    Configuration 'releaseProvided' in project ':firebase_auth' is deprecated. Use 'releaseCompileOnly' instead.
+    Configuration 'compile' in project ':firebase_core' is deprecated. Use 'implementation' instead.
+    Configuration 'debugProvided' in project ':firebase_core' is deprecated. Use 'debugCompileOnly' instead.
+    Configuration 'releaseProvided' in project ':firebase_core' is deprecated. Use 'releaseCompileOnly' instead.
+    Configuration 'debugProvided' in project ':firebase_database' is deprecated. Use 'debugCompileOnly' instead.
+    Configuration 'releaseProvided' in project ':firebase_database' is deprecated. Use 'releaseCompileOnly' instead.
+    Skipping AOT snapshot build. Fingerprint match.
+
+    FAILURE: Build failed with an exception.
+
+    * What went wrong:
+    Execution failed for task ':app:lintVitalRelease'.
+    &gt; Could not resolve all artifacts for configuration ':app:profileRuntimeClasspath'.
+    &gt; Could not resolve project :firebase_auth.
+        Required by:
+            project :app
+        &gt; Unable to find a matching configuration of project :firebase_auth:
+            - Configuration 'debugApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'debugRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+            - Configuration 'releaseApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'releaseRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+    &gt; Could not resolve project :firebase_database.
+        Required by:
+            project :app
+        &gt; Unable to find a matching configuration of project :firebase_database:
+            - Configuration 'debugApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'debugRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+            - Configuration 'releaseApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'releaseRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+    &gt; Could not resolve project :firebase_core.
+        Required by:
+            project :app
+        &gt; Unable to find a matching configuration of project :firebase_core:
+            - Configuration 'debugApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'debugRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'debug'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'debug' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+            - Configuration 'releaseApiElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found incompatible value 'java-api'.
+            - Configuration 'releaseRuntimeElements':
+                - Required com.android.build.api.attributes.BuildTypeAttr 'profile' and found incompatible value 'release'.
+                - Required com.android.build.gradle.internal.dependency.AndroidTypeAttr 'Aar' and found compatible value 'Aar'.
+                - Found com.android.build.gradle.internal.dependency.VariantAttr 'release' but wasn't required.
+                - Required org.gradle.api.attributes.Usage 'java-runtime' and found compatible value 'java-runtime'.
+
+    * Try:
+    Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+    * Get more help at https://help.gradle.org
+
+    BUILD FAILED in 38s
+    Gradle build failed: 1
+</code></pre>
+","6843923","","6143482","","2018-01-02 10:54:38","2018-09-29 16:46:00","Can't build release APK for flutter","<firebase><firebase-realtime-database><release><flutter>","3","0","2","",""
+"48054293","2","","6234773","2018-01-02 00:11:17","","4","","<p>This is, by far, the fastest way I have seen it done. Plus, it does it all without adding, removing, or changing elements on the page.</p>
+
+<pre><code>function escapeHTML(unsafeText) {
+    let div = document.createElement('div');
+    div.innerText = unsafeText;
+    return div.innerHTML;
+}
+</code></pre>
+","8427036","","8427036","","2018-08-29 01:23:17","2018-08-29 01:23:17","","","","0","","",""
+"48054294","2","","48054060","2018-01-02 00:12:43","","1","","<p>This as you would expect is a routing issue. The comments have already identified that you have conflicts with your route and route prefix attributes resulting in the following route</p>
+
+<pre><code>api/resize/api/resize/preserveAspectRatio
+</code></pre>
+
+<p>being mapped to your action.</p>
+
+<p>To get the desired route, you can either remove the prefix from the controller itself.</p>
+
+<pre><code>//removed prefix
+public class ResizeController : ApiController {
+    //Matches POST api/resize/preserveAspectRatio
+    [HttpPost, Route(""api/resize/preserveAspectRatio"")]
+    public async Task&lt;IHttpActionResult&gt; resizePreserveAspectRatio() {
+        //...removed for brevity
+    }
+}
+</code></pre>
+
+<p>Or Remove it from the route on the method</p>
+
+<pre><code>[RoutePrefix(""api/resize"")]
+public class ResizeController : ApiController {
+    //Matches POST api/resize/preserveAspectRatio
+    [HttpPost, Route(""preserveAspectRatio"")]
+    public async Task&lt;IHttpActionResult&gt; resizePreserveAspectRatio() {
+        //...removed for brevity
+    }
+}
+</code></pre>
+
+<p>Or override the route prefix by using tilde (<code>~</code>) on the method attribute</p>
+
+<pre><code>[RoutePrefix(""api/resize"")]
+public class ResizeController : ApiController {
+    //Matches POST api/resize/preserveAspectRatio
+    [HttpPost, Route(""~/api/resize/preserveAspectRatio"")]
+    public async Task&lt;IHttpActionResult&gt; resizePreserveAspectRatio() {
+        //...removed for brevity
+    }
+}
+</code></pre>
+
+<p>Reference <a href=""https://docs.microsoft.com/en-us/aspnet/web-api/overview/web-api-routing-and-actions/attribute-routing-in-web-api-2"" rel=""nofollow noreferrer"">Attribute Routing in ASP.NET Web API 2</a></p>
+","5233410","","","","","2018-01-02 00:12:43","","","","11","","",""
+"48054295","2","","40317243","2018-01-02 00:12:44","","-1","","<p>For now the solution is to avoid miniconda when installing.</p>
+
+<p>To diagnose further, it would be helpful for ld-linux-armhf.so.3 and libopenblas.so.0 to have <code>-g</code> debug symbols available.</p>
+","8431111","","","","","2018-01-02 00:12:44","","","","0","","",""
+"48054296","2","","48050323","2018-01-02 00:12:53","","0","","<p>If your concern is to manipulate the DB, I will recommend using <a href=""http://flask-sqlalchemy.pocoo.org/2.3/quickstart/"" rel=""nofollow noreferrer"">Flask-SQLAlchemy</a> and <a href=""http://flask-sqlalchemy.pocoo.org/2.3/config/#connection-uri-format"" rel=""nofollow noreferrer"">right here</a> you will find how to connect using MySQL databases.</p>
+
+<p>Flask-SQLAlchemy is a ORM (Object Relational Mapper) so, you will probably have to code map the DB</p>
+
+<p>I hope this helps!</p>
+","8322303","","","","","2018-01-02 00:12:53","","","","1","","",""
+"48054543","1","","","2018-01-02 01:11:08","","0","60","<p>Until now, even if 20 per database were created, no error was issued, but when I made suddenly more than 16 suddenly I got an error.</p>
+
+<p>It is totally different from what is described in <a href=""https://cloud.google.com/spanner/quotas"" rel=""nofollow noreferrer"">https://cloud.google.com/spanner/quotas</a>. I do not understand the reason at all.</p>
+","4474199","","","","","2018-09-08 09:13:55","This instance has too many database splits to complete the operation","<google-cloud-spanner>","1","1","","",""
+"48054544","1","48054597","","2018-01-02 01:11:59","","1","316","<p>I'm building a React/Redux app with 3 main Components -
+Instructions, StoryFeed and Quiz which i'm trying to cycle through for
+4 Rounds (3 + 1 practice). </p>
+
+<p>I have a Clock Component (that's nested within the StoryFeed
+Component) and it's set to move to the Quiz Component when the timer
+hits zero. However, it seems to be calling setState after it's been
+unmounted and giving the infinite error </p>
+
+<blockquote>
+  <p>Warning: setState(...): Can only update a mounted or mounting
+  component. This usually means you called setState() on an unmounted
+  component. This is a no-op.</p>
+</blockquote>
+
+<p>I can't figure out how to prevent this. Here's the code below for the <code>Clock</code> Component:</p>
+
+<pre><code>import React from 'react'
+import PropTypes from 'prop-types'
+
+import ReactInterval from 'react-interval'
+
+class Clock extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      count: 0,
+      timed: props.timed,
+      counting: true
+    }
+
+    this.tick = this.tick.bind(this)
+  }
+
+  reset() {
+    this.setState({
+      counting: true,
+      count: this.state.count + 1
+    })
+
+  }
+  componentWillUnmount() {
+    this.setState({ counting: false }, () =&gt; this.props.complete())
+  }
+  tick() {
+    const { count, timed, counting } = this.state
+    if (count + 1 &gt; timed &amp;&amp; counting) {
+      this.componentWillUnmount()
+    } else {
+      this.reset();
+    }
+  }
+
+  render() {
+    return (
+      &lt;div className=""clock alert alert-warning""&gt;
+        &lt;ReactInterval
+          timeout={1000}
+          enabled={this.props.timed &gt; 1 &amp;&amp; this.state.count &lt; this.props.timed}
+          callback={() =&gt; this.tick()}
+        /&gt;
+        &lt;span&gt;{this.state.timed - this.state.count}&lt;/span&gt;
+      &lt;/div&gt;
+    )
+  }
+}
+
+Clock.propTypes = {
+  timed: PropTypes.number,
+  complete: PropTypes.func
+}
+
+export default Clock
+</code></pre>
+
+<p>And here's the parent Component <code>StoryFeed</code> code:</p>
+
+<pre><code>import React from 'react'
+import Marquee from './Marquee'
+import * as stories from '../stories'
+import Clock from './Clock'
+import { chunk, now } from '../utils'
+import PropTypes from 'prop-types'
+
+class StoryFeed extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      text: stories.example,
+      currentTest: 1,
+      count: 0,
+      timed: props.timed,
+      selected: []
+    }
+    this.storyLoad.bind(this)
+    this.select = this.select.bind(this)
+    this.isSelected = this.isSelected.bind(this)
+  }
+
+  componentDidMount() {
+    document.body.classList.add('mosaic-full-screen')
+    this.storyLoad();
+  }
+
+  componentWillUnmount() {
+    document.body.classList.remove('mosaic-full-screen')
+
+
+  }
+
+  select(id) {
+    if (this.state.selected.find(s =&gt; s.id == id)) return
+
+    this.setState({
+      selected: [...this.state.selected, { id, time: now() }]
+    })
+  }
+
+  isSelected(id) {
+    return this.state.selected.find(j =&gt; j.id === id)
+  }
+
+  storyLoad(state) {
+    switch (this.state.currentTest){
+      case 1:
+      this.setState({text: stories.example});
+        console.log(this.state.currentTest)
+      break;
+      case 2:
+      this.setState({text: stories.colleagues});
+      break;
+      case 3:
+      this.setState({text: stories.aroomforthenight});
+      break;
+      case 4:
+      this.setState({text: stories.thepromotion});
+      break;
+    }
+  };
+
+
+
+  reset() {
+    this.clock &amp;&amp;
+      this.clock.reset(4, () =&gt; {
+        this.setState({
+          counting: true
+        })
+      })
+  }
+
+
+  render() {
+    const { enterAnswers, id, show, timed } = this.props
+    return (
+      &lt;div className=""story""&gt;
+        &lt;div className='container'&gt;
+          &lt;Marquee text={this.state.text.join(' - ')} loop={false} hoverToStop={true} /&gt;
+        &lt;/div&gt;
+        &lt;div className=""controls""&gt;
+          {timed &amp;&amp; (
+            &lt;Clock
+              timed={timed}
+              complete={() =&gt; enterAnswers(id, this.state.selected, now())}
+
+            /&gt;
+          )}
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      )
+    }
+
+}
+StoryFeed.propTypes = {
+  timed: PropTypes.number,
+
+  enterAnswers: PropTypes.func,
+  id: PropTypes.number,
+  show: PropTypes.oneOf(['window', 'jigsaw'])
+}
+export default StoryFeed
+</code></pre>
+
+<p>The other answers to this question seem to be case specific</p>
+","7988928","","3231537","","2018-01-02 01:19:14","2018-01-02 01:25:05","Redux setState called after component unmounted","<reactjs><redux>","2","4","","",""
+"48054545","2","","46471240","2018-01-02 01:12:06","","1","","<p>I have experienced exactly what you describe here, however when I ensured that I was connected to Visual Studio using the same account as I wished to publish with, the ""reenter credentials"" message disappeared.</p>
+","5019","","","","","2018-01-02 01:12:06","","","","0","","",""
+"48054546","1","","","2018-01-02 01:12:08","","0","195","<p>I've read the documentation on how to do this but it is not working. I am trying to get my query to sort by date newest first, but this is not working:</p>
+
+<pre><code>wrQuery = WorkRequest.query()
+wrQuery.order('-date')
+wrResult = wrQuery.fetch()
+</code></pre>
+
+<p>I have also tried <code>('-WorkRequest.date')</code> but both results in similar errors:</p>
+
+<blockquote>
+  <p>TypeError: order() expects a Property or query Order; received '-date'</p>
+</blockquote>
+","9010265","","","","","2018-01-02 09:17:54","Datastore query sort order by newest date","<python><google-app-engine><google-cloud-datastore>","2","0","","",""
+"48054548","2","","47916422","2018-01-02 01:12:23","","3","","<p>An alternative I use is with <code>knit_child</code>:</p>
+
+<ul>
+<li><p><code>main.Rmd</code></p>
+
+<pre><code>---
+output: html_document
+---
+
+```{r, include=FALSE}
+out &lt;- knitr::knit_child(""script_chunk.Rmd"")
+```
+
+### Print sessionInfo()
+```{r, ref.label='script_chunk'}
+paste(out, collapse = ""\n"")
+```
+</code></pre></li>
+<li><p><code>script_chunk.Rmd</code></p>
+
+<pre><code>```{r script_chunk}
+# ---- script_chunk
+sessionInfo()
+```
+</code></pre></li>
+</ul>
+
+<p>When compiled:</p>
+
+<pre><code>---
+output: html_document
+---
+
+### Print sessionInfo()
+
+```r
+# ---- script_chunk
+sessionInfo()
+```
+
+```
+## R version 3.3.3 (2017-03-06)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 16299)
+## ... blah blah blah ...
+```
+</code></pre>
+
+<p>Thoughts:</p>
+
+<ol>
+<li><code>out</code> is a horrible name for this;</li>
+<li>I often use it to iterate a single child document (which handles one ""thing"") over zero or more things, so <code>out</code> can contain concatenated results of multiple calls to <code>knit_child</code></li>
+</ol>
+","3358272","","","","","2018-01-02 01:12:23","","","","1","","",""
+"48054549","2","","40064574","2018-01-02 01:12:36","","0","","<p>In case anyone is wondering about this, you can use Thor.map to map a string to a method/command. Ex.</p>
+
+<pre><code>desc ""Command help"", ""Longer command description""
+def package_all
+  puts ""Packing...""
+end
+map ""package-all"" =&gt; ""package_all""
+</code></pre>
+
+<p>Link to the documentation: <a href=""http://www.rubydoc.info/github/wycats/thor/Thor#map-class_method"" rel=""nofollow noreferrer"">Thor#map-class_method</a></p>
+","9161939","","","","","2018-01-02 01:12:36","","","","0","","",""
+"48054552","1","48055364","","2018-01-02 01:13:13","","1","44","<p>I have a large database that I've split into multiple files. Each file is saved in the same directory, and there is a numerical sequence in the naming scheme so the order of the database is maintained. Ive done this to reduce the time and memory it takes to load and manipulate the database. I would like to start analyzing the database in sequence, which I intend to accomplish using a rollapply like function. I am having a problem when I want the window to span two files at once. Which is where I need help. Here is dummy dataset that will create five CSV files with a similar naming scheme to my database:</p>
+
+<pre><code>library(readr)
+
+val &lt;- c(1,2,3,4,5)
+df_1 &lt;- data.frame(val)
+
+write_csv(df_1, ""1_database.csv"", col_names = TRUE)
+write_csv(df_1, ""2_database.csv"", col_names = TRUE)
+write_csv(df_1, ""3_database.csv"", col_names = TRUE)
+write_csv(df_1, ""4_database.csv"", col_names = TRUE)
+write_csv(df_1, ""5_database.csv"", col_names = TRUE)
+</code></pre>
+
+<p>Keep in mind that this database is huge, and causes memory and time issues on my current machine. The solution MUST have a component that ""forgets"". This means recurrently joining the files, or loading them all at once to the R environment is not an option. When a new file is loaded, the last file must be removed from the R environment. I can have at maximum three files loaded at once. For example files 1-3 can be loaded, and then file 1 needs to be removed before file 4 is loaded. </p>
+
+<p>The output can be a single list of all files - the combination of files 1-5 in a single list.</p>
+
+<p>For the sake of simplicity, lets say I want to use a window of 2, and I want to calculate the mean of this window. I'm imagining something like this (see below) but this maybe a failed approach, and I'm open to anything.</p>
+
+<pre><code>appreciated_function &lt;- function(x){
+
+           Your greatly appreciated function
+}
+
+rollapply(df, 2, appreciated_function, by.column = FALSE, align = ""left"")
+</code></pre>
+","5005126","","","","","2018-01-02 04:03:29","r- rollapply across a mutiple file database","<r><database><rollapply>","1","2","","",""
+"48054297","2","","47444042","2018-01-02 00:12:59","","0","","<p>I had a similar issue but on windows, so Im not sure if this will help. Turns out I has some environment variables that were causing the terminal to screw it. </p>
+
+<p>I downloaded <code>anaconda</code> but had <code>PYTHONHOME</code> and <code>PYTHONSCRIPTS</code> as environmental variables. I deleted those since anaconda creates it's own environmental variables for the terminal to use. Problem solved after that.</p>
+
+<p>Note: Be sure to restart after deleting</p>
+","6031995","","","","","2018-01-02 00:12:59","","","","1","","",""
+"48054298","1","48054452","","2018-01-02 00:13:05","","0","35","<p>I am trying to obtain the data points nearest to the query timestamp for multiple independent categories like this (<a href=""https://gist.github.com/talesa/babe9955b891c8f75611eaf8e4f48974"" rel=""nofollow noreferrer"">example in more detail in the gist</a>):</p>
+
+<pre><code>dt = pd.to_datetime(dt)
+df_output = list()
+for category in df.category.unique():
+    df_temp = df[df.category == category]
+    i = df_temp.index.get_loc(dt, method='nearest')
+    latest = df_temp.iloc[i]
+    df_output.append(latest)
+
+pd.DataFrame(df_output)
+</code></pre>
+
+<p>The issue with this approach is that it is very slow (and obviously feels very blunt). Profiling suggests the bottleneck is <code>iloc</code>, which seems odd.</p>
+
+<p>What is a faster/more correct way to go about it? Is there a way to obtain the result for all of the categories at once? (I'm thinking of some <code>groupby</code> magic) </p>
+
+<p>Is <code>pandas</code> capable of doing it or should I switch to some other timeseries storage method?</p>
+","3160671","","","","","2018-01-02 00:55:50","Finding nearest timeindex for many categories","<python><pandas><time-series>","2","0","","",""
+"48054299","1","","","2018-01-02 00:13:30","","0","438","<p>Having some problems trying to receive characters from a serial Putty Session. When I type sentences/multiple characters into Putty to send character to the stm32f4 microcontroller, it doesn't seem to receive all of the characters using an interrupt approach. </p>
+
+<p>So two questions:</p>
+
+<ol>
+<li>Not sure what is going on here. Am I missing something?</li>
+<li>I am a little confused when an interrupt is called for receiving characters. Is the interrupt called for each character or do you process the whole string with one interrupt call?  </li>
+</ol>
+
+<p>Code:</p>
+
+<pre><code>void USART_Write(USART_TypeDef * USARTx, char * str)  {                         
+
+  while(*str){                                                                  
+    // First check if the Transmission Data register is empty                   
+    while ( !(USARTx-&gt;SR &amp; USART_SR_TXE)){};                                    
+
+    // Write Data to the register which will then get shifted out               
+    USARTx-&gt;DR =(*str &amp;(uint16_t) 0x01FF);                                      
+
+    str++;                                                                      
+  }                                                                             
+  // Wait until transmission is complete                                        
+  while ( !(USARTx-&gt;SR &amp; USART_SR_TC)){};                                       
+
+}                              
+
+void receive(USART_TypeDef * USARTx, volatile  char *buffer,
+                volatile uint32_t * pCounter){
+
+  if(USARTx-&gt;SR &amp; USART_SR_RXNE){                                               
+    char c = USARTx-&gt;DR;                                                        
+    USART_Write(USARTx,&amp;c);                                                     
+    USART_Write(USARTx,""\n\r"");                                                 
+  }                                                                             
+
+
+
+}                                                                               
+
+void USART2_IRQHandler(void){                                                   
+  receive(USART2, USART2_Buffer_Rx,&amp;Rx2_Counter);                             
+}  
+</code></pre>
+
+<p>Putty Session:</p>
+
+<p>(I type <code>asdfghjkl</code> into Putty and print out the receiving characters using the <code>USART_WRITE(...)</code> function)</p>
+
+<pre><code>asdfghjkl
+a
+s
+g
+k
+</code></pre>
+","4157543","","","","","2018-01-02 01:57:35","Why does stm32f4 uart skip some characters when receiving using an interrupt","<c><interrupt><stm32><stm32f4discovery>","1","3","","",""
+"48054429","1","","","2018-01-02 00:45:24","","0","94","<p>I trying to set the format of an appointment body to RTF using a VSTO add-in. The below instruction works fine with Outlook 2010,2013: </p>
+
+<pre><code>appointmentFormat = Convert.ToInt32(appointmentItem.GetType().InvokeMember(""BodyFormat"",
+                    System.Reflection.BindingFlags.GetProperty, null, appointmentItem, null));
+
+if (appointmentFormat != 3)
+{ 
+appointmentItem.GetType().InvokeMember(""BodyFormat"", System.Reflection.BindingFlags.SetProperty, null, appointmentItem, new object[1] { 3 });
+}
+</code></pre>
+
+<p>It seems that the property is managed differently in Outlook 2016 and using the same instructions will generate the below error as the <a href=""https://msdn.microsoft.com/en-us/vba/outlook-vba/articles/appointmentitem-object-outlook"" rel=""nofollow noreferrer"">property</a> does not exist.</p>
+
+<pre><code>Unknown name. (Exception from HRESULT: 0x80020006 (DISP_E_UNKNOWNNAME)
+</code></pre>
+
+<p>Is there a way to set appointment body formats with outlook 2016?</p>
+","2800651","","2800651","","2018-01-02 01:02:20","2018-01-02 01:02:20","Microsoft.Office.Interop.Outlook.AppointmentItem bodyformat Outlook 2016","<vsto><outlook-addin><outlook-2016>","0","1","","",""
+"48054430","1","","","2018-01-02 00:45:32","","0","190","<p>Is there a way to use an env variable in a background script of a Chrome extension?</p>
+
+<p>I need to conditionally take an action depending on whether we are in development/production environment.</p>
+","5047085","","","","","2018-01-02 00:45:32","Use env variable in background script of Chrome extension","<google-chrome-extension>","0","2","","",""
+"48054433","1","48059166","","2018-01-02 00:46:04","","1","373","<p>I have two machines (linux, Mac) and need to use vagrant to manage the vm. VirtualBox is used in the Liux while parallels is used in Mac. so I configured these two providers in the vagrant config file as below:</p>
+
+<pre><code>Vagrant.configure('2') do |config|
+agrant.configure('2') do |config|
+    config.ssh.forward_agent = true
+    config.ssh.password = 'crunch'
+
+    config.vm.box = 'ubuntu/xenial64'
+
+    config.vm.provider 'virtualbox' do |vb|
+        vb.gui = true
+        vb.memory = '8192'
+        vb.name = 'ubuntu'
+    end
+
+    config.vm.provider 'parallels' do |vb|
+        vb.gui = true
+        vb.memory = '8192'
+        vb.name = 'ubuntu'
+        config.vm.box = 'parallels/ubuntu-14.04'
+    end
+</code></pre>
+
+<p>on my mac system, when I run below command but got an error:</p>
+
+<pre><code>$ vagrant up --provider parallels
+An active machine was found with a different provider. Vagrant
+currently allows each machine to be brought up with only a single
+provider at a time. A future version will remove this limitation.
+Until then, please destroy the existing machine to up with a new
+provider.
+
+Machine name: default
+Active provider: virtualbox
+Requested provider: parallels
+</code></pre>
+
+<p>I have installed the required providers:</p>
+
+<pre><code>$ vagrant plugin list
+docker (0.4.0)
+vagrant-parallels (1.7.8)
+vagrant-share (1.1.9, system)
+vagrant-vbguest (0.15.0)
+</code></pre>
+
+<p>so why <code>vagrant</code> doesn't pick up the <code>--provider</code> parameter?</p>
+","5421539","","","","","2018-01-02 10:20:16","How to specify a provider during `vagrant up` command?","<vagrant><vagrantfile><vagrant-plugin>","1","0","1","",""
+"48054434","2","","48054379","2018-01-02 00:46:20","","0","","<p>You could also use your ul class (navbar-nav) and simply target the li elements in that class.</p>
+
+<pre><code>.navbar-nav &gt; li {
+    float: right; 
+}
+</code></pre>
+","9020559","","","","","2018-01-02 00:46:20","","","","0","","",""
+"48054435","2","","48053329","2018-01-02 00:46:30","","0","","<p>Here's an example of starting 3 processes as tasks and waiting for completion.  </p>
+
+<pre><code>Task[] tasks = new Task[3];
+        for (int i = 0; i &lt; 3; i++)
+        {
+
+            int x = i;
+            tasks[i] = Task.Factory.StartNew(() =&gt;
+            {
+
+                // the processPath will be different based on whatever the value for i is
+                ProcessStartInfo startInfo = null;
+                switch (x)
+                {
+                    case 0:
+                        startInfo = new ProcessStartInfo(""c:\\windows\\notepad.exe"");
+                        break;
+                    case 1:
+                        startInfo = new ProcessStartInfo(""c:\\windows\\explorer.exe"");
+                        break;
+                    case 2:
+                        startInfo = new ProcessStartInfo(""c:\\windows\\regedit.exe"");
+                        break;
+                }
+                Process proc = Process.Start(startInfo);
+                proc.WaitForExit();
+            });
+        }
+        Task.WaitAll(tasks);
+</code></pre>
+","9086466","","","","","2018-01-02 00:46:30","","","","0","","",""
+"48054553","1","48147141","","2018-01-02 01:13:18","","0","138","<p>I have a project that makes use of a large bundle (<a href=""http://dexie.org/"" rel=""nofollow noreferrer"">dexie.js</a> not that it's important to this question), that I'd like to 'split out' into it's own bundle that I can include manually, because it's only needed in a few of my entry point scripts.</p>
+
+<p>Just so that you know: my webpack config uses multiple modules, with multiple (6) entry points, so this is a cut-down sample of my <code>webpack.config.js</code>:</p>
+
+<pre><code>{
+context: path.join(__dirname, 'src'),
+entry: {
+    'js/contentscript.js' : './js/contentscript.js',
+    'js/background.js'    : './js/background.js',
+    'js/popup.js'         : './js/popup.js',
+    'js/options.js'       : './js/options.js',
+},
+output: {
+    path: path.join(__dirname, 'dist'), 
+    filename: ""[name]""
+},
+plugins: [
+    new webpack.optimize.CommonsChunkPlugin({
+        name: ""dexie"",
+        filename: ""js/dexie.js"",
+        minChunks: function (module) {
+            // this assumes your vendor imports exist in the node_modules directory
+            return module.context &amp;&amp; module.context.includes(""node_modules/dexie"");
+        }
+    }),
+    ... // other non relevant plugins here
+]
+}
+</code></pre>
+
+<p>The problem is that I have no typical 'vendor' nor 'common' requirement, like many other projects to. It's <em>only</em> in a few cases that I want to include the <code>js/dexie.js</code> bundle. </p>
+
+<p>eg. in <code>options.html</code>, I have this:</p>
+
+<pre><code>&lt;script src=""js/dexie.js""&gt;&lt;/script&gt;
+&lt;script src=""js/options.js""&gt;&lt;/script&gt;
+</code></pre>
+
+<p>...but I do not want it to be used for <code>popup.html</code>, which I want to keep as this:</p>
+
+<pre><code>&lt;script src=""js/popup.js""&gt;&lt;/script&gt;
+</code></pre>
+
+<p>And since this is also a WebExtensions project, I <em>definitely</em> don't want my content scripts to need it!</p>
+
+<p>The problem is, that when I open popup.js, I get the error: <code>Uncaught ReferenceError: webpackJsonp is not defined</code>.</p>
+
+<p>Is there any way  -- <em>without splitting this into more webpack modules</em> -- so that the <code>CommonsChunkPlugin</code> will play nice with the entry points so that only the ones I want are affected by it? </p>
+
+<p>The only solution I can think of, is to make another <code>CommonsChunkPlugin</code> that acts in the way that 'vendor' and 'common' is typically used. That is:</p>
+
+<pre><code>    new webpack.optimize.CommonsChunkPlugin({
+        name: ""dexie"",
+        filename: ""js/dexie.js"",
+        minChunks: function (module) {
+            // this assumes your vendor imports exist in the node_modules directory
+            return module.context &amp;&amp; module.context.includes(""node_modules/dexie"");
+        }
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+        name: ""manifest"",
+        filename: ""js/manifest.js"",
+        minChunks: Infinity
+    }),
+</code></pre>
+
+<p>Unfortunately, this means I need to include <code>js/manifest.js</code> in <em>all</em> my scripts, and since this is a WebExtension, then that means I have to inject it into each content page...IMHO this is a terrible solution.</p>
+
+<p>Any ideas on how to improve this? Am I using <code>CommonsChunkPlugin</code> incorrectly? Is there a better module I should be using? (I'm actually still coming to grips with webpack!)</p>
+","125525","","","","","2018-01-08 09:11:16","Using CommonsChunkPlugin without always needing to define webpackJsonp?","<javascript><webpack><webpack-2><dexie>","2","0","","",""
+"48054554","2","","48054526","2018-01-02 01:13:33","","2","","<p>Can you try this?</p>
+
+<pre><code>Sub AddingNbr()
+Columns(""A"").Insert copyorigin:=xlFormatFromRightOrBelow
+Range(""A1"").Value = ""ID""
+ For i = 1 To Range(""B2"", Range(""B2"").End(xlDown)).Count
+   Cells(i + 1, 1).Value = WorksheetFunction.Ceiling(CDec(i) / CDec(2), 1)
+ Next
+End Sub
+</code></pre>
+","9086466","","","","","2018-01-02 01:13:33","","","","2","","",""
+"48054555","2","","39049717","2018-01-02 01:14:42","","0","","<p>I had the same challenge, and did the following to solve it:</p>
+
+<p>In VirtualBox, go to File -> Host Network Manager</p>
+
+<p>Take note of the IPv4 address in this window. In your Vagrantfile, use any IP in the reserved private IPv4 network range. Let's say your VirtualBox IPv4 address is 192.168.56.1/24. In your Vagrantfile you could then add</p>
+
+<blockquote>
+  <p>config.vm.network ""private_network"", ip: ""192.168.56.5""</p>
+</blockquote>
+
+<p>Remember to configure your <em>hosts</em> file accordingly, should that be required.</p>
+","5268822","","","","","2018-01-02 01:14:42","","","","0","","",""
+"48054436","2","","48054098","2018-01-02 00:46:50","","-1","","<p>According to <a href=""http://api.jquery.com/jquery.ajax/"" rel=""nofollow noreferrer"">Jquery docs</a>, the key for request method in ajax settings is ""method"", not ""type"", which means Your request is GET by default. Therefore Method is not allowed, as stated in exception.</p>
+","5896397","","","","","2018-01-02 00:46:50","","","","3","","",""
+"48054437","2","","48054233","2018-01-02 00:46:57","","1","","<p>We just need to change one line to make it work:</p>
+
+<pre><code>formdata={'idNumeroOriginario': '1234'},
+</code></pre>
+
+<p>See how here you are specifying <code>idNumeroOriginario</code> form value.</p>
+
+<p>The problem is, <code>idNumeroOriginario</code> is an <code>id</code> value, but the form input <code>name</code> values are used as form request parameter names, change it to:</p>
+
+<pre><code>formdata={'numeroOriginario': '1234'}, 
+</code></pre>
+","771848","","","","","2018-01-02 00:46:57","","","","0","","",""
+"48054438","2","","48054098","2018-01-02 00:47:00","","0","","<p>Change ""type"" to ""method"".</p>
+
+<p>You are also forgetting the CSRF token in your AJAX call. Add it as a parameter :</p>
+
+<pre><code>_token : {{ csrf_token() }}
+</code></pre>
+
+<p>Blade will insert it into your js.</p>
+","6480089","","6480089","","2018-01-02 00:55:11","2018-01-02 00:55:11","","","","3","","",""
+"48054439","1","","","2018-01-02 00:47:23","","-3","43","<p>Say I have a following table</p>
+
+<h1>license_num (varchar)--------checkout_datetime (datetime)</h1>
+
+<p>ABC-123--------------------------------------------2017-12-29 00:07:00</p>
+
+<p>ABC-123-------------------------------------------                  2017-12-30 00:10:00</p>
+
+<p>XYZ-456-------------------------------------------                  2017-12-30 00:10:00</p>
+
+<p>XYZ-456-------------------------------------------                  2017-12-31 00:11:00</p>
+
+<p><strong>I need a SQL statement that produce the following result:</strong></p>
+
+<h1>LicenseNumber--------12/29---12/30---12/31---TotalOfWeek</h1>
+
+<p>ABC-123-----------------------------------1-------------1-------------0------------------2</p>
+
+<p>XYZ-456-----------------------------------0--------------1------------1------------------2</p>
+
+<p>How do I write such SQL statement?</p>
+
+<p>Appreciate the help!</p>
+","7572455","","7572455","","2018-01-02 00:56:48","2018-01-02 08:40:16","sql statement: count by date range","<sql><date><count><range>","1","3","","",""
+"48054440","1","","","2018-01-02 00:47:37","","-1","20","<p>My HTML:</p>
+
+<pre><code>&lt;input type=""text"" id=""fname"" name=""fname"" placeholder=""First Name"" /&gt;
+&lt;input type=""text"" id=""lname"" name=""lname"" placeholder=""Last Name"" /&gt;
+&lt;input type=""text"" id=""birthdate"" name=""birthdate"" placeholder=""Birth Date (DD/MM/YYYY)"" /&gt;
+&lt;input type=""email"" id=""email"" name=""email"" placeholder=""Email"" /&gt;
+&lt;input type=""password"" id=""password"" name=""password"" placeholder=""Password"" /&gt;
+&lt;input type=""password"" id=""repassword"" name=""repassword"" placeholder=""Re-Password"" /&gt;
+&lt;button type=""button"" id=""button""&gt;Submit&lt;/button&gt;
+
+&lt;p id=""test""&gt;&lt;/p&gt;
+</code></pre>
+
+<p>My jQuery:</p>
+
+<pre><code>$(document).ready(function(){
+    $(""#button"").on(""click"", function(){            
+        var fn=$('#fname').val(),
+            ln=$('#lname').val(),
+            bd=$('#birthdate').val(),
+            email=$('#email').val(),
+            pw=$('#password').val(),
+            rpw=$('#repassword').val();
+        $('#test').text(fn+ln+bd+email+pw+rpw);
+    });
+});
+</code></pre>
+
+<p>I get values for <code>fn</code>, <code>ln</code>, <code>bd</code> and <code>rpw</code>, but not <code>email</code> and <code>pw</code>. What is the wrong with <code>email</code> and <code>pw</code>?</p>
+","9161886","","2590203","","2018-01-02 00:56:30","2018-01-02 00:56:30","val() of jquery does not take value of all input","<jquery>","1","2","","",""
+"48054441","1","48055048","","2018-01-02 00:48:02","","0","71","<p>I have a Sequence of tuples, which could very well be a List of Lists generated by grouping  a set of records e.g. </p>
+
+<pre><code>[
+    [""2017-01"",""Banking"",25000000],
+    [""2017-02"",""Banking"",10000000],
+    [""2017-02"",""Telecoms"",12500000],
+    [""2017-03"",""FCMG"",22500000],
+    [""2017-04"",""FCMG 2"",17500000],
+    [""2017-05"",""FCMG 2"",5000000]
+]
+</code></pre>
+
+<p>This was generated by grouping some records by a formatted date, a sector and taking the sum of some values. I will like to display this value in a matrix style as follows:</p>
+
+<pre><code>         | 2017-01 | 2017-02 | 2017-03 | 2017-04 | 2017-05 |
+------------------------------------------------------------
+Banking  | 25000000|10000000 | 0       | 0       | 0
+------------------------------------------------------------
+Telecoms | 0       |12500000 | 0       | 0       | 0
+------------------------------------------------------------
+FCMG     | 0       | 0       |22500000 | 0       | 0
+------------------------------------------------------------
+FCMG 2   | 0       | 0       | 0       | 17500000| 5000000
+------------------------------------------------------------
+</code></pre>
+
+<p>To achieve that, I'm thinking I'll convert the first data structure to the form below:</p>
+
+<pre><code>[
+    [""Banking"", 25000000, 10000000, 0, 0, 0]
+    [""Telecoms"", 0, 12500000, 0, 0, 0],
+    [""FCMG"", 0, 0, 22500000, 0, 0],
+    [""FCMG 2"",0, 0, 0, 17500000, 5000000]
+]
+</code></pre>
+
+<p>How can I achieve this where each of the 5 numbers after the sectors represent the corresponding values for each date and 0 where there is no corresponding value. 
+Or Maybe </p>
+
+<pre><code>[
+    {""Banking"" -&gt; (25000000, 10000000, 0, 0, 0)}
+    {""Telecoms"" -&gt; (0, 12500000, 0, 0, 0)},
+    {""FCMG"" -&gt; (0, 0, 22500000, 0, 0)},
+    {""FCMG 2"" -&gt; (0, 0, 0, 17500000, 5000000)}
+]
+</code></pre>
+","123043","","6316508","","2018-01-10 01:09:04","2018-01-10 01:09:04","Scala - Pivot sequence of Tuples to table form","<scala>","1","0","1","",""
+"48054301","2","","48054245","2018-01-02 00:13:56","","0","","<p>You can call a function from the template.
+So, you could have:</p>
+
+<pre><code> &lt;tr *ngFor=""let mr of movementRatesFlat""&gt;
+    &lt;td&gt;{{mr.path}}&lt;/td&gt;
+    &lt;td class=""text-center""&gt;{{convert(mr.foot)}}&lt;/td&gt;
+    &lt;td class=""text-center""&gt;{{convert(mr.horse)}}&lt;/td&gt;
+    &lt;td class=""text-center""&gt;{{convert(mr.cart)}}&lt;/td&gt;
+    &lt;td class=""text-center""&gt;{{convert(mr.wagon)}}&lt;/td&gt;
+  &lt;/tr&gt;
+</code></pre>
+
+<p>and in your component, you'd have something like:</p>
+
+<pre><code>public selectedUnits;
+
+public convert(value) {
+ return .... /* some function involving 'this.selectedUnits' */
+}
+</code></pre>
+","982341","","","","","2018-01-02 00:13:56","","","","1","","",""
+"48054303","2","","12232899","2018-01-02 00:14:44","","0","","<p>A safer way:</p>
+
+<pre><code>Dim prop as PropertyInfo = GetType(MyClass).GetProperty(NameOf(MyClass.MyProperty))
+</code></pre>
+","117499","","","","","2018-01-02 00:14:44","","","","0","","",""
+"48054305","2","","48054290","2018-01-02 00:15:37","","1","","<p>The short answer is <code>Websockets</code>. This is actually a server side issue.</p>
+
+<p>Your API will never 'push' data out when the Database is updated unless you have told it to do so, and the easiest way to accomplish that is with Websockets. I would provide an example implementation, but there are a lot of variables, especially if you are monitoring database updates and pushing information accordingly.</p>
+
+<p>An Observable is a data stream. If you setup multiple subscriptions to the same API call in your service, when new data is pulled from the API every subscription will get the new values. The problem is that HTTP Requests are just that, 'requests' that originate from the client.</p>
+","1625304","","","","","2018-01-02 00:15:37","","","","5","","",""
+"48054307","2","","48054001","2018-01-02 00:16:37","","2","","<p>A vanilla javascript approach might look like the following.</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>var div = document.createElement('div');
+
+div.innerHTML = document.body.innerHTML;
+
+div.querySelectorAll('script').forEach(function(scriptTag) {
+  scriptTag.parentNode.removeChild(scriptTag);
+});
+
+document.body.innerHTML = div.innerHTML;</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;div&gt;
+  A div
+&lt;/div&gt;
+
+&lt;script&gt;
+  console.log('hi');
+&lt;/script&gt;
+
+&lt;p&gt;
+  A paragraph
+&lt;/p&gt;</code></pre>
+</div>
+</div>
+</p>
+","1586174","","","","","2018-01-02 00:16:37","","","","0","","",""
+"48054308","2","","48053496","2018-01-02 00:16:46","","0","","<p>The promise-based implementation would look something like this (I just modified your code directly in the answer so it probably has bugs, but it gives you the gist).  Note that you get out of duplicating both the response as well as the error conditions.</p>
+
+<pre><code>router.route( ""/edit-:id"" )
+    .get((req,res,next) =&gt; {
+
+        const ops ={
+            h1: ""Edit post"",
+            title: ""Admin edit post"",
+            description: ""Admin page"",
+            specialscript: ""/javascripts/editpost.js""
+        };
+
+        DBposts.findOne({_id: req.params.id})
+            .then(saved =&gt; {
+                if (saved.h1.length) debug('Edit «'+saved.h1+'»');
+                else debug('Create new post');
+                return DBcategories.find({})
+                    .then(categories =&gt; {
+                    if (saved.parent &amp;&amp; saved.parent.length) {
+                        return DBpgs.findOne({parent: saved.parent});
+                    }
+                    return {};
+                })
+               .then(group =&gt; {
+                   res.render('admin/post', {ops, saved, categories, group})
+               })
+               .catch(error =&gt; {
+                   next(boom.badImplementation(err));
+               });
+            });
+    });
+</code></pre>
+","1364723","","","","","2018-01-02 00:16:46","","","","0","","",""
+"48054309","1","","","2018-01-02 00:17:06","","0","106","<p>I need your help, because I don't know how to solve my problem. I have my shiny app where I have data frame (imported from file) and checkboxgroupinput where I can mark which columns are for me interesting. After that in other tabpanel I would like to get two plot for each column (in one facet_wrap). All facet_wrap one under the other. The problem is that number of interesting columns is not constant. It is easy for my if I could hardcode number of rows with plots, but where it can change dynamically I have no idea how to program it, any tips from your side?</p>
+","8783163","","","","","2018-01-02 12:14:38","dynamic number of ggplots in shiny app","<r><dataframe><ggplot2><shiny>","1","2","","",""
+"48054442","2","","48053464","2018-01-02 00:48:10","","0","","<p>I eventually noticed that my event was being triggered twice - and further research suggested that the web profiler toolbar was firing the event itself.</p>
+
+<p>I don't know why this meant that the token from tokenStorage was NULL but when I excluded the web profiler from firing using the accepted answer to the question below the behaviour reverted to what I would expect.  It may help others;</p>
+
+<p><a href=""https://stackoverflow.com/questions/21133802/symfony2-onkernelresponse-called-twice-as-master-request"">Symfony2 : onKernelResponse called twice as MASTER_REQUEST</a></p>
+","3663003","","","","","2018-01-02 00:48:10","","","","0","","",""
+"48054443","2","","48054413","2018-01-02 00:48:24","","1","","<p>You should just need:</p>
+
+<pre><code>scalac /Users/myName/Downloads/ScalaTutorial.scala
+</code></pre>
+
+<p>The <code>Macintosh HD</code> volume would normally be mounted at the root, so you just need <code>/</code> to access it.</p>
+
+<p>It would also be accessible under <code>/Volumes/Macintosh\ HD/</code>, but <code>/</code> is more-direct and will work if you change the volume name.</p>
+
+<p>Simpler still, you can most-likely use <code>~/</code> to get to your home directory:</p>
+
+<pre><code>scalac ~/Downloads/ScalaTutorial.scala
+</code></pre>
+","3155639","","","","","2018-01-02 00:48:24","","","","1","","",""
+"48054444","2","","48054388","2018-01-02 00:48:25","","2","","<p>The empty strings are appearing because <code>\W</code> is splitting on any non-word character, which includes the parentheses: the first is separating an empty string and A. The second is next to another non-word character, the <code>*</code>, hence the second empty string, for the empty space between them.</p>
+
+<p>The non-word characters are then being spliced back into the result array, per the <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split"" rel=""nofollow noreferrer"">spec</a>:</p>
+
+<blockquote>
+  <p>If separator is a regular expression that contains capturing
+  parentheses, then each time separator is matched, the results
+  (including any undefined results) of the capturing parentheses are
+  spliced into the output array. However, not all browsers support this
+  capability.</p>
+</blockquote>
+
+<p>If you just want to split into its constituent characters, why not just call <code>infix.split('')</code>, out of interest?</p>
+","3306454","","","","","2018-01-02 00:48:25","","","","2","","",""
+"48054446","2","","42959902","2018-01-02 00:48:43","","0","","<p>Try changing          </p>
+
+<pre><code>urlAdress = ""http://skillsexchangecyprus.com/SEC/ss.php""; 
+</code></pre>
+
+<p>to         </p>
+
+<pre><code>urlAdress = ""https://skillsexchangecyprus.com/SEC/ss.php"";
+</code></pre>
+","9161742","","3002139","","2018-01-02 01:07:21","2018-01-02 01:07:21","","","","0","","",""
+"48054448","1","48054633","","2018-01-02 00:49:10","","0","175","<p>I created a (rather complicated) Monty Hall simulation in Python, but, when run, returns equal odds of 33% for both Switching and not, when I know that, in reality, this cannot be the case and is not the case. What is wrong?</p>
+
+<pre><code>import math
+import random
+
+Right = 0
+def TestWithSwitch():
+    global Right
+    wdoor = math.floor(random.random() * 3)
+    doors = [0,0,0]
+    doors[wdoor] = 1
+    Ldoors = [0,0]
+    i=0
+    ##Declare winning door to be the winning door in the door Array
+
+    for x in range(0, 3):
+        if(x!=3):
+            if(doors[x] != 1):
+                Ldoors[i] = x
+                i+=1
+    ##Chose the losing doors to be the doors that aren't the winning door
+    choice = math.floor(random.random() * 3)
+    DoorOut = 0
+    ##Pick a Choice
+    LChose = False
+    for y in range(0, 2):
+        if(y!= 2):
+            if(Ldoors[y] == choice):
+                DoorOut = Ldoors[(y+1)%2]
+                LChose = True
+    if(LChose == False):
+        DoorOut = Ldoors[math.floor(random.random() * 2)]
+    Reserved = [DoorOut, choice]
+
+##DoorOut is chosen from any of the losing doors we didn't pick as our choice, and is the door the computer is told doesn't have the prize
+    for z in range(0, 3):
+        if(z!= 3):
+            if(z in Reserved == False):
+                choice = z
+                ##Make our new choice the other choice that we didn't previously choose
+    if(choice == wdoor):
+        Right+=1
+
+def TestNoSwitch():
+    global Right
+    wdoor = math.floor(random.random() * 3)
+    doors = [0,0,0]
+    doors[wdoor] = 1
+    Ldoors = [0,0]
+    i=0
+
+
+    for x in range(0, 3):
+        if(x!=3):
+            if(doors[x] != 1):
+                Ldoors[i] = x
+                i+=1
+    choice = math.floor(random.random() * 3)
+    if(choice == wdoor):
+        Right+=1
+
+
+
+for j in range(1, 10000):
+    ## TestWithSwitch() and TestNoSwitch() both result in about 1/3. You can test by putting either function in.
+    if(j == 9999):
+        print(Right/10000)
+</code></pre>
+
+<p>I know that switching should return 66% odds, while not should return 33% odds. THe odds I recieve tend to not even add up to 100% , but about two thirds, which is a probabilistic impossibility. </p>
+","7599308","","7599308","","2018-01-02 01:07:41","2018-01-02 01:41:23","Python Monty Hall simulation giving equal odds for both switching and not","<python><simulation>","2","8","","",""
+"48054449","1","48055454","","2018-01-02 00:49:35","","1","101","<p>I have 20 files. In each file I have a list of the occurring words and their frequency.</p>
+
+<p>Example:</p>
+
+<pre><code> 2 représentant 
+ 3 reproduire 
+ 2 réseau 
+ 1 rester 
+ 3 reste 
+ 1 résumer 
+</code></pre>
+
+<p>I used this command to merge between these 20 files</p>
+
+<pre><code>cat *.txt &gt; tous.txt | sort | uniq -ci  | sort -k3
+</code></pre>
+
+<p>The result was for example:</p>
+
+<pre><code>2  2 représentant 
+1  6 représentant 
+5  3 reproduire
+2  3 reproduire  
+6  3 réseau
+1  1 réseau
+etc..
+</code></pre>
+
+<p>But what I want is to make it calculate the number of occurrence of each word without writing it many times. What I want is:</p>
+
+<pre><code>8 representant
+6 reproduire
+4 réseau
+... 
+</code></pre>
+
+<p>I can do it with awk:</p>
+
+<pre><code>awk '{tab[$2]+=$1} END {for(i in tab){printf(""%7d %s\n"", tab[i], i) | ""sort -k2""}}' ~/Bureau/Projet/data/dico/*.dico.forme.txt &gt; ~/Bureau/Projet/data/input/black.txt
+</code></pre>
+
+<p>Any other suggestions by using for ex if?</p>
+","9106514","","3776858","","2018-01-02 02:01:21","2018-01-02 10:57:46","Bash Uniq options","<bash><shell>","2","4","","",""
+"48054450","2","","48053777","2018-01-02 00:50:28","","1","","<p>I think I figured it out. The check has to be inside the switchMap function. 
+The rest of the code only runs when the model is initialized.</p>
+
+<p>I changed my code and it worked:</p>
+
+<pre><code>    if (startsWith.getValue() == null)
+        startsWith.setValue(true);
+
+    list = Transformations.switchMap(searchText, searchText -&gt; {
+        if (startsWith.getValue() == true)
+            return appDatabase.dictWordDao().getWordsStartingWith(searchText);
+        else
+            return appDatabase.dictWordDao().getWordsLike(searchText);
+    });
+</code></pre>
+","436341","","","","","2018-01-02 00:50:28","","","","0","","",""
+"48054451","2","","48054068","2018-01-02 00:51:07","","1","","<p>If you're working with promises, you need to return values as part of the Promise.then chain. This is usually done by chaining a bunch of <code>.then()</code> calls/blocks together. Remember, the <code>then()</code> portion will only be called when a Promise resolves.</p>
+
+<p>In your case, it looks like you can just generate <code>balanceresponse</code> and call the <code>response.send()</code> after you calculate <code>workingbalance</code>, inside the same block of code. The call to <code>response.send()</code> doesn't need to be at the end of the function. So you might have that block look something like:</p>
+
+<pre><code>.then(snapshot =&gt; {
+    var workingbalance = 0
+    snapshot.forEach(doc =&gt; {
+        workingbalance = workingbalance + doc.data().amount;
+    });
+
+    balanceresponse = {
+      ""speech"": request.body.result.parameters.accountowner + "" has a balance of $"" + workingbalance,
+      ""displayText"": request.body.result.parameters.accountowner + "" has an account balance of $"" + workingbalance,
+      ""data"": {},
+      ""contextOut"": [],
+      ""source"": ""system""
+    }
+
+    response.send(balanceresponse); 
+})
+</code></pre>
+
+<p>If, for some reason, you wanted to separate the calculation and compute the <code>balanceresponse</code> in a different block, you could do so. I don't necessarily recommend this, but it has some merits (for example, you could put multiple catch blocks after each part, which I've shown here):</p>
+
+<pre><code>// query firestore based on user
+var transactions = db.collection('accounts')
+               .doc(request.body.result.parameters.accountowner)
+               .collection('transactions');
+await transactions.get()
+
+    .then(snapshot =&gt; {
+        var workingbalance = 0
+        snapshot.forEach(doc =&gt; {
+            workingbalance = workingbalance + doc.data().amount;
+        });
+        return workingbalance
+    })
+
+    .catch(err =&gt; {
+        console.log('Error getting transactions', err);
+    });
+
+    .then( accountbalance =&gt; {
+        balanceresponse = {
+            ""speech"": request.body.result.parameters.accountowner + "" has a balance of $"" + accountbalance,
+            ""displayText"": request.body.result.parameters.accountowner + "" has an account balance of $"" + accountbalance,
+            ""data"": {},
+            ""contextOut"": [],
+            ""source"": ""system""
+        }
+        response.send(balanceresponse);    
+    })
+
+    .catch(err =&gt; {
+        console.log('Error sending response', err);
+    });
+</code></pre>
+","1405634","","1405634","","2018-01-02 15:52:41","2018-01-02 15:52:41","","","","7","","",""

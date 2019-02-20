@@ -1,0 +1,1465 @@
+Id,PostTypeId,AcceptedAnswerId,ParentId,CreationDate,DeletionDate,Score,ViewCount,Body,OwnerUserId,OwnerDisplayName,LastEditorUserId,LastEditorDisplayName,LastEditDate,LastActivityDate,Title,Tags,AnswerCount,CommentCount,FavoriteCount,ClosedDate,CommunityOwnedDate
+"48046378","1","","","2018-01-01 00:00:29","","0","112","<p>Calling a <em>dll</em> from Python using <em>ctypes</em>, I want to pass a ctypes array to the <em>dll</em>.  Here is the Python code:</p>
+
+<pre><code>ReturnVec = ctypes.c_float * len(arrA)
+t = type(ReturnVec)
+hllDll = ctypes.WinDLL(r""C:/Temp2/Test_Project_3B/Std_Math_Formulas.dll"")
+SimpleTest = hllDll.SimpleTest
+SimpleTest.argtypes = [ctypes.c_void_p, ctypes.POINTER(ctypes.c_float)]
+SimpleTest.restype = ctypes.c_void_p
+retvar = SimpleTest(ctypes.byref(pvarr),ctypes.c_float(ReturnVec))
+</code></pre>
+
+<p>The final line throws the error:</p>
+
+<blockquote>
+  <p>""TypeError: must be real number, not _ctypes.PyCArrayType.""</p>
+</blockquote>
+
+<p>The variable <code>t</code> shows that its type is <code>ctypes.PyCArrayType</code>.  The variable <code>ReturnVec</code> shows that its type is <code>c_floatarray_1000</code> (where <code>1000</code> is the length of the array).  </p>
+
+<p>I try to cast it to a <code>float</code>:</p>
+
+<pre><code>aq = ctypes.cast(ReturnVec, ctypes.c_float)
+</code></pre>
+
+<p>but it returns:</p>
+
+<blockquote>
+  <p>""&lt;class 'TypeError'&gt;: wrong type""</p>
+</blockquote>
+
+<p>I try to cast it to a pointer, I get the same thing:</p>
+
+<pre><code>floatPtr = ctypes.cast(ReturnVec, ctypes.POINTER(ctypes.c_float))
+</code></pre>
+
+<p>I've researched this at length, and there are many threads on this issue, but none described my situation.  </p>
+","8276973","","236247","","2018-01-01 03:16:54","2018-01-03 08:21:23","Python ctypes: how to pass ctypes array to DLL?","<python><ctypes>","2","0","","",""
+"48046379","1","","","2018-01-01 00:00:32","","1","2162","<p>I have a Django app with which users can create video collages using multiple videos. Problem is, on production, when uploading videos to amazon s3, I get a 502 bad gateway (works fine locally). Does anyone know what could be wrong? I already set </p>
+
+<pre><code>client_max_body_size 100M
+</code></pre>
+
+<p>and </p>
+
+<pre><code>fastcgi_buffers 8 16k;
+fastcgi_buffer_size 32k;
+fastcgi_connect_timeout 3000;
+fastcgi_send_timeout 3000;
+fastcgi_read_timeout 3000;
+</code></pre>
+
+<p>Does anyone know what could be wrong? Thanks in advance</p>
+
+<p>Full error: </p>
+
+<pre><code>2017/12/31 23:50:51 [error] 1279#1279: *1 upstream prematurely closed connection while reading response header from upstream, 
+client: 107.205.110.154, 
+server: movingcollage.com, 
+request: ""POST /create-collage/ HTTP/1.1"", 
+upstream: ""http://unix:/home/mike/movingcollage/movingcollage.sock:/create-collage/"", 
+host: ""movingcollage.com"", referrer: ""http://movingcollage.com/create-collage/""
+</code></pre>
+","1745384","","1745384","","2018-01-01 03:18:33","2018-01-11 23:14:31","nginx gunicorn 502 bad gateway: upstream prematurely closed connection while reading response header from upstream","<python><django><nginx>","1","0","1","",""
+"48046380","2","","48046140","2018-01-01 00:00:33","","1","","<pre><code>db.collection.aggregate([
+    {$group: { 
+        _id: ""$parent.child.child_id"",
+        timestamp: {$max: ""$parent.child.timestamp""}
+    }},
+    {$project: {
+        cid: {$arrayElemAt: [""$_id"", 0]},
+        ts: {$arrayElemAt: [""$timestamp"", 0]},
+        _id: 0
+    }},
+    {$out: ""groupedCollection"" }
+])
+</code></pre>
+
+<p>You are missing the <code>_id</code> which is mandatory for the <a href=""https://docs.mongodb.com/manual/reference/operator/aggregation/group/"" rel=""nofollow noreferrer""><code>$group</code></a> pipeline stage. That being said since the ""parent"" field in your document is one element array, the <code>$group</code> stage should be the first stage in the pipeline. </p>
+
+<p>By making the <code>$group</code> stage the first stage, you will only need to project one document per group instead of all documents in the collection. </p>
+
+<p>Note that the resulted document fields are array hence the use of the <a href=""https://docs.mongodb.com/manual/reference/operator/aggregation/arrayElemAt"" rel=""nofollow noreferrer""><code>$arrayElemAt</code></a> operator in the <a href=""https://docs.mongodb.com/manual/reference/operator/aggregation/project"" rel=""nofollow noreferrer""><code>$project</code></a> stage.</p>
+","3100115","","","","","2018-01-01 00:00:33","","","","1","","",""
+"48046381","2","","48045435","2018-01-01 00:00:48","","0","","<p>You can make a quick check for interests before saving them or use <code>.first_or_create</code> to create interest if it doesn't exist, like below:  </p>
+
+<pre><code> def interests_list=value
+    current_interest = value.split(',')
+    unique_interest = current_interest - Interest.where(name: current_interest).pluck(:name)
+    unique_interest.each do |interest|
+      self.interests.build(:name =&gt; interest).save
+    end
+ end
+</code></pre>
+","3389795","","3389795","","2018-01-01 19:22:38","2018-01-01 19:22:38","","","","2","","",""
+"48046382","1","","","2018-01-01 00:00:52","","0","55","<p>I'm trying to implement hittest that is used by ARkit.</p>
+
+<p><a href=""https://developer.apple.com/documentation/arkit/arframe/2875718-hittest"" rel=""nofollow noreferrer"">https://developer.apple.com/documentation/arkit/arframe/2875718-hittest</a></p>
+
+<p>I have my own line intersection, but I don't take account of the position and orientation of the Camera.</p>
+
+<p>I already have the position and orientation of the camera, but how would I use it ?</p>
+
+<pre><code>std::pair&lt;bool, double&gt;  linePlaneIntersection(Vec3f direction, Vec3f rayOrigin,
+    Vec3f normal, Vec3f coord) {
+    double denom = normalize(normal).dot(direction);
+    double d = -(normalize(normal).dot(coord));
+
+    if (std::abs(denom) &lt; std::numeric_limits&lt;double&gt;::epsilon())
+    {
+        // Parallel
+        return std::pair&lt;bool, double&gt;(false, (double)0);
+    }
+    else
+    {
+        double nom = normalize(normal).dot(normalize(rayOrigin)) + d;
+        double t = -(nom / denom);
+        return std::pair&lt;bool, double&gt;(t &gt;= 0, (double)t);
+    }
+
+}
+
+        Mat rot = (Mat_&lt;double&gt;(3, 3)
+                &lt;&lt; 1, 0, 0,
+                0, 1, 0,
+                0, 0, 1);
+
+            Mat translVec(3, 1, CV_64F);
+            translVec.at&lt;double&gt;(0, 0) = 0;
+            translVec.at&lt;double&gt;(1, 0) = 0;
+            translVec.at&lt;double&gt;(2, 0) = 0;
+
+    std::vector&lt;Ray&gt; rays;
+            for (int i = 0; i &lt; points3DProjected.size(); i++)
+            {
+
+                Ray ray;
+
+                ray.origin = Vec3f(translVec.at&lt;double&gt;(0, 0), translVec.at&lt;double&gt;(1, 0),
+                    translVec.at&lt;double&gt;(2, 0));
+                ray.direction = Vec3f(points3DProjected[i][0] - translVec.at&lt;double&gt;(0, 0),
+                    points3DProjected[i][1] - translVec.at&lt;double&gt;(1, 0), points3DProjected[i][2] - translVec.at&lt;double&gt;(2, 0));
+                ray.direction = normalize(ray.direction);
+                rays.push_back(ray);
+            }
+</code></pre>
+
+<p>Camera Orientation</p>
+
+<pre><code>**[  0.8744617,  0.2258282, -0.4293233;
+   0.0608088,  0.8270180,  0.5588771;
+   0.4812683, -0.5148232,  0.7094631 ]**
+</code></pre>
+
+<p>Camera Position</p>
+
+<pre><code>""position"": {
+        ""x"": 21.408294677734375,
+        ""y"": 531.1319580078125,
+        ""z"": 705.74224853515625
+    },
+</code></pre>
+","8794406","","","","","2018-01-01 00:00:52","Implementing hit test","<c++><opencv><3d><computer-vision><arkit>","0","0","","",""
+"48046383","1","48047012","","2018-01-01 00:01:14","","1","199","<p>My response looks like this:</p>
+
+<p>[
+  {
+    ""id"": 1,
+    ""name"": ""TEST FORMAT"",
+    ""value"": ""#####""
+  }
+]</p>
+
+<p>I want to validate it like this:
+And match response[0] == { id: 1, name: 'TEST FORMAT', value: '#####' }</p>
+
+<p>But it gives me the error below:
+ERROR com.intuit.karate - assertion failed: path: $[0].value, actual: '#####', expected: '#####', reason: unknown validator</p>
+","9132922","","9132922","","2018-01-01 00:18:32","2018-01-01 03:42:13","How to validate response value containing the number sign #","<karate>","1","0","","",""
+"48046384","1","48046468","","2018-01-01 00:01:25","","2","75","<p>I have a single view controller class that I reuse on multiple screens, on different screens I want to supply a different data source. My VC looks something like this:</p>
+
+<pre><code>class SpotViewController: UIViewController {
+
+    var dataSource: SpotDataSource!
+}
+</code></pre>
+
+<p>Now I want to have two different Data Source Classes</p>
+
+<pre><code>class PersonalSpotDataSource {}
+class ExploreSpotDataSource {}
+</code></pre>
+
+<p>Now I want to create some sort of a shared protocol that makes the above two classes implmenent the following properties</p>
+
+<pre><code>var spots: [Spot]
+var title: String
+</code></pre>
+
+<p>And then I want to that shared construct to conform UITableViewDataSource since it has everything it needs which is just the list of spots and the title. And then going back to my first class I can supply either class (Personal or explore) as my VC's data source.</p>
+
+<p>Is this possible?</p>
+","3646585","","1718685","","2018-01-01 00:14:49","2018-01-01 00:39:33","Protocol Design in Swift","<ios><swift><protocols>","1","1","","",""
+"48046385","2","","48046242","2018-01-01 00:02:20","","3","","<p>Can't u just use a defaultdict with defaultdict(int) as seen here: <a href=""https://stackoverflow.com/questions/5029934/python-defaultdict-of-defaultdict"">Python: defaultdict of defaultdict?</a></p>
+
+<pre><code>from collections import defaultdict
+
+graph = defaultdict(lambda : defaultdict(int))
+
+graph['a']['b'] += 1
+graph['a']['b'] += 1
+graph['a']['c'] += 1
+
+graph
+</code></pre>
+
+<p>Returns:</p>
+
+<pre><code>defaultdict(&lt;function __main__.&lt;lambda&gt;&gt;,
+            {'a': defaultdict(int, {'b': 2, 'c': 1})})
+# equal to: {'a': {'b': 2, 'c': 1}}
+</code></pre>
+","7386332","","","","","2018-01-01 00:02:20","","","","5","","",""
+"48046386","1","","","2018-01-01 00:02:28","","2","3883","<p>This is really my first time using Chart.js and I am importing it into an Angular component. I am trying to at this point just create a simple bar chart. I am getting the following error in my console:</p>
+
+<p><code>core.controller.js:118 Failed to create chart: can't acquire context from the given item</code></p>
+
+<p>not sure what I am doing wrong here!</p>
+
+<p>this is the TS file for my component:</p>
+
+<pre><code>import { Component, OnInit } from '@angular/core';
+import { Chart } from 'chart.js';
+import { data } from './data';
+
+@Component({
+  selector: 'app-propel-factor',
+  templateUrl: './propel-factor.component.html'
+})
+export class PropelFactorComponent implements OnInit {
+
+    chart = [];
+    labels: any = [];
+
+    data: any = [];
+
+    constructor() { }
+
+    ngOnInit() {
+        data.forEach(item =&gt; {
+            this.labels.push(item.name);
+            this.data.push(item.value);
+        });
+
+        this.chart = new Chart('canvas', {
+            type: 'bar',
+            labels: this.labels,
+            data: {
+                labels: this.labels,
+                data: this.data
+            },
+            options: {
+                responsive: true
+            }
+        });
+    }
+
+}
+</code></pre>
+
+<p>and then my template is simply:</p>
+
+<pre><code>&lt;div *ngIf=""chart""&gt;
+    &lt;canvas id=""canvas""&gt;{{ chart }}&lt;/canvas&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>I also wanted to go on record saying that i tried this fix <a href=""https://stackoverflow.com/questions/41280857/chart-js-failed-to-create-chart-cant-acquire-context-from-the-given-item"">chart.js Failed to create chart: can&#39;t acquire context from the given item</a> and still go the same error!</p>
+","7195998","","7195998","","2018-01-01 00:08:34","2018-01-01 00:31:11","Angular/Chart.js error: Failed to create chart: can't acquire context from the given item","<javascript><angular>","1","3","","",""
+"48046387","2","","48039080","2018-01-01 00:02:50","","3","","<p>First, I advise you to create a single css file ""fonts.css"" in your node module, it will be simple to include a css file in your application rather than redefine the fonts and refer to N files (woff2, eot...ect), for example:
+Your fonts.css:</p>
+
+<pre><code>@font-face {
+  font-family: 'a-icon';
+  src: url('a-icon.eot');
+  src:
+    url('a-icon.ttf') format('truetype'),
+    url('a-icon.woff') format('woff'),
+    url('a-icon.svg') format('svg');
+}
+</code></pre>
+
+<p>Second, include the file ""fonts.css"" in your styles.css of your angular application as follows: </p>
+
+<pre><code>@import ""~a-icons/fonts.css"";
+</code></pre>
+
+<p>I have a similar solution that works fine, my node module contains a theme with fonts.</p>
+","7503123","","","","","2018-01-01 00:02:50","","","","5","","",""
+"48046388","2","","48046363","2018-01-01 00:03:09","","2","","<p>You can use the <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice"" rel=""nofollow noreferrer"">slice</a> method with the <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_operator"" rel=""nofollow noreferrer"">spread syntax</a>:  </p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""true"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>const shim = (source, index, target) =&gt; [
+  ...source.slice(0, index),
+  ...target,
+  ...source.slice(index)
+]
+
+var arr1 = [0,0,0];
+var arr2 = [0,1,2,3,4,5,6,7,8,9];
+
+const newArr = shim(arr2, 3, arr1);
+console.log(newArr);</code></pre>
+</div>
+</div>
+</p>
+
+<p><code>.slice</code> will not mutate the array and will return a new shallow copy of it (unlike <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice"" rel=""nofollow noreferrer"">splice</a>). </p>
+","3148807","","","","","2018-01-01 00:03:09","","","","0","","",""
+"48046391","1","","","2018-01-01 00:03:50","","1","64","<p>I'm using Scrapy 1.4.0 and Python 3.6.3.  When I run ""scrapy crawl  -o items.csv"", every other line of the csv file is blank.</p>
+
+<p>While I did find  a solution <a href=""https://stackoverflow.com/questions/45908465/cant-get-rid-of-blank-rows-in-csv-output"">here</a>, it generates the following error:</p>
+
+<pre><code>2017-12-31 18:39:48 [scrapy.utils.signal] ERROR: Error caught on signal handler: &lt;bound method FeedExporter.item_scraped of 
+&lt;scrapy.extensions.feedexport.FeedExporter object at 0x000001FEA491D128&gt;&gt;
+Traceback (most recent call last):
+  File ""c:\programdata\anaconda3\lib\site-packages\twisted\internet\defer.py"", line 150, in maybeDeferred
+result = f(*args, **kw)
+  File ""c:\programdata\anaconda3\lib\site-packages\pydispatch\robustapply.py"", line 55, in robustApply
+return receiver(*arguments, **named)
+  File ""c:\programdata\anaconda3\lib\site-packages\scrapy\extensions\feedexport.py"", line 224, in item_scraped
+slot.exporter.export_item(item)
+  File ""c:\programdata\anaconda3\lib\site-packages\scrapy\exporters.py"", line 243, in export_item
+self.csv_writer.writerow(values)
+  File ""c:\programdata\anaconda3\lib\encodings\cp1252.py"", line 19, in encode
+return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 77-78: character maps to &lt;undefined&gt;
+</code></pre>
+
+<p>Thank you in advance.</p>
+
+<p>Here's the code:</p>
+
+<pre><code>import scrapy
+from scrapy import Request
+class JobsSpider(scrapy.Spider):
+    name = 'jobs'
+    allowed_domains = ['craigslist.org']
+    start_urls = ['https://newyork.craigslist.org/search/egr?s=120'] 
+
+def parse(self, response):
+    jobs = response.xpath('//p[@class=""result-info""]')
+
+    for job in jobs:
+        title = job.xpath('a[@class=""result-title hdrlnk""]/text()').extract_first()
+        address = job.xpath('span[@class=""result-meta""]/span[@class=""result-hood""]/text()').extract_first("""")[2:-1]
+        relative_url = job.xpath('a/@href').extract_first()
+        yield Request(relative_url, callback=self.parse_page, meta={'URL': relative_url, 'Title': title, 'Address':address}) 
+
+def parse_page(self, response):
+    url = response.meta.get('URL')
+    title = response.meta.get('Title')
+    address = response.meta.get('Address')
+    compensation = response.xpath('//p[@class=""attrgroup""]/span[1]/b/text()').extract_first()
+    employment_type = response.xpath('//p[@class=""attrgroup""]/span[2]/b/text()').extract_first()
+
+    description = """".join(line for line in response.xpath('//*[@id=""postingbody""]/text()').extract())
+    yield{'URL': url, 'Title': title, 'Address':address, 'compensation': compensation,'employment_type':employment_type, 'Description':description}
+</code></pre>
+","8684537","","8684537","","2018-01-01 00:27:24","2018-01-01 00:27:24","Removing blank lines in csv output on Windows 10 without an error","<python><csv><web-scraping><scrapy>","0","3","","",""
+"48046392","2","","48046357","2018-01-01 00:03:58","","0","","<p>your data has to be </p>
+
+<pre><code>var data = '{""field1"": ""Val1"", ""field2"":""Val2""}';
+</code></pre>
+
+<p>then, you can use the standard JS method JSON.Parse() like below:</p>
+
+<pre><code>var ObjectData = JSON.Parse(data);
+</code></pre>
+
+<p>so the end result will be:</p>
+
+<pre><code>ObjectData = {field1: ""Val1"", field2: ""Val2""};
+</code></pre>
+
+<p>you can use this tool - <a href=""https://jsonlint.com/"" rel=""nofollow noreferrer"">https://jsonlint.com/</a> to verify if you JSON data is valid or not</p>
+","7547352","","1661358","","2018-01-01 00:23:24","2018-01-01 00:23:24","","","","0","","",""
+"48046393","2","","48046345","2018-01-01 00:04:19","","0","","<p>.NET Abhors dynamic types. They fly in the face of solid type checking at compile time. That being said, there is support for it:</p>
+
+<p>As the example data is basically just a array of images, any collection could deal with this input.</p>
+
+<p>If you can not even define the types umanbigiously (you might have a array of images and one of strings), the only way is <a href=""https://msdn.microsoft.com/en-us/library/system.dynamic.expandoobject.aspx"" rel=""nofollow noreferrer"">ExpandoObject</a>. It is designed specifically to deal with such cases. It is basically a List[string, object] with some Syntax Sugar, but it also does includes functions like Property Change Notifications.</p>
+","3346583","","","","","2018-01-01 00:04:19","","","","0","","",""
+"48046394","2","","48046219","2018-01-01 00:04:57","","0","","<p>I am not sure about the VBA method and what exactly you need to do but one solution would be to write requestdata.php to parse the result of your query into a .csv file and then load that into Excel via VBA. Parsing the result array into the .csv plain text format is made even more trivial by the fact that PHP already has a function <code>fputcsv($file, $records)</code> to use (<a href=""http://php.net/manual/en/function.fputcsv.php"" rel=""nofollow noreferrer"">documentation</a>).</p>
+","2817316","","","","","2018-01-01 00:04:57","","","","2","","",""
+"48046395","2","","48046254","2018-01-01 00:05:02","","0","","<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>let isAvailable = false;
+
+console.log('test1');
+
+let asyncFunc = () =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      if (isAvailable === true) {
+        resolve('here asyncFunc');
+      }
+    }, 2000);
+  });
+}
+
+(async() =&gt; {
+  return await asyncFunc(); // await used here is optional
+})().then(v =&gt; {
+  console.log(v);  // prints value after 2 seconds.
+});
+
+console.log('test2');
+isAvailable = true;</code></pre>
+</div>
+</div>
+</p>
+
+<p>All <code>Promises</code> need to be either resolved or rejected. In your case you did neither. In order to see the value in the async function, I passed the value to the <code>resolve</code> callback.</p>
+
+<blockquote>
+  <p>In an async function it is optional to use the <code>await</code> key when returning a value as the return value of an <code>async function</code> is implicitly wrapped in <code>Promise.resolve</code>.</p>
+</blockquote>
+","7905437","","7905437","","2018-01-01 00:27:41","2018-01-01 00:27:41","","","","5","","",""
+"48046398","2","","48046363","2018-01-01 00:05:13","","4","","<p>Use the <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set"" rel=""nofollow noreferrer""><code>typedarray.set(array[, offset])</code></a> offset.</p>
+
+<blockquote>
+  <p><strong>offset <em>Optional</em></strong> </p>
+  
+  <p>The offset into the target array at which to begin
+  writing values from the source array. If you omit this value, 0 is
+  assumed (that is, the source array will overwrite values in the target
+  array starting at index 0).</p>
+</blockquote>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>const arr1 = new Uint8Array([0,0,0]);
+const arr2 = new Uint8Array([0,1,2,3,4,5,6,7,8,9]);
+
+arr2.set(arr1, 4);
+
+console.log(arr2);</code></pre>
+</div>
+</div>
+</p>
+","5157454","","5157454","","2018-01-01 00:08:05","2018-01-01 00:08:05","","","","2","","",""
+"48046399","1","","","2018-01-01 00:05:47","","0","78","<p>I am working to implement a local SQLite DB in my app and my Observablecollection seems to return empty when it should have a list of image names like ""image1.png"",""image2.png"",""image3.png"" etc. The Model is as follows: </p>
+
+<pre><code>public class ImageDB
+{
+    [PrimaryKey, AutoIncrement]
+        public int Id { get; set; }
+        public string ImageName { get; set; }
+        public string ImageSource { get; set; }
+        public string Description { get; set; }
+}
+</code></pre>
+
+<p>And I am essentially trying to fill an Oberservablecollection like so: </p>
+
+<pre><code>var myList = await App.Database.GetChinsAsync();
+FeaturesChangerSource = new ObservableCollection&lt;string&gt;(myList.Select(x =&gt; 
+x.ImageSource.ToString()).ToList());
+</code></pre>
+
+<p>Using this method: </p>
+
+<pre><code>public Task&lt;List&lt;ImageDB&gt;&gt; GetChinsAsync()
+    {
+return database.QueryAsync&lt;ImageDB&gt;(""SELECT * FROM tImages WHERE Description 
+LIKE '%chin%'"");
+    }
+</code></pre>
+
+<p>Property Change notification:</p>
+
+<pre><code>private ObservableCollection&lt;string&gt; _featuresChangerSource;
+public ObservableCollection&lt;string&gt; FeaturesChangerSource
+{
+    get { return _featuresChangerSource; }
+    set { _featuresChangerSource = value; OnPropertyChanged(); }
+}
+</code></pre>
+
+<p>Any insight as to why the Observablecollection is empty?</p>
+","9159420","","9159420","","2018-01-01 00:28:10","2018-01-01 00:28:10","Observablecollection from Query","<c#><sqlite><xamarin>","0","3","2","",""
+"48046402","2","","48037601","2018-01-01 00:07:01","","2","","<p>I solved it and should have read the documentation of the graphql-java-tools library more carefully i suppose.
+Beside the <code>GraphQLQueryResolver</code> which resolves the basic queries i also needed a <code>GraphQLResolver&lt;T&gt;</code> for my <code>Show</code>class, which looks like this:</p>
+
+<pre><code>@Component
+public class ShowResolver implements GraphQLResolver&lt;Show&gt; {
+    @Autowired
+    private CompetitionRepository competitionRepository;
+
+    public List&lt;Competition&gt; competitions(Show show) {
+        return ((List&lt;Competition&gt;)competitionRepository.findByShowId(show.getId()));
+    }
+}
+</code></pre>
+
+<p>This tells the library how to resolve complex objects inside my <code>Show</code>class and is only used if the initially query requests to include the <code>Competition</code>objects. Happy new Year!</p>
+
+<p><strong>EDIT:</strong> As requested here is another solution using a custom execution strategy. I am using <code>graphql-spring-boot-starter</code> and <code>graphql-java-tools</code>:</p>
+
+<p>I first define a GraphQL Config like this:</p>
+
+<pre><code>@Configuration
+public class GraphQLConfig {
+    @Bean
+    public Map&lt;String, ExecutionStrategy&gt; executionStrategies() {
+        Map&lt;String, ExecutionStrategy&gt; executionStrategyMap = new HashMap&lt;&gt;();
+        executionStrategyMap.put(""queryExecutionStrategy"", new AsyncTransactionalExecutionStrategy());
+        return executionStrategyMap;
+    }
+}
+</code></pre>
+
+<p>Where <code>AsyncTransactionalExecutionStrategy</code> is defined like this:</p>
+
+<pre><code>@Service
+public class AsyncTransactionalExecutionStrategy extends AsyncExecutionStrategy {
+
+    @Override
+    @Transactional
+    public CompletableFuture&lt;ExecutionResult&gt; execute(ExecutionContext executionContext, ExecutionStrategyParameters parameters) throws NonNullableFieldWasNullException {
+        return super.execute(executionContext, parameters);
+    }
+}
+</code></pre>
+
+<p>This puts the whole execution of the query inside the same transaction. I don't know if this is the most optimal solution, and it also already has some drawbacks in regards to error handling, but you don't need to define a type resolver that way.</p>
+","1386873","","1386873","","2018-07-03 20:17:56","2018-07-03 20:17:56","","","","5","","",""
+"48046403","2","","48046357","2018-01-01 00:07:02","","0","","<p>You could use <code>eval</code> to parse the string, or <code>new Function</code> The parenthesis are important for eval as you need to evaluate the object as an object expression.</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>var data = ""{ field1: 'Val1', field2: 'Val2' }"";
+
+const evil = x =&gt; {
+  ""use strict""
+  return eval(x)
+}
+
+console.log(evil(`(${data})`))
+
+console.log(new Function(`return ${data}`)())</code></pre>
+<pre class=""snippet-code-html lang-html prettyprint-override""><code>&lt;script src=""https://codepen.io/synthet1c/pen/KyQQmL.js""&gt;&lt;/script&gt;</code></pre>
+</div>
+</div>
+</p>
+","1733478","","1733478","","2018-01-01 00:24:19","2018-01-01 00:24:19","","","","1","","",""
+"48046404","1","48046452","","2018-01-01 00:07:04","","2","106","<p>I'm facing yet another issue.</p>
+
+<p>I'm using firebase db to store text and firebase storage to store files. And here comes my issue.</p>
+
+<p><strong>Q</strong>: How to fetch a correct image <strong>from storage</strong> when fetching particular element <strong>from database</strong>?</p>
+
+<p>Here's my attempt:</p>
+
+<pre><code>const storageRef = firebase.storage().ref('companyImages/companyImage' + 123);
+                                            ^^^^^^^^^^^^ I dont have access to id yet :(
+const task = storageRef.put(companyImage);
+
+task.on('state_changed', () =&gt; {
+  const percentage = (snap.bytesTransferred / snap.totalBytes) * 100; 
+                               // ^^^^^^^^^^^^ not sure if i even need this
+}, (err) =&gt; {
+    console.log(err);
+}, () =&gt; {
+  firebase.database().ref('offers').push(values);
+    ^^^^^^^^^^^^^^^ now I could retrieve id from it with .key but its too late
+});
+</code></pre>
+
+<p>As you can see, first what Im doing is uploading the image and when it's succesful, Im starting to upload the data to database. </p>
+
+<p>Still, it doesnt work as it is supposed to. When uploading image I have to name it with a correct <code>id</code> to retrieve it easily later, in components. </p>
+
+<p>It may look a lil bit complex but will appreciate any kind of help. Any suggestion or hint.</p>
+
+<p><strong>Should I</strong> firstly upload data to DB and then image to the storage?</p>
+","6945866","","","","","2018-01-01 00:36:04","Relation between storage and database - Firebase","<javascript><reactjs><firebase>","2","0","","",""
+"48046405","2","","48046357","2018-01-01 00:07:22","","0","","<p>The syntax used below will not bring up any errors, and the result will be object.
+<div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>var o = JSON.parse(""{ \""field1\"": \""Val1\"", \""field2\"": \""Val2\"" }"");
+console.log(typeof(o));
+var o2 = JSON.parse('{ ""field1"": ""Val1"", ""field2"": ""Val2"" }');
+console.log(typeof(o2));
+var o3 = JSON.parse('{ \""field1\"": \""Val1\"", \""field2\"": \""Val2\"" }');
+console.log(typeof(o3));</code></pre>
+</div>
+</div>
+</p>
+","2560539","","","","","2018-01-01 00:07:22","","","","0","","",""
+","124486","","","","","2018-01-01 00:08:53","","","","0","","",""
+"48046407","2","","48046337","2018-01-01 00:09:15","","3","","<p>Using spread operator is good until you start working with deeply nested state and/or arrays(remember spread operator does a shallow copy only). </p>
+
+<p>I would rather recommend you starting working with <a href=""https://github.com/kolodny/immutability-helper"" rel=""nofollow noreferrer"">immutability-helper</a> instead. It is a React recommendation and it will let your code more readable and bug free.</p>
+
+<p>Example:</p>
+
+<pre><code>  import update from ""immutability-helper"";
+
+  (...)
+
+  const toggleLike = !state.data[""-L1LwSwW97KkwdSnYvsc""].liked
+  return update(state, {
+    data: {
+      ""-L1LwSwW97KkwdSnYvsc"": {
+        like: {
+          $set: toggleLike
+        }
+      }
+    }
+  })
+</code></pre>
+","136258","","","","","2018-01-01 00:09:15","","","","2","","",""
+"48046408","2","","48046185","2018-01-01 00:10:03","","0","","<p>The data is stored in a 2 X 50 array. So X[50,0] maybe be width of 50 leafs while X[1,50] could be the length of the same 50 leafs. Hence you could be plotting width vs. length, for example. That combination comprises one plot set. The data will be denoted by red circles.</p>
+","3902974","","","","","2018-01-01 00:10:03","","","","2","","",""
+"48046410","2","","48046358","2018-01-01 00:10:14","","1","","<p>You could use localStorage:</p>
+
+<pre><code>// check key pressed and whether we've done this before
+if (e.which==27 &amp;&amp; !localStorage.getItem('hasLoggedEscape')){
+    // set the local storage value saying we've done this before
+    localStorage.setItem('hasLoggedEscape', 1);
+    //do some stuff with tools, etc 
+}
+</code></pre>
+
+<p>later if you want to reset this, do </p>
+
+<p><code>localStorage.removeItem('hasLoggedEscape');</code></p>
+","1376624","","","","","2018-01-01 00:10:14","","","","3","","",""
+"48046411","1","","","2018-01-01 00:10:20","","3","905","<p>I am struggling to figure out how to increment the index variable within a for loop in Liquid/Jekyll. Currently, I have something along the lines of </p>
+
+<pre><code>{% for i in (0..num_posts) %}
+    {% if i &lt; some_value %}
+        do_thing
+    {% else %}
+    {% endif %}
+    {% assign i = i|plus:1 %}
+    {% if i&lt;some_value %}
+        do_another_thing
+    {% else %}
+    {% endif %}
+{% endfor %}
+</code></pre>
+
+<p>The problem is, instead of incrementing i, it leaves i as the same value.</p>
+
+<p>Things I have tried:</p>
+
+<ol>
+<li>Using <code>{% assign i = i|plus:1 %}</code>.</li>
+<li>Using <code>{% increment i %}</code>. </li>
+<li><p>Using</p>
+
+<pre><code>{% assign j = i|plus:1 %}
+{% assign i = j %}
+</code></pre></li>
+</ol>
+
+<p>I can't use the <code>offset</code> command either since the code doesn't always check only 2 if statements in the loop. </p>
+
+<p>Any ideas?</p>
+","9159460","","","","","2018-01-01 09:48:32","How to increment the counter inside a Liquid for loop?","<jekyll><liquid>","1","0","","",""
+"48046412","2","","48046363","2018-01-01 00:10:27","","1","","<p>Since you are using typed array. Don't you can use the offset of the set method?</p>
+
+<pre><code>arr2.set(arr1, 3)
+</code></pre>
+
+<p>To overwrite from the 4th element of the target array.
+ <a href=""https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set"" rel=""nofollow noreferrer"">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray/set</a></p>
+
+<p>To me it does just what you need, if I understand your question.</p>
+","29125","","","","","2018-01-01 00:10:27","","","","0","","",""
+"48046414","2","","48046254","2018-01-01 00:11:01","","0","","<p>Here's a function you can play around with that might help you understand what's going on a bit more. Note you're using a immediately invoked function expression (IIFE) to switch from synchronous to asynchronous code, which is fine as long as you understand that <code>console.log('test2')</code> in your original code may not process in the same order as your code looks like it might. However, you did not call the IIFE, so simply add () to the end of it.</p>
+
+<p>I.e., </p>
+
+<pre><code>(function (){})();
+(()=&gt;{})();
+(async function(){})();
+(async ()=&gt;{})();
+</code></pre>
+
+<p>As for the rest of your code, you don't resolve or reject your promise, return the promise correctly from the function, and you need to try{}catch{} your asynchronous function otherwise reject() from the promise will be unhandled. </p>
+
+<pre><code>(function(){      
+    let isAvailable = false;
+    let asynchFunc = () =&gt; new Promise((resolve,reject) =&gt; {
+        if (isAvailable === true) {
+            console.log('Available');
+            resolve(true);
+        }else{
+            console.log('Not available');
+            reject(false)
+        }
+    });
+    (async () =&gt; {
+        try{
+            // isAvailable = true; // test with me.
+            console.log('test1');
+            // result is always true, unless there is an error.
+            // but if there is an error 
+            // the rejected promise will go to catch(e){}.
+            let result = await asynchFunc(); 
+            console.log('test2');
+            isAvailable = true;
+        }catch(e){
+            console.log('Error:',e)
+        }
+    })();  
+})();
+</code></pre>
+","2446254","","","","","2018-01-01 00:11:01","","","","0","","",""
+"48046415","1","48272001","","2018-01-01 00:11:07","","0","134","<p>My site is built with AngularJS and Worpress as a single page application and based on the page I'm routing I define appropriate meta tags in the controller. This is my HTML header:</p>
+
+<pre><code>&lt;meta property=""og:url"" content=""{{ngMeta['og:url']}}"" /&gt;
+&lt;meta property=""og:title"" content=""{{ngMeta['og:title']}}"" /&gt;
+&lt;meta property=""og:description"" content=""{{ngMeta['og:description']}}"" /&gt;
+&lt;meta property=""og:image"" content=""{{ngMeta['og:image']}}"" /&gt;
+</code></pre>
+
+<p>This is working correctly, but I'm faced a problem when I'm trying to share a page on Facebook. Cause the crawler dispatched doesn't see the meta tags and this is what is returned:</p>
+
+<p><a href=""https://i.stack.imgur.com/VH8Mk.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/VH8Mk.png"" alt=""enter image description here""></a></p>
+
+<p>I guess that this is because the crawler does not load the javascript, so the meta tags are not loaded.</p>
+
+<p>How can I solve this, maybe working on the server side and use two different redirect (in the apache mod) one for human being and one for social inspection (facebook, twitter etc.)</p>
+
+<p>EDIT:
+I read an article in which they suggest to do a mod rewrite with apache that will handle the requests from the social media crawlers and redirect them to a server side static page with meta data handled by the server.</p>
+
+<p>As already said I'm using wordpress with this permalinks <code>https://&lt;dns&gt;/%category%/%postname%/</code> and so this is my <code>.htaccess</code>:</p>
+
+<pre><code># BEGIN WordPress
+&lt;IfModule mod_rewrite.c&gt;
+RewriteEngine On
+RewriteBase /
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+&lt;/IfModule&gt;
+# END WordPress
+</code></pre>
+
+<p>I should add something like this (each Rewrite url for each category):</p>
+
+<pre><code>RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit/[0-9]|Twitterbot|Pinterest|Google.*snippet)
+RewriteRule tracks/(\d*)$ https://&lt;dns&gt;/server/static-page.php?id=$1 [P]
+RewriteRule articles/(\d*)$ https://&lt;dns&gt;/server/static-page.php?id=$1 [P]
+</code></pre>
+
+<p>To redirect the crowlers to the static page. But how can I handle the request in this server side static page? Do you have any suggests?</p>
+","6399695","","6399695","","2018-01-01 14:50:42","2018-01-15 23:14:20","Facebook crawlers over angularjs app, javascript not loaded","<javascript><angularjs><facebook><facebook-graph-api>","1","0","1","",""
+"48046416","1","","","2018-01-01 00:11:22","","0","17","<p>I use Marko bonzonini<a href=""https://i.stack.imgur.com/s5zJk.png"" rel=""nofollow noreferrer"">screen shot from this code</a> code and it work perfectly but i have some questions.
+1- How i can collecting tweet withot any keyword such ""car"" in following photo?
+2- what means of time limit?it work eleven times each hour?I run it but cant understand its working.
+3- in my work,we need huge volume of twitts for example 500K per day.how I can collect this volume?
+I want that twitts are random and collect every 30 min of day because we need good twitts contribution over all of day.
+so thanks for all of work you did to make easier life.
+with best regards.
+have a good day.</p>
+","8852659","","","","","2018-01-01 00:11:22","collecting twitts by location","<python-3.x><twitter><streaming>","0","1","","",""
+"48046417","1","","","2018-01-01 00:11:30","","0","34","<p>I'm working on an app where it needs to download the files to custom folder in the mobile. Here's the code I've used,</p>
+
+<pre><code>downloadImage(imageURL) {
+
+    file.createDir(this.storageDirectory, 'FolderName', false);
+
+    const fileTransfer: FileTransferObject = this.transfer.create();          
+    const imageName = imageURL.split('/').pop();
+
+    fileTransfer.download(imageURL, this.storageDirectory + 'FolderName/' + imageName).then((entry) =&gt; {
+        const alertSuccess = this.alertCtrl.create({
+            title: `Download Succeeded!`,
+            subTitle: `${imageURL} was successfully downloaded to: ${entry.toURL()}`,
+            buttons: ['Ok']
+        });
+        alertSuccess.present();
+    }, (error) =&gt; {
+        console.log(error)
+        const alertFailure = this.alertCtrl.create({
+            title: `Download Failed!`,
+            subTitle: `${imageURL} was not successfully downloaded. Error code: ${error.code}`,
+            buttons: ['Ok']
+        });
+        alertFailure.present();
+    });
+}
+</code></pre>
+
+<p>Based on some references, I tried to use promise like this.</p>
+
+<pre><code>downloadImage(imageURL) {
+  var folderName = 'FolderName';
+  this.createDirectory(folderName);
+  console.log('After CreateDirectory');
+  this.platform.ready().then(() =&gt; {
+      const fileTransfer: FileTransferObject = this.transfer.create();        
+      const imageName = imageURL.split('/').pop();
+
+      fileTransfer.download(imageURL, this.storageDirectory + 'FolderName/' + imageName).then((entry) =&gt; {
+          const alertSuccess = this.alertCtrl.create({
+              title: `Download Succeeded!`,
+              subTitle: `${imageURL} was successfully downloaded to: ${entry.toURL()}`,
+              buttons: ['Ok']
+          });
+          alertSuccess.present();
+      }, (error) =&gt; {
+          console.log(error)
+          const alertFailure = this.alertCtrl.create({
+              title: `Download Failed!`,
+              subTitle: `${imageURL} was not successfully downloaded. Error code: ${error.code}`,
+              buttons: ['Ok']
+          });
+          alertFailure.present();
+      });
+  });
+}
+
+createDirectory(folderName): Promise&lt;Boolean&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    setTimeout(() =&gt; {
+      console.log('createDirectory = ' + folderName)
+    }, 5000);
+
+    if(!this.platform.is('cordova')) {
+      return false;
+    }
+
+    if (this.platform.is('ios')) {
+      this.storageDirectory = this.file.externalRootDirectory;
+    }
+    else if(this.platform.is('android')) {
+      this.storageDirectory = this.file.externalRootDirectory;
+    }
+    else {
+      return false;
+    }
+
+    this.file.createDir(this.storageDirectory, folderName, false)
+    .then((success) =&gt; {
+      resolve(true);
+    })
+    .catch((error) =&gt; {
+      reject(false);
+    });
+  });
+}
+</code></pre>
+
+<p>When I click on the link which triggers this function, it shows a popup like ""Allow MyApp to access photos, media..."", but before the user press ""Allow"" button, it's displaying the error popup. I tried keeping this inside the async block, but still I'm facing the same issue.</p>
+
+<p>How to defer the flow until the user confirms the popup? Any help on this would be much appreciated.</p>
+","698072","","698072","","2018-01-01 09:57:23","2018-01-01 09:57:23","Ionic 3 - Defer file download until folder created","<angular><ionic-framework><angular-promise>","0","6","","",""
+"48046418","1","48046434","","2018-01-01 00:11:32","","2","104","<p>I am developing a simple project. And I have a conflict with meaning of Liskov Principle in my project.</p>
+
+<p>I simplified my question of my project with this example: </p>
+
+<pre><code>public class Animal {  
+
+     public void feed() {     
+
+         // do something here         
+     }    
+}    
+
+
+public class Dog extends Animal {
+
+    // some methods and attributes
+
+    @Override
+    public void feed() {   
+
+        // never call parent feed() method (super.feed())
+    }
+}
+</code></pre>
+
+<p>So, my question is, if I don't call parent method and write a completely new codes in override method, Is this violates Liskov Principle?</p>
+
+<p>thanks.</p>
+","","user9159218","","","","2018-01-01 00:25:35","Overriding without calling parent method, violating Liskov Principle","<java><oop><solid-principles><method-overriding>","2","5","","",""
+"48046419","2","","47724328","2018-01-01 00:11:46","","2","","<p>It's hardly fair to claim that it ""does literally nothing"". Yes, at the app level you chose to make the whole thing a giant no-op for your microbenchmark, that's fine. But no, down beneath the covers at the system level, it's hardly ""nothing"". You asked linux to fork off a brand new execution environment, initialize it, and connect it to the environment. You called very few glibc functions, but dynamic linking is non-trivial and after a million instructions your process was ready to demand fault printf() and friends, and to efficiently bring in libs you might have linked against or dlopen()'ed.</p>
+
+<p>This is not the sort of microbench that implementors are likely to optimize against. What <em>would</em> be of interest is if you can identify ""expensive"" aspects of fork/exec that in some use cases are never used, and so might be #ifdef'd out (or have their execution short circuited) in very specific situations. Lazy evaluation of resolv.conf is one example of that, where the overhead is never paid by a process if it never interacts with IP servers.</p>
+","8431111","","","","","2018-01-01 00:11:46","","","","0","","",""
+"48046421","1","","","2018-01-01 00:12:32","","0","189","<p>I am currently using <a href=""https://github.com/Rapptz/discord.py"" rel=""nofollow noreferrer"">discord.py</a> and I was curious about how the <code>Client.event</code> decorator works, but I can't find out for example, when it pass the data to the <code>on_message</code> function when there is a message event.</p>
+
+<pre><code>import discord
+import asyncio
+
+client = discord.Client()
+
+@client.event
+async def on_message(message):
+    pass
+
+client.run('token')
+</code></pre>
+
+<p>When there is a message it takes the <code>on_message</code> function and pass the message to it, but I can't find when that happens in the code.</p>
+
+<p>What I am missing?</p>
+","7139999","","1000551","","2018-01-01 13:30:36","2018-01-01 13:30:36","How discord.py knows which function to pass the event data?","<python><events><python-decorators><discord.py>","2","0","","",""
+"48046423","1","48046529","","2018-01-01 00:12:39","","1","727","<p>Hi I am trying to access my params from my react router but it always shows me an empty object.</p>
+
+<p>this is my code:</p>
+
+<pre><code>    &lt;Switch&gt;
+    &lt;Route exact path='/' render={(props) =&gt; (&lt;PhotoWall {...this.props}/&gt;)}/&gt;
+    &lt;Route path='/single/:id' render={(props) =&gt; (&lt;Single {...this.props}/&gt;)}/&gt;
+    &lt;/Switch&gt;
+</code></pre>
+
+<p>I can see the value of my params in react dev tools. but i can't access it in this.props.match.params..
+<a href=""https://i.stack.imgur.com/jAOXU.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/jAOXU.png"" alt=""enter image description here""></a></p>
+","6568911","","","","","2018-01-01 00:43:09","getting empty value from this.props.match.params while it is showing in the react dev tools","<reactjs><react-router><react-redux><react-router-redux>","1","2","","",""
+"48046424","1","","","2018-01-01 00:12:56","","0","86","<p>using</p>
+
+<pre><code>RedirectMatch 301 /m/(..*) http://example.com/$1
+</code></pre>
+
+<p>to redirect from <a href=""http://sub.site.com/m/link"" rel=""nofollow noreferrer"">http://sub.site.com/m/link</a> to <a href=""http://example.com/link"" rel=""nofollow noreferrer"">http://example.com/link</a></p>
+
+<p>thought it was working great until it tries to load thumbnails from <a href=""http://example.com/data/avatars/m/0/2.jpg?1599539541"" rel=""nofollow noreferrer"">http://example.com/data/avatars/m/0/2.jpg?1599539541</a></p>
+
+<p>it changes it to <a href=""http://example.com/m/0/2.jpg?1599539541"" rel=""nofollow noreferrer"">http://example.com/m/0/2.jpg?1599539541</a> which will not do</p>
+
+<p>spent hours googling and playing with htaccess redirects and RewriteRule
+doesn't work at all
+neither does</p>
+
+<pre><code>RewriteEngine on
+RewriteCond %{HTTP_HOST} /m/. [NC]
+RewriteRule ^(.*)$ http://example.com/$1 [L]
+</code></pre>
+
+<p>been pulling my hair out for a couple days and probably irritating a few other people close by...</p>
+","9159471","","1145196","","2018-01-01 01:07:10","2018-01-01 04:47:57","htaccess RedirectMatch messing up subdirectories with same match","<apache><.htaccess><redirect><mod-rewrite>","1","2","","",""
+"48046425","2","","48046386","2018-01-01 00:13:11","","2","","<p>If you look at the documentation for creating a chart in <a href=""http://www.chartjs.org/docs/latest/#creating-a-chart"" rel=""nofollow noreferrer"">Chart.js</a>, the first parameter is a context obtained from a DOM element, and not a string:</p>
+
+<pre><code>var ctx = document.getElementById(""myChart"").getContext('2d');
+var myChart = new Chart(ctx, {
+</code></pre>
+
+<p>You can get a reference to the DOM element by using template variables and ElementRef:</p>
+
+<p>HTML</p>
+
+<pre><code>&lt;div *ngIf=""chart""&gt;
+    &lt;canvas #canvas id=""canvas""&gt;{{ chart }}&lt;/canvas&gt;
+&lt;/div&gt;
+</code></pre>
+
+<p>Tyepscript: </p>
+
+<pre><code>import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { Chart } from 'chart.js';
+import { data } from './data';
+
+@Component({
+  selector: 'app-propel-factor',
+  templateUrl: './propel-factor.component.html'
+})
+export class PropelFactorComponent implements OnInit {
+    @ViewChild('canvas') canvas: ElementRef;
+
+    chart = [];
+    labels: any = [];
+
+    data: any = [];
+
+    constructor() { }
+
+    ngOnInit() {
+        data.forEach(item =&gt; {
+            this.labels.push(item.name);
+            this.data.push(item.value);
+        });
+
+    }
+    ngAfterViewInit() {
+        this.chart = new Chart(this.canvas.nativeElement.getContext('2d'), {
+            type: 'bar',
+            labels: this.labels,
+            data: {
+                labels: this.labels,
+                data: this.data
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+    }
+
+}
+</code></pre>
+","3661630","","3661630","","2018-01-01 00:31:11","2018-01-01 00:31:11","","","","2","","",""
+"48046426","2","","48044395","2018-01-01 00:13:19","","0","","<p>It's hard to know why GradeRows doesn't match your range without seeing all of your code.
+Using Cooper's getRange arguments will likely reveal your problem, and will prevent you from having to update your row and column variables when you make changes to your code. Another issue that gets me sometimes is the fact that the setValues array needs to be exactly the same dimensions as the range. If one row has a different length, it will fail. If the logic I use to create row arrays can result in different lengths, I use the function below to make sure my arrays are symmetric before writing them to a sheet. It is also helpful for debugging.</p>
+
+<p><div class=""snippet"" data-lang=""js"" data-hide=""false"" data-console=""true"" data-babel=""false"">
+<div class=""snippet-code"">
+<pre class=""snippet-code-js lang-js prettyprint-override""><code>/** 
+ * Takes a 2D array with element arrays with differing lengths
+ * and adds empty string elements as necessary to return 
+ * a 2D array with all element arrays of equal length.
+ * @param {array} ar
+ * @return {array}
+ */
+function symmetric2DArray(ar){
+  var maxLength;
+  var symetric = true;
+  if (!Array.isArray(ar)) return [['not an array']];
+  ar.forEach( function(row){
+    if (!Array.isArray(row)) return [['not a 2D array']];
+    if (maxLength &amp;&amp; maxLength !== row.length) {
+      symetric = false;
+      maxLength = (maxLength &gt; row.length) ? maxLength : row.length;
+    } else { maxLength = row.length }
+  });
+  if (!symetric) {
+    ar.map(function(row){
+      while (row.length &lt; maxLength){
+        row.push('');
+      }
+      return row;
+    });
+  }
+  return ar
+}</code></pre>
+</div>
+</div>
+</p>
+","3247279","","","","","2018-01-01 00:13:19","","","","0","","",""
+"48046427","1","","","2018-01-01 00:13:21","","0","231","<p>I am not a coder but I have some basic ability to mash some scripts together and usually get something that works for me, but this is way beyond my comprehension. I am trying to combine 3 things into a batch file. It's essentially an all in one solution to turn Windows 10 privacy settings off and to remove some background apps. I can run the commands just fine in powershell, but I wanted to automate the entire thing through one batch script:</p>
+
+<ol>
+<li><p>Keep the windows 10 privacy settings script up to date. This is done through the following command in powershell:</p>
+
+<pre><code>(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/hahndorf/Set-Privacy/master/Set-Privacy.ps1') | out-file .\Set-Privacy.ps1 -force 
+</code></pre></li>
+</ol>
+
+<p>Just need to make sure that the destination folder for download is set first (I have no idea how to do this through a batchfile/script). The command comes from the script that someone wrote on github located <a href=""https://github.com/hahndorf/Set-Privacy/blob/master/README.md"" rel=""nofollow noreferrer"">here</a></p>
+
+<ol start=""2"">
+<li><p>Run the powershell script to turn privacy settings off, on the highest setting. This is done through the following command, again from the link above:</p>
+
+<pre><code>.\Set-Privacy.ps1 -Strong -admin
+</code></pre></li>
+<li><p>Remove background apps, for example, removing ""3D Builder"":</p></li>
+</ol>
+
+<p>To uninstall 3D Builder:</p>
+
+<pre><code>get-appxpackage *3dbuilder* | remove-appxpackage
+</code></pre>
+
+<p>Details on this found <a href=""https://www.askvg.com/guide-how-to-remove-all-built-in-apps-in-windows-10/"" rel=""nofollow noreferrer"">here</a></p>
+
+<p>Any help with any of this is greatly appreciated.</p>
+","9159454","","995714","","2018-01-01 00:18:32","2018-01-01 03:13:16","Combining powershell & cmd to create a batch file","<powershell>","1","0","","",""
+"48046428","2","","48046358","2018-01-01 00:13:40","","2","","<p>Use only handler function as argument according to <a href=""http://api.jquery.com/off/"" rel=""nofollow noreferrer"">documentation</a>:</p>
+
+<pre><code>let tools = {};
+//how can i eliminate this next line of code after escape has been triggered?
+$(window).on('keydown', escape);
+function escape(e){
+    if (e.which==27){
+        //do some stuff with tools, etc
+        $(window).off('keydown', escape);
+        alert('alert triggered, but next time escape is pressed it wont.');
+    }
+}
+</code></pre>
+","4209136","","4209136","","2018-01-01 00:31:42","2018-01-01 00:31:42","","","","7","","",""
+"48046429","1","","","2018-01-01 00:13:50","","1","109","<p>I'm trying to publish an <code>Winform</code> application that i build with Visual Studio 2013 <code>.Net 4.5.2</code>.
+After i publish it and send the install to another computer it's install but when i try to run it i get an error:</p>
+
+<pre><code>Files that help describe the problem:
+  C:\Users\Administrator\AppData\Local\Temp\WERE983.tmp.WERInternalMetadata.xml
+  C:\Users\Administrator\AppData\Local\Temp\WERF20C.tmp.appcompat.txt
+  C:\Users\Administrator\AppData\Local\Temp\WERF21D.tmp.mdmp
+
+Read our privacy statement online:
+  http://go.microsoft.com/fwlink/?linkid=104288&amp;clcid=0x0409
+
+If the online privacy statement is not available, please read our privacy statement offline:
+  C:\Windows\system32\en-US\erofflps.txt
+</code></pre>
+
+<p>I check this files:</p>
+
+<pre><code>WERE983.tmp.WERInternalMetadata.xml 
+WERF20C.tmp.appcompat.txt
+</code></pre>
+
+<p>And this is what the contain:</p>
+
+<pre><code>&lt;?xml version=""1.0"" encoding=""UTF-16""?&gt;
+&lt;DATABASE&gt;
+&lt;EXE NAME=""VAScanProducts.exe"" FILTER=""CMI_FILTER_PRIVACY""&gt;
+    &lt;MATCHING_FILE NAME=""CefSharp.Core.dll"" SIZE=""1227264"" CHECKSUM=""0x96A9A86D"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x130D03"" LINKER_VERSION=""0x0"" LINK_DATE=""04/18/2017 05:44:15"" UPTO_LINK_DATE=""04/18/2017 05:44:15"" EXPORT_NAME=""CefSharp.Core.dll"" EXE_WRAPPER=""0x0"" /&gt;
+    &lt;MATCHING_FILE NAME=""CefSharp.dll"" SIZE=""185344"" CHECKSUM=""0xBE52941B"" BIN_FILE_VERSION=""57.0.0.0"" BIN_PRODUCT_VERSION=""57.0.0.0"" PRODUCT_VERSION=""57.0.0.0"" FILE_DESCRIPTION=""CefSharp"" COMPANY_NAME=""The CefSharp Authors"" PRODUCT_NAME=""CefSharp"" FILE_VERSION=""57.0.0.0"" ORIGINAL_FILENAME=""CefSharp.dll"" INTERNAL_NAME=""CefSharp.dll"" LEGAL_COPYRIGHT=""Copyright © 2010-2017 The CefSharp Authors"" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x4"" VERFILETYPE=""0x2"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x2E412"" LINKER_VERSION=""0x0"" UPTO_BIN_FILE_VERSION=""57.0.0.0"" UPTO_BIN_PRODUCT_VERSION=""57.0.0.0"" LINK_DATE=""04/18/2017 05:43:55"" UPTO_LINK_DATE=""04/18/2017 05:43:55"" VER_LANGUAGE=""Language Neutral [0x0]"" EXE_WRAPPER=""0x0"" /&gt;
+    &lt;MATCHING_FILE NAME=""CefSharp.WinForms.dll"" SIZE=""23552"" CHECKSUM=""0xE50D82BF"" BIN_FILE_VERSION=""57.0.0.0"" BIN_PRODUCT_VERSION=""57.0.0.0"" PRODUCT_VERSION=""57.0.0.0"" FILE_DESCRIPTION=""CefSharp.WinForm"" COMPANY_NAME=""The CefSharp Authors"" PRODUCT_NAME=""CefSharp"" FILE_VERSION=""57.0.0.0"" ORIGINAL_FILENAME=""CefSharp.WinForms.dll"" INTERNAL_NAME=""CefSharp.WinForms.dll"" LEGAL_COPYRIGHT=""Copyright © 2010-2017 The CefSharp Authors"" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x4"" VERFILETYPE=""0x2"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x7B0E"" LINKER_VERSION=""0x0"" UPTO_BIN_FILE_VERSION=""57.0.0.0"" UPTO_BIN_PRODUCT_VERSION=""57.0.0.0"" LINK_DATE=""04/18/2017 05:44:19"" UPTO_LINK_DATE=""04/18/2017 05:44:19"" VER_LANGUAGE=""Language Neutral [0x0]"" EXE_WRAPPER=""0x0"" /&gt;
+    &lt;MATCHING_FILE NAME=""Newtonsoft.Json.dll"" SIZE=""653824"" CHECKSUM=""0xABD0EDC9"" BIN_FILE_VERSION=""10.0.3.21018"" BIN_PRODUCT_VERSION=""10.0.3.0"" PRODUCT_VERSION=""10.0.3"" FILE_DESCRIPTION=""Json.NET"" COMPANY_NAME=""Newtonsoft"" PRODUCT_NAME=""Json.NET"" FILE_VERSION=""10.0.3.21018"" ORIGINAL_FILENAME=""Newtonsoft.Json.dll"" INTERNAL_NAME=""Newtonsoft.Json.dll"" LEGAL_COPYRIGHT=""Copyright © James Newton-King 2008"" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x4"" VERFILETYPE=""0x2"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0xA4DDC"" LINKER_VERSION=""0x0"" UPTO_BIN_FILE_VERSION=""10.0.3.21018"" UPTO_BIN_PRODUCT_VERSION=""10.0.3.0"" LINK_DATE=""06/10/2061 13:14:05"" UPTO_LINK_DATE=""06/10/2061 13:14:05"" VER_LANGUAGE=""Language Neutral [0x0]"" EXE_WRAPPER=""0x0"" /&gt;
+    &lt;MATCHING_FILE NAME=""VAScanProducts.exe"" SIZE=""16384"" CHECKSUM=""0xDA25CD21"" BIN_FILE_VERSION=""1.0.0.0"" BIN_PRODUCT_VERSION=""1.0.0.0"" PRODUCT_VERSION=""1.0.0.0"" FILE_DESCRIPTION=""VAScanProducts"" PRODUCT_NAME=""VAScanProducts"" FILE_VERSION=""1.0.0.0"" ORIGINAL_FILENAME=""VAScanProducts.exe"" INTERNAL_NAME=""VAScanProducts.exe"" LEGAL_COPYRIGHT=""Copyright ©  2018"" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x4"" VERFILETYPE=""0x1"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x0"" LINKER_VERSION=""0x0"" UPTO_BIN_FILE_VERSION=""1.0.0.0"" UPTO_BIN_PRODUCT_VERSION=""1.0.0.0"" LINK_DATE=""01/01/2018 00:00:30"" UPTO_LINK_DATE=""01/01/2018 00:00:30"" VER_LANGUAGE=""Language Neutral [0x0]"" EXE_WRAPPER=""0x0"" FILE_ID=""0000feefe9ec5f02546ae654935471793c1b87db67f2"" PROGRAM_ID=""0000da39a3ee5e6b4b0d3255bfef95601890afd80709"" /&gt;
+&lt;/EXE&gt;
+&lt;EXE NAME=""KERNELBASE.dll"" FILTER=""CMI_FILTER_THISFILEONLY""&gt;
+    &lt;MATCHING_FILE NAME=""KernelBase.dll"" SIZE=""275456"" CHECKSUM=""0xDD5DB326"" BIN_FILE_VERSION=""6.1.7601.23807"" BIN_PRODUCT_VERSION=""6.1.7601.23807"" PRODUCT_VERSION=""6.1.7601.18015"" FILE_DESCRIPTION=""Windows NT BASE API Client DLL"" COMPANY_NAME=""Microsoft Corporation"" PRODUCT_NAME=""Microsoft® Windows® Operating System"" FILE_VERSION=""6.1.7601.18015 (win7sp1_gdr.121129-1432)"" ORIGINAL_FILENAME=""Kernelbase"" INTERNAL_NAME=""Kernelbase"" LEGAL_COPYRIGHT=""© Microsoft Corporation. All rights reserved."" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x40004"" VERFILETYPE=""0x2"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x4FD50"" LINKER_VERSION=""0x60001"" UPTO_BIN_FILE_VERSION=""6.1.7601.23807"" UPTO_BIN_PRODUCT_VERSION=""6.1.7601.23807"" LINK_DATE=""05/12/2017 18:06:06"" UPTO_LINK_DATE=""05/12/2017 18:06:06"" EXPORT_NAME=""KERNELBASE.dll"" VER_LANGUAGE=""English (United States) [0x409]"" EXE_WRAPPER=""0x0"" FILE_ID=""0000ff428087a9ddf81b3edcb9f46e3b5ca798b97376"" PROGRAM_ID=""0000f519feec486de87ed73cb92d3cac802400000000"" /&gt;
+&lt;/EXE&gt;
+&lt;EXE NAME=""kernel32.dll"" FILTER=""CMI_FILTER_THISFILEONLY""&gt;
+    &lt;MATCHING_FILE NAME=""kernel32.dll"" SIZE=""1114112"" CHECKSUM=""0x1725986C"" BIN_FILE_VERSION=""6.1.7601.23807"" BIN_PRODUCT_VERSION=""6.1.7601.23807"" PRODUCT_VERSION=""6.1.7601.18015"" FILE_DESCRIPTION=""Windows NT BASE API Client DLL"" COMPANY_NAME=""Microsoft Corporation"" PRODUCT_NAME=""Microsoft® Windows® Operating System"" FILE_VERSION=""6.1.7601.18015 (win7sp1_gdr.121129-1432)"" ORIGINAL_FILENAME=""kernel32"" INTERNAL_NAME=""kernel32"" LEGAL_COPYRIGHT=""© Microsoft Corporation. All rights reserved."" VERDATEHI=""0x0"" VERDATELO=""0x0"" VERFILEOS=""0x40004"" VERFILETYPE=""0x2"" MODULE_TYPE=""WIN32"" PE_CHECKSUM=""0x11A808"" LINKER_VERSION=""0x60001"" UPTO_BIN_FILE_VERSION=""6.1.7601.23807"" UPTO_BIN_PRODUCT_VERSION=""6.1.7601.23807"" LINK_DATE=""05/12/2017 18:06:05"" UPTO_LINK_DATE=""05/12/2017 18:06:05"" EXPORT_NAME=""KERNEL32.dll"" VER_LANGUAGE=""English (United States) [0x409]"" EXE_WRAPPER=""0x0"" FILE_ID=""00005daf7834295c8a8d2b58f1e3e780e39a6842a4c2"" PROGRAM_ID=""0000f519feec486de87ed73cb92d3cac802400000000"" /&gt;
+&lt;/EXE&gt;
+&lt;/DATABASE&gt;
+</code></pre>
+
+<p>And:</p>
+
+<pre><code>&lt;?xml version=""1.0"" encoding=""UTF-16""?&gt;
+&lt;WERReportMetadata&gt;
+    &lt;OSVersionInformation&gt;
+        &lt;WindowsNTVersion&gt;6.1&lt;/WindowsNTVersion&gt;
+        &lt;Build&gt;7601 Service Pack 1&lt;/Build&gt;
+        &lt;Product&gt;(0x30): Windows 7 Professional&lt;/Product&gt;
+        &lt;Edition&gt;Professional&lt;/Edition&gt;
+        &lt;BuildString&gt;7601.23807.amd64fre.win7sp1_ldr.170512-0600&lt;/BuildString&gt;
+        &lt;Revision&gt;1130&lt;/Revision&gt;
+        &lt;Flavor&gt;Multiprocessor Free&lt;/Flavor&gt;
+        &lt;Architecture&gt;X64&lt;/Architecture&gt;
+        &lt;LCID&gt;1033&lt;/LCID&gt;
+    &lt;/OSVersionInformation&gt;
+    &lt;ProblemSignatures&gt;
+        &lt;EventType&gt;CLR20r3&lt;/EventType&gt;
+        &lt;Parameter0&gt;VAScanProducts.exe&lt;/Parameter0&gt;
+        &lt;Parameter1&gt;1.0.0.0&lt;/Parameter1&gt;
+        &lt;Parameter2&gt;5a497a1e&lt;/Parameter2&gt;
+        &lt;Parameter3&gt;VAScanProducts&lt;/Parameter3&gt;
+        &lt;Parameter4&gt;1.0.0.0&lt;/Parameter4&gt;
+        &lt;Parameter5&gt;5a497a1e&lt;/Parameter5&gt;
+        &lt;Parameter6&gt;1&lt;/Parameter6&gt;
+        &lt;Parameter7&gt;17&lt;/Parameter7&gt;
+        &lt;Parameter8&gt;System.IO.FileNotFoundException&lt;/Parameter8&gt;
+    &lt;/ProblemSignatures&gt;
+    &lt;DynamicSignatures&gt;
+        &lt;Parameter1&gt;6.1.7601.2.1.0.256.48&lt;/Parameter1&gt;
+        &lt;Parameter2&gt;1033&lt;/Parameter2&gt;
+        &lt;Parameter22&gt;0a9e&lt;/Parameter22&gt;
+        &lt;Parameter23&gt;0a9e372d3b4ad19135b953a78882e789&lt;/Parameter23&gt;
+        &lt;Parameter24&gt;0a9e&lt;/Parameter24&gt;
+        &lt;Parameter25&gt;0a9e372d3b4ad19135b953a78882e789&lt;/Parameter25&gt;
+    &lt;/DynamicSignatures&gt;
+    &lt;SystemInformation&gt;
+        &lt;MID&gt;B73736F6-D3D2-46FF-BDB0-6668893CF9EF&lt;/MID&gt;
+        &lt;SystemManufacturer&gt;VMware, Inc.&lt;/SystemManufacturer&gt;
+        &lt;SystemProductName&gt;VMware Virtual Platform&lt;/SystemProductName&gt;
+        &lt;BIOSVersion&gt;6.00&lt;/BIOSVersion&gt;
+    &lt;/SystemInformation&gt;
+&lt;/WERReportMetadata&gt;
+</code></pre>
+
+<p>=========
+Edit- First error message:
+<a href=""https://i.stack.imgur.com/hD4Vc.png"" rel=""nofollow noreferrer""><img src=""https://i.stack.imgur.com/hD4Vc.png"" alt=""enter image description here""></a></p>
+
+<p>Any idea what can be the problem with the publish?</p>
+","679099","","679099","","2018-01-01 09:47:57","2018-01-01 09:47:57","C# publish Winform application","<c#><windows><winforms><publish><cefsharp>","0","3","","",""
+"48046430","2","","48043350","2018-01-01 00:13:56","","1","","<p>To be honest with you, I did not want to answer this question at first because you already have the answer in one of your questions here on SO</p>
+
+<p><a href=""https://stackoverflow.com/a/46796879/7579632"">Create a button that accepts .PNG images as Glyph</a></p>
+
+<p>the first class to be exact it is a <code>TPersistent</code> that exposed the Glyph coordinates in the <code>TNCRSpeedButton</code>. </p>
+
+<p>I'm writing this because I said <strong><em>I hope you benefit well from it.</em></strong> and I can see you did not.</p>
+
+<p>So this is your solution to your problem and you are more than welcome to ask any thing about how it is implemented.</p>
+
+<pre><code>unit UnitName;;
+
+interface
+   uses
+    System.Classes, Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.Controls;
+
+type
+  TCheckEditCaptions = class(TPersistent)
+  private
+    FDisableCaption: TCaption;
+    FEnableCaption: TCaption;
+    FOnChange: TNotifyEvent;
+    function GetDisableCaption: TCaption;
+    function GetEnableCaption: TCaption;
+    procedure SetDisableCaption(const Value: TCaption);
+    procedure SetEnableCaption(const Value: TCaption);
+  public
+    procedure Assign(aValue: TPersistent); override;
+  published
+    property EnableCaption: TCaption read GetEnableCaption write SetEnableCaption;
+    property DisableCaption: TCaption read GetDisableCaption write SetDisableCaption;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  end;
+
+TCheckEdit = class (TCustomControl)
+  private
+    FCheckBox : TCheckBox;
+    FEdit : TEdit;
+    FCheckEditCaptions: TCheckEditCaptions;
+    procedure SetIsActive(const Value: Boolean);
+    function GetIsActive : Boolean;
+    procedure ChBoxOnClick (Sender : TObject);
+    procedure CheckEditCaptionsChanged(Sender : TObject);
+    procedure SetCheckEditCaptions(const Value: TCheckEditCaptions);
+  protected
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  published
+    property IsActive : Boolean read GetIsActive write SetIsActive default False;
+    property CheckEditCaptions : TCheckEditCaptions read FCheckEditCaptions write SetCheckEditCaptions;
+    property OnClick;
+end;
+procedure register;
+
+implementation
+
+ procedure register;
+ begin
+   RegisterComponents('Samples', [TCheckEdit]);
+ end;
+
+{ TCheckEdit }
+
+procedure TCheckEdit.ChBoxOnClick(Sender: TObject);
+begin
+  IsActive := FCheckBox.Checked;
+end;
+
+procedure TCheckEdit.CheckEditCaptionsChanged(Sender: TObject);
+begin
+  SetIsActive(GetIsActive);
+end;
+
+constructor TCheckEdit.Create(AOwner: TComponent);
+begin
+  inherited;
+
+  FCheckBox := TCheckBox.Create(Self);
+  FCheckBox.Parent := Self;
+  FCheckBox.Align := alTop;
+  FCheckBox.OnClick := ChBoxOnClick;
+
+  FCheckEditCaptions := TCheckEditCaptions.Create;
+  FCheckEditCaptions.FDisableCaption := 'Disabled';
+  FCheckEditCaptions.FEnableCaption := 'Enabled';
+  FCheckEditCaptions.OnChange := CheckEditCaptionsChanged;
+
+  FCheckBox.Caption := CheckEditCaptions.DisableCaption;
+
+  FEdit := TEdit.Create(Self);
+  FEdit.Parent := Self;
+  FEdit.Align := alTop;
+  FEdit.Enabled := False;
+
+  Self.Height := 40;
+  Self.Width := 185;
+  Self.AutoSize := True;
+end;
+
+destructor TCheckEdit.Destroy;
+begin
+  FEdit.Free;
+  FCheckBox.Free;
+  FCheckEditCaptions.Free;
+  inherited;
+end;
+
+function TCheckEdit.GetIsActive: Boolean;
+begin
+  Result := FCheckBox.Checked ;
+end;
+
+procedure TCheckEdit.SetCheckEditCaptions(const Value: TCheckEditCaptions);
+begin
+  FCheckEditCaptions.Assign(Value);
+end;
+
+procedure TCheckEdit.SetIsActive(const Value: Boolean);
+begin
+  FCheckBox.Checked := Value;
+  FEdit.Enabled := Value;
+  if Value then
+    FCheckBox.Caption := CheckEditCaptions.EnableCaption
+  else
+    FCheckBox.Caption := CheckEditCaptions.DisableCaption;
+end;
+{ TCheckEditCaptions }
+
+procedure TCheckEditCaptions.Assign(aValue: TPersistent);
+begin
+  if aValue is TCheckEditCaptions then begin
+    FEnableCaption := TCheckEditCaptions(aValue).FEnableCaption;
+    FEnableCaption := TCheckEditCaptions(aValue).FDisableCaption;
+    if Assigned(FOnChange) then
+       FOnChange(self);
+  end else
+    inherited;
+end;
+
+function TCheckEditCaptions.GetDisableCaption: TCaption;
+begin
+  result := FDisableCaption;
+end;
+
+function TCheckEditCaptions.GetEnableCaption: TCaption;
+begin
+  result := FEnableCaption;
+end;
+
+procedure TCheckEditCaptions.SetDisableCaption(const Value: TCaption);
+begin
+  FDisableCaption := Value;
+  if Assigned(FOnChange) then
+       FOnChange(self);
+end;
+
+procedure TCheckEditCaptions.SetEnableCaption(const Value: TCaption);
+begin
+  FEnableCaption := Value;
+  if Assigned(FOnChange) then
+       FOnChange(self);
+end;
+
+end.
+</code></pre>
+","7579632","","","","","2018-01-01 00:13:56","","","","9","","",""
+"48046431","1","48049572","","2018-01-01 00:14:15","","0","64","<p>Thanks for taking a moment to read this! So, as the title of my post implies, I'm trying to import some obj files into Maya, but I get the following error message when I try running my script:</p>
+
+<pre><code>Error: line 1: TypeError: file &lt;maya console&gt; line 8: object of type 
+'NoneType' has no len()
+</code></pre>
+
+<p>My script is listed below:</p>
+
+<pre><code>import maya.cmds as cmds
+
+
+pathOfFiles = ""/This PC/Desktop/Facial Rigging Blendshapes/""
+fileType = ""obj""
+
+files = cmds.getFileList(folder=pathOfFiles, filespec='*.%s' % fileType)
+if len(files) == 0:
+    cmds.warning(""No files found"")
+else:
+    for f in files:
+        cmds.file(pathOfFiles + f, i=True)
+</code></pre>
+
+<p>Thanks again for taking the time to read this! Cheers!</p>
+","9159470","","","","","2018-01-01 12:16:38","Issues Importing Obj Files Into Maya","<python><object><import><scripting><maya>","1","0","","",""
+"48046432","1","48046530","","2018-01-01 00:14:21","","0","114","<p>I want to print a two column table. In the first column are paths (without spaces), in the second column are names (with spaces). I'd like to make the <code>column</code> treat everything after Nth space (N = 2) as belonging to a single column.</p>
+
+<p>I don't need to use the <code>column</code>, but I'd like something short.
+Note: I'm not looking for other solution that expects that there are only two columns.</p>
+
+<pre><code>mark@localhost ~/.config/chromium/Default/Extensions
+% for f in */*/manifest.json; do
+    echo -n ""$f "";
+    cat $f | jq -r '.name + "" "" + .version';
+done | column -t
+cjpalhdlnbpafiamejdnhcphjbkeiagm/1.14.22_0/manifest.json     uBlock                  Origin      1.14.22          
+dbepggeogbaibhgnhhndojpepiihcmeb/1.62.4_0/manifest.json      Vimium                  1.62.4                       
+dffhipnliikkblkhpjapbecpmoilcama/0.3_0/manifest.json         Swap                    My          Cookies  0.3     
+gcbommkclmclpchllfjekcdonpmejbdp/2017.12.6_0/manifest.json   __MSG_about_ext_name__  2017.12.6                    
+gdbofhhdmcladcmmfjolgndfkpobecpg/4.19_0/manifest.json        Don't                   track       me       Google  4.19
+pkehgijcmpdhfbdbbnkijodmdjhbjlgp/2017.11.20_0/manifest.json  __MSG_name__            2017.11.20                   
+</code></pre>
+","9159458","","9159458","","2018-01-01 01:26:25","2018-01-01 12:43:08","Shell, column -t, treat everything after Nth space as a last column","<bash><shell><formatting>","2","0","","",""
+"48046434","2","","48046418","2018-01-01 00:14:39","","4","","<p>No, it will not violate the Liskov Principle as long as the subclass' implementation satisfies the expectations of the base class.</p>
+","206543","","","","","2018-01-01 00:14:39","","","","5","","",""
+"48046435","2","","48046404","2018-01-01 00:14:57","","1","","<p>I would suggest using .getDownloadURL(). Then push all your uploadedfileDownloadURL's into an object or array and then store that into your database. So in the future you can access this object or array from, lets say your user/ProfilePHotos, and then in your app level code you can just use the DownloadURL as a uri links inside an image tag!</p>
+
+<p>In this example I am using react-native, I upload multiple photos, save the download URL each time in an array, then set the array to firebase under the users account. </p>
+
+<pre><code>export const userVehiclePhotoUploadRequest = (photos, user, year) =&gt; dispatch =&gt; {
+    console.log('Inside vehiclePhotoUpload Actions', photos, user)
+
+    let referenceToUploadedPhotos = [];
+
+    return new Promise((resolve, reject) =&gt; {
+        photos.map(ele =&gt; {
+            let mime = 'application/octet-stream'
+
+            let uri = ele.uri
+            let uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+            let sessionId = new Date().getTime()
+            let uploadBlob = null
+            let imageRef = firebase.storage().ref('vehicleImages/' + `${user.account.uid}`).child(`${sessionId}`)
+
+            fs.readFile(uploadUri, 'base64')
+                .then((data) =&gt; {
+                    return Blob.build(data, { type: `${mime};BASE64` })
+                })
+                .then((blob) =&gt; {
+                    uploadBlob = blob
+                    return imageRef.put(blob, { contentType: mime })
+                })
+                .then(() =&gt; {
+                    uploadBlob.close()
+                    return imageRef.getDownloadURL()
+                })
+                .then((url) =&gt; {
+                    referenceToUploadedPhotos.push(url)
+                    console.log('ARRAY OF URLS WHILE PUSHING', referenceToUploadedPhotos)
+                    resolve(url)
+                })
+                .catch((error) =&gt; {
+                    reject(error)
+                })
+        })
+    })
+        .then(() =&gt; {
+            //I did this to not go home until photos are done uploading. 
+
+            let vehicles;
+            firebase.database().ref('users/' + user.account.uid + `/allVehicles/allVehiclesArray`).limitToFirst(1).once('value').then(function (snapshot) {
+                // ******** This method is straight from their docs ********
+                // ******** It returns whatever is found at the path xxxxx/users/user.uid ********
+                vehicles = snapshot.val();
+            }).then(() =&gt; {
+                console.log('ARRAY OF URLS BEFORE SETTING', referenceToUploadedPhotos)
+                // let lastVehicle = vehicles.length - 1;
+                firebase.database().ref('users/' + user.account.uid + `/allVehicles/allVehiclesArray/` + `${Object.keys(vehicles)[0]}` + `/photosReference`).set({
+                    referenceToUploadedPhotos
+                }).then(() =&gt; {
+                    dispatch(loginRequest(user.account))
+                })
+            })
+
+
+        })
+
+
+};
+</code></pre>
+
+<p>And then in your code, lets say inside a map of the user's information...</p>
+
+<pre><code> { ele.photosReference !== undefined ? dynamicAvatar = { uri: `${ele.photosReference.referenceToUploadedPhotos[0]}` } : undefined }
+</code></pre>
+","9105626","","9105626","","2018-01-01 00:25:33","2018-01-01 00:25:33","","","","0","","",""
