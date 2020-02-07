@@ -7,7 +7,11 @@ import pymongo
 from pymongo import MongoClient
 import pprint
 import urllib.parse
+#from urlparse import urlparse
 import matplotlib.pyplot as plt 
+import numpy as np
+import plotly.plotly as py
+import plotly.graph_objs as go
 
 
 def getViewsMongo():
@@ -87,10 +91,10 @@ def plotViewReleasesRecordsNumber(releases, attributes, yLabels, xlabel, ylabel,
     
     i = 0
 
-    for i in range(0, len(releases)):
-        plt.plot(attributes, releases[i], label = yLabels[i])
-    
-    # naming the x axis 
+    for i in range(0, len(releases)):    
+         plt.plot(attributes, releases[i], label = yLabels[i])
+
+    #naming the x axis 
     plt.xlabel(xlabel) 
     # naming the y axis 
     plt.ylabel(ylabel) 
@@ -98,6 +102,8 @@ def plotViewReleasesRecordsNumber(releases, attributes, yLabels, xlabel, ylabel,
     plt.title(title) 
     # show a legend on the plot 
     plt.legend() 
-    # function to show the plot 
+    #  # function to show the plot 
     plt.show() 
+    
+
     

@@ -184,7 +184,7 @@ def estimate_Effort(scoreL, qtimeL):
             calcEffortL.append((tmp*100)/1800)   
     return calcEffortL
 
-def store_Game_Results(scoreL,qtimeL,userEffortL,calcEffortL,elapsed):
+def store_Game_Results( scoreL, qtimeL, userEffortL, calcEffortL, elapsed):
     # qid | time | score | user_effort | calculated_effort | execution_time (cpu)
     header=['qid', 'score', 'time', 'user_effort', 'calculated_effort', 'execution_time'] 
     qid=list(range(1,8))
